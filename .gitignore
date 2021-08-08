@@ -1,3 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+/build
+/dist
+SpotiStats.spec
+
 __pycache__

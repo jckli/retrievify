@@ -9,6 +9,7 @@ import datetime
 import tkinter
 from tkinter import filedialog
 from time import sleep
+from os import system, name
 
 # currentTime = datetime.datetime.utcnow()
 
@@ -54,5 +55,11 @@ for i in range(startLength2019, startLength2020):
 
 timeListened2021 = convertMillitoMin(msPlay2021)
 
-os.system("cls")
+def clear():
+    if name == 'nt':
+        _ = system('cls')
+    else:
+        _ = system('clear')
+clear()
 print(f"Your minutes listened in 2021 is {timeListened2021:,.2f} minutes. That's a lot OwO")
+input("Press enter to close program")
