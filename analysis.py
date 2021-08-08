@@ -1,7 +1,5 @@
 import json
-import os 
-from typing import List
-import pathlib
+import os
 
 def get_files(dirname):
     streamingHistory = []
