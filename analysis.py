@@ -1,6 +1,16 @@
 import json
 import os
 
+class spotifyInfo:
+    name = "Default"
+    milsec = 0
+    year = 0
+
+def get_info(streamingHistory, dirname):
+    for i in range(0, 5):
+        print(streamingHistory[i])
+        i += 1
+
 def get_files(dirname):
     streamingHistory = []
     for file in os.listdir(dirname):
