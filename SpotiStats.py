@@ -22,7 +22,8 @@ dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the M
 
 print("Analyzing Data! Please wait.")
 sleep(0.2)
-get_info(dirname)
+list = get_info(dirname)
+
 """
 historyLength = len(endTime)
 endTime = [datetime.datetime.strptime(endTime[i], "%Y-%m-%d %H:%M") for i in range(historyLength)]
@@ -58,3 +59,7 @@ def clear():
 clear()
 #print(f"Your minutes listened in 2021 is {timeListened2021:,.2f} minutes. That's a lot OwO")
 input("Press enter to close program")
+
+def print_songNames(list):
+    for i in list:
+        print(i.name)
