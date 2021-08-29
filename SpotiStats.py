@@ -1,4 +1,4 @@
-from analysis import get_files, get_msPlayed, get_endTime
+from analysis import get_files, get_msPlayed, get_endTime, get_info
 from calculations import convertMillitoMin
 
 import os
@@ -10,11 +10,12 @@ from os import system, name
 
 # currentTime = datetime.datetime.utcnow()
 
+# Start Up Menu
 print("SpotiStats Beta v0.1")
 print("Starting up.")
 sleep(0.05)
 
-# get the path of the folder containing the files
+# Get the path of the folder containing the files
 root = tkinter.Tk()
 root.withdraw()
 dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the MyData folder")
@@ -23,6 +24,7 @@ print("Analyzing Data! Please wait.")
 sleep(0.2)
 
 streamingHistory = get_files(dirname)
+get_info(streamingHistory, dirname)
 msPlayed = get_msPlayed(streamingHistory, dirname)
 endTime = get_endTime(streamingHistory, dirname)
 
