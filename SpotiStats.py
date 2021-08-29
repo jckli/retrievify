@@ -1,6 +1,3 @@
-import analysis
-import calculations
-
 from analysis import get_files, get_msPlayed, get_endTime
 from calculations import convertMillitoMin
 
