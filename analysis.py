@@ -55,3 +55,4 @@ def get_list(streamingHistory, dirname):
 
                 # Resets dulplicate indicator
                 dupIndicate = False
+    return list
