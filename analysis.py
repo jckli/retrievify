@@ -45,7 +45,7 @@ def get_list(streamingHistory, dirname):
                         dupIndicate = True
                 
                 # Creates new instance for non existing songs
-                if(not b):
+                if(not dupIndicate):
                     a = spotifyInfo()
                     a.name = item["trackName"]
                     a.artist = item["artistName"]
