@@ -2,6 +2,7 @@
 
 /build
 /dist
+/MyData
 SpotiStats.spec
 
 __pycache__

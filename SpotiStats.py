@@ -1,8 +1,8 @@
-from analysis import get_files, get_msPlayed, get_endTime, get_info
+from analysis import get_info
 from calculations import convertMillitoMin
 
 import os
-import datetime
+#import datetme
 import tkinter
 from tkinter import filedialog
 from time import sleep
@@ -22,12 +22,8 @@ dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the M
 
 print("Analyzing Data! Please wait.")
 sleep(0.2)
-
-streamingHistory = get_files(dirname)
-get_info(streamingHistory, dirname)
-msPlayed = get_msPlayed(streamingHistory, dirname)
-endTime = get_endTime(streamingHistory, dirname)
-
+get_info(dirname)
+"""
 historyLength = len(endTime)
 endTime = [datetime.datetime.strptime(endTime[i], "%Y-%m-%d %H:%M") for i in range(historyLength)]
 yearsTime = [endTime[i].year for i in range(historyLength)]
@@ -53,12 +49,12 @@ for i in range(startLength2019, startLength2020):
     msPlay2019 = msPlay2019 + msPlayed[i]
 
 timeListened2021 = convertMillitoMin(msPlay2021)
-
+"""
 def clear():
     if name == 'nt':
         _ = system('cls')
     else:
         _ = system('clear')
 clear()
-print(f"Your minutes listened in 2021 is {timeListened2021:,.2f} minutes. That's a lot OwO")
+#print(f"Your minutes listened in 2021 is {timeListened2021:,.2f} minutes. That's a lot OwO")
 input("Press enter to close program")
