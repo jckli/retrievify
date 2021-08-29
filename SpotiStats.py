@@ -1,4 +1,4 @@
-from analysis import get_info
+from analysis import get_info, yearSort, topTen, topTenInYear
 from calculations import convertMillitoMin
 
 import os
@@ -19,6 +19,10 @@ sleep(0.05)
 root = tkinter.Tk()
 root.withdraw()
 dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the MyData folder")
+
+def print_songNames(list):
+    for i in list:
+        print(i.name)
 
 print("Analyzing Data! Please wait.")
 sleep(0.2)
@@ -59,7 +63,3 @@ def clear():
 clear()
 #print(f"Your minutes listened in 2021 is {timeListened2021:,.2f} minutes. That's a lot OwO")
 input("Press enter to close program")
-
-def print_songNames(list):
-    for i in list:
-        print(i.name)
