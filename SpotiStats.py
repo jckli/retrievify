@@ -1,5 +1,5 @@
 from analysis import *
-from calculations import convertMillitoMin
+from outputs import choices
 
 import os
 #import datetme
@@ -47,34 +47,4 @@ print("4. Total Time Listened by Year")
 print("5. Total Time Listened by Song")
 
 userInput = input("Enter a Number: ")
-if userInput == "1":
-    clear()
-    songCount = input("How many songs: ")
-    if songCount == "":
-        songCount = 10
-
-
-    print("Top Songs")
-    print("----------------")
-    for i in range(10):
-        print(f"{i+1}. {list[i].name}")
-    print("----------------")
-    input("Press Enter to Go Back...")
-    clear()
-elif userInput == "2":
-    clear()
-    print("Top Artists")
-    print("----------------")
-    for i in range(10):
-        print(f"{i+1}. {list[i].artist}")
-    print("----------------")
-    input("Press Enter to Go Back...")
-    clear()
-elif userInput == "3":
-    clear()
-    print("Total Time Listened")
-    print("----------------")
-    print(f"You've spent {convertMillitoMin(list[0].msPlayed)} listening to music starting from *Beginning time*")
-    print("----------------")
-    input("Press Enter to Go Back...")
-    clear()
+choices(userInput)
