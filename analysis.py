@@ -134,7 +134,7 @@ def printList(list):
 def removeLowestTime(list):
     a = list[0].milsec
     b = 0
-    for i in range(list):
+    for i in range(len(list)):
         if a < list[i].milsec:
             a = list[i].milsec
             b = i
