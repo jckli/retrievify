@@ -8,5 +8,7 @@ root.withdraw()
 dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the MyData folder")
 
 list = get_info(dirname)
-poggers = topList(list, 12)
-print(poggers)
+
+for i in list:
+    with open("fuck.txt", "w", encoding="utf-8") as f:
+        f.write(i.song + "\n")
