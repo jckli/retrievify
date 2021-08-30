@@ -89,6 +89,7 @@ def topList(list, int):
                 b = False
             elif(len(listA) < int):
                 listA.append(i)
+    b = True
     return listA
 
 # Returns list of Song Names from 0 to int
