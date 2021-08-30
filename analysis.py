@@ -85,7 +85,6 @@ def topList(list, int):
             if( i.milsec > top.milsec and len(listA) >= int and b):
                 listA.append(i)
                 listA = removeLowestTime(listA)
-                listA.pop()
                 b = False
             elif(len(listA) < int):
                 listA.append(i)
