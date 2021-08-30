@@ -17,8 +17,8 @@ def choices(userInput):
         songList = topIntSongNames(list, songCount)
         print("Top Songs")
         print("----------------")
-        # for i in range(songCount):
-        print(songList)
+        for i in range(songCount):
+            print(songList[i])
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
