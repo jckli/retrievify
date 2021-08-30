@@ -78,13 +78,13 @@ def yearSort(list, year):
     
 # Returns top songs instances based on listening time
 def topList(list, int):
-    listA = []
+    listA = [list[0]]
     b = True
     for i in list:
         for top in listA:
             if( i.milsec > top.milsec and len(listA) >= int and b):
                 listA.append(i)
-                sorted(listA)
+                listA = removeLowestTime(listA)
                 listA.pop()
                 b = False
             elif(len(listA) < int):
@@ -129,5 +129,15 @@ def totalTimeListenedInYear(list, year):
 
 def printList(list):
     for i in list:
-        print(list.song + "\n")
-        print(list.artist + "\n\n")
+        print(i.song + "\n")
+        print(i.artist + "\n\n")
+
+def removeLowestTime(list):
+    a = list[0].milsec
+    b = 0
+    for i in range(list):
+        if a < list[i].milsec:
+            a = list[i].milsec
+            b = i
+    list.pop(i)
+    return list
