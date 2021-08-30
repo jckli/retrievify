@@ -126,3 +126,8 @@ def totalTimeListened(list):
 # Returns Total milseconds listen on spotify, given year
 def totalTimeListenedInYear(list, year):
     return totalTimeListened.yearSort(list, year)
+
+def printList(list):
+    for i in list:
+        print(list.song + "\n")
+        print(list.artist + "\n\n")
