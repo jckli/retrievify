@@ -6,6 +6,12 @@ class spotifyInfo:
     artist = "Default"
     milsec = 0
     endTime = 0
+    timeList = []
+
+class time:
+    year = []
+    date = []
+    milsec = []
 
 # Converts milsecond time to mins
 def convertMillitoMin(millis):
@@ -70,20 +76,23 @@ def yearSort(list, year):
             a.append(i)
     return a
     
-# Returns Top number of Songs based on time from list
+# Returns top songs instances based on listening time
 def topList(list, int):
     listA = []
+    b = True
     for i in list:
         for top in listA:
-            if( i.milsec > top.milsec and len(listA) >= int):
+            if( i.milsec > top.milsec and len(listA) >= int and b):
                 listA.append(i)
                 sorted(listA)
                 listA.pop()
+                b = False
             elif(len(listA) < int):
                 listA.append(i)
+    b = True
     return listA
 
-# Returns list of Top Int Song Names
+# Returns list of Song Names from 0 to int
 def topIntSongNames(list,int):
     listA = topList(list, int)
     listB = []
@@ -91,11 +100,11 @@ def topIntSongNames(list,int):
         listB.append(i.song)
     return listB
 
-# Defaults to top 10 Song Names
+# Default List of top 10 Songs
 def topSongNames(list):
     return topIntSongNames(list, 10)
     
-# Returns the name of the top 10 artist names
+# Returns list of Artist Names from 0 to int
 def topIntArtistNames(list, int):
     listA = topList(list, int)
     listB = []
@@ -103,18 +112,17 @@ def topIntArtistNames(list, int):
         listB.append(i.artist)
     return listB
 
-# Defaults to top 10 Artist Names
+# Default List of top 10 Artist
 def topArtistNames(list):
     return topIntArtistNames(list, 10)
 
-# Returns Total milseconds listen on spotify
+# Returns Total Milseconds listened on spotify
 def totalTimeListened(list):
     a = 0
     for i in list:
         a += i.milsec
     return a
     
-# Returns Total milseconds listen on spotify for a given year
+# Returns Total milseconds listen on spotify, given year
 def totalTimeListenedInYear(list, year):
     return totalTimeListened.yearSort(list, year)
-
