@@ -13,8 +13,8 @@ def get_info(dirName):
     listA =  get_list(get_files(dirName), dirName)
     print("Finished Receiving Data")
     return listA
-    #endTime = get_endTime(streamingHistory, dirname)
 
+# Gets the information into an array from files
 def get_files(dirName):
     streamingHistory = []
     for file in os.listdir(dirName):
@@ -22,7 +22,7 @@ def get_files(dirName):
             streamingHistory.append(file)
     return streamingHistory
 
-
+# PLaces all the information into classes
 def get_list(streamingHistory, dirname):
     listA = []
     dupIndicate = False
@@ -53,7 +53,7 @@ def get_list(streamingHistory, dirname):
                     a.milsec = item["msPlayed"]
                     listA.append(a)
 
-                # Resets dulplicate indicator
+                # Resets dulplicate indicator for the next item in list
                 dupIndicate = False
     return listA
 
@@ -113,6 +113,7 @@ def get_list(streamingHistory, dirname):
     def totalTimeListenedInYear(list, year):
         return totalTimeListened.yearSort(list, year)
 
+    # Converts milsecond time to mins
     def convertMillitoMin(millis):
         minutes=(millis/(1000*60))
         return minutes
