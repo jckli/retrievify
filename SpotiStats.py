@@ -1,4 +1,4 @@
-from analysis import get_info, yearSort, topTen, topTenInYear
+from analysis import get_info
 from calculations import convertMillitoMin
 
 import os
@@ -7,11 +7,12 @@ import tkinter
 from tkinter import filedialog
 from time import sleep
 from os import system, name
+import json
 
 # currentTime = datetime.datetime.utcnow()
 
 # Start Up Menu
-print("SpotiStats Beta v0.1")
+print("SpotiStats v0.2")
 print("Starting up.")
 sleep(0.05)
 
@@ -20,14 +21,14 @@ root = tkinter.Tk()
 root.withdraw()
 dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the MyData folder")
 
-def print_songNames(list):
-    for i in list:
-        print(i.name)
-
 print("Analyzing Data! Please wait.")
-sleep(0.2)
-list = get_info(dirname)
 
+def print_songNames(list):
+    list = []
+    for i in list:
+        list.append(i.name)
+    return list
+        
 """
 historyLength = len(endTime)
 endTime = [datetime.datetime.strptime(endTime[i], "%Y-%m-%d %H:%M") for i in range(historyLength)]
@@ -60,6 +61,48 @@ def clear():
         _ = system('cls')
     else:
         _ = system('clear')
+
+list = get_info(dirname)
+sleep(1)
 clear()
 #print(f"Your minutes listened in 2021 is {timeListened2021:,.2f} minutes. That's a lot OwO")
-input("Press enter to close program")
+print("~What would you like to see?~")
+print("1. Top Songs")
+print("2. Top Artists")
+print("3. Top Genre (utilize api)")
+print("3. Total Time Listened")
+print("4. Total Time Listened by Year")
+print("5. Total Time Listened by Song")
+
+userInput = input("Enter a Number: ")
+if userInput == "1":
+    clear()
+    songCount = input("How many songs: ")
+    if songCount == "":
+        songCount = 10
+
+
+    print("Top Songs")
+    print("----------------")
+    for i in range(10):
+        print(f"{i+1}. {list[i].name}")
+    print("----------------")
+    input("Press Enter to Go Back...")
+    clear()
+elif userInput == "2":
+    clear()
+    print("Top Artists")
+    print("----------------")
+    for i in range(10):
+        print(f"{i+1}. {list[i].artist}")
+    print("----------------")
+    input("Press Enter to Go Back...")
+    clear()
+elif userInput == "3":
+    clear()
+    print("Total Time Listened")
+    print("----------------")
+    print(f"You've spent {convertMillitoMin(list[0].msPlayed)} listening to music starting from *Beginning time*")
+    print("----------------")
+    input("Press Enter to Go Back...")
+    clear()
