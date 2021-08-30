@@ -36,7 +36,7 @@ def get_files(dirName):
 # PLaces all the information into classes
 def get_list(streamingHistory, dirname):
     listA = []
-    dupIndicate = True
+    dupIndicate = False
 
     # Goes through all the files
     for i in range(0,len(streamingHistory) - 1):
@@ -51,30 +51,21 @@ def get_list(streamingHistory, dirname):
 
                 # Checks for Duplicates and adds time
                 for existing in listA:
-                    if(item["trackName"] == existing.song and item["artistName"] == existing.artist):
-                        if(item["endTime"][0:4] == existing.endTime[0:4]):
-                            existing.milsec = existing.milsec + int(item["msPlayed"])
-                            dupIndicate = False
-                        elif(dupIndicate):
-                            a = spotifyInfo()
-                            a.song = item["trackName"]
-                            a.artist = item["artistName"]
-                            a.endTime = item["endTime"]
-                            a.milsec = int(item["msPlayed"])
-                            listA.append(a)
+                    if(item["trackName"] == existing.song and item["artistName"] == existing.artist and item["endTime"][0:4] == existing.endTime[0:4]):
+                        existing.milsec += item["msPlayed"]
+                        dupIndicate = True
                 
                 # Creates new instance for non existing songs
-                if(dupIndicate):
+                if(not dupIndicate):
                     a = spotifyInfo()
                     a.song = item["trackName"]
                     a.artist = item["artistName"]
                     a.endTime = item["endTime"]
-                    a.milsec = int(item["msPlayed"])
+                    a.milsec = item["msPlayed"]
                     listA.append(a)
 
                 # Resets dulplicate indicator for the next item in list
-                dupIndicate = True
-    #printList(listA)
+                dupIndicate = False
     return listA
 
 # Returns a list that contains all the songs in a given year
@@ -84,35 +75,20 @@ def yearSort(list, year):
         if(year == i.endTime[0:4]):
             a.append(i)
     return a
-
-"""   
+    
 # Returns top songs instances based on listening time
 def topList(list, int):
-    listA = [list[0],list[1]]
+    listA = [list[0]]
     b = True
     for i in list:
         for top in listA:
             if( i.milsec > top.milsec and len(listA) >= int and b):
                 listA.append(i)
                 listA = removeLowestTime(listA)
-                printList(listA)
                 b = False
             elif(len(listA) < int):
                 listA.append(i)
-    print("-----------------------------------------")
     b = True
-    return listA
-"""
-# Returns top songs instances based on listening time
-def topList(list, int):
-    listA = []
-    for i in range(int):
-        listA.append(list[i])
-    for i in list:
-        for a in listA:
-            if i.milsec > a.milsec:
-                listA.append(i)
-                if len(listA) > 10: removeLowestTime(listA)
     return listA
 
 # Returns list of Song Names from 0 to int
@@ -153,26 +129,14 @@ def totalTimeListenedInYear(list, year):
 def printList(list):
     for i in list:
         print(i.song + "\n")
-        print(i.artist + "\n")
-        print(i.endTime + "\n")
-        print(str(i.milsec) + "\n\n")
-    """
-    print(list[0].song + "\n")
-    print(list[0].artist + "\n\n")
-    print(list[1].song + "\n")
-    print(list[1].artist + "\n\n")
-    print(list[2].song + "\n")
-    print(list[2].artist + "\n\n")
-    print(list[3].song + "\n")
-    print(list[3].artist + "\n\n")
-    """
+        print(i.artist + "\n\n")
 
 def removeLowestTime(list):
     a = list[0].milsec
     b = 0
-    for i in range(len(list) - 1):
+    for i in range(len(list)):
         if a < list[i].milsec:
             a = list[i].milsec
             b = i
-    list.pop(b)
+    list.pop(i)
     return list
