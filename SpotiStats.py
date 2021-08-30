@@ -1,5 +1,4 @@
 from analysis import *
-from calculations import convertMillitoMin
 
 import os
 #import datetme
