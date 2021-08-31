@@ -140,6 +140,17 @@ def printList(list):
         #print(i.endTime + "\n")
         #print("   " + str(i.milsec))
 
+# Removes the lowest time from the list
+def removeLowestTime(list):
+    a = list[0].milsec
+    b = 0
+    for i in range(len(list)):
+        if a < list[i].milsec:
+            a = list[i].milsec
+            b = i
+    list.pop(i)
+    return list
+
 def sort(list):
     for i in range(0, len(list)):
         key_item = list[i]
@@ -149,3 +160,22 @@ def sort(list):
             j -= 1
         list[j + 1] = key_item
     return list
+
+# Returns the total milliseconds throughout the data given
+def totalTime(list):
+    milsec = 0
+    for i in list:
+        milsec += i.milsec
+    return milsec
+
+# Returns the total milliseconds throughout the data given, in a given year
+def totalTimeInYear(list, year):
+    milsec = 0
+    for i in list:
+        if(int(i.endTime[0:4]) == year):
+            milsec += i.milsec
+    return milsec
+
+def totalTimeBySong(list, song):
+    milsec = 0
+    return milsec

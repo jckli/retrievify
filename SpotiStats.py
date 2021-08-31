@@ -10,7 +10,7 @@ from os import system, name
 import json
 
 # Start Up Menu
-print("SpotiStats v0.2")
+print("SpotiStats v1.1")
 print("Starting up.")
 sleep(0.05)
 
@@ -38,13 +38,13 @@ sleep(1)
 clear()
 
 #print(f"Your minutes listened in 2021 is {timeListened2021:,.2f} minutes. That's a lot OwO")
-print("~What would you like to see?~")
+print("~ What would you like to see?")
 print("1. Top Songs")
 print("2. Top Artists")
 print("3. Top Genre (utilize api)")
-print("3. Total Time Listened")
-print("4. Total Time Listened by Year")
-print("5. Total Time Listened by Song")
+print("4. Total Time Listened")
+print("5. Total Time Listened by Year")
+print("6. Total Time Listened by Song")
 
 userInput = input("Enter a Number: ")
-choices(userInput)
+choices(list, userInput)

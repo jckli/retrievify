@@ -9,11 +9,4 @@ dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the M
 
 list = get_info(dirname)
 
-print("Pulled Info")
-
-listA = topList(list, 25)
-
-print("\nTop List is \n\n")
-printList(listA)
-
-print("Finished")
+print(totalTimeInYear(list, 2021))
