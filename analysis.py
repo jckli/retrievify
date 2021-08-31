@@ -149,8 +149,16 @@ def removeLowestTime(list):
 
 # Returns the total milliseconds throughout the data given
 def totalTime(list):
-    a = 0
+    milsec = 0
     for i in list:
-        a += i.milsec
-    return a
+        milsec += i.milsec
+    return milsec
 
+def totalTimeInYear(list, year):
+    milsec = 0
+    print(year)
+    for i in list:
+        if(int(i.endTime[0:4]) == year):
+            milsec += i.milsec
+    return milsec
+    

@@ -9,4 +9,4 @@ dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the M
 
 list = get_info(dirname)
 
-print(totalTime(list))
+print(totalTimeInYear(list, 2021))
