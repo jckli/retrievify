@@ -10,7 +10,7 @@ from os import system, name
 import json
 
 # Start Up Menu
-print("SpotiStats v1.1")
+print("SpotiStats v1")
 print("Starting up.")
 sleep(0.05)
 
