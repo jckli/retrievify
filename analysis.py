@@ -154,11 +154,14 @@ def totalTime(list):
         milsec += i.milsec
     return milsec
 
+# Returns the total milliseconds throughout the data given, in a given year
 def totalTimeInYear(list, year):
     milsec = 0
-    print(year)
     for i in list:
         if(int(i.endTime[0:4]) == year):
             milsec += i.milsec
     return milsec
-    
+
+def totalTimeBySong(list, song):
+    milsec = 0
+    return milsec

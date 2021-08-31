@@ -8,17 +8,15 @@ def clear():
     else:
         _ = system('clear')
 
-def choices(userInput):
+def choices(list, userInput):
     if userInput == "1":
         clear()
-        songCount = input("How many songs (default 10): ")
-        if songCount == "":
-            songCount = 10
-        songList = topIntSongNames(list, songCount)
+        songCount = int(input("How many songs (default 10): ") or 10)
+        songList = topList(list, songCount)
         print("Top Songs")
         print("----------------")
         for i in range(songCount):
-            print(songList[i])
+            print(f"{i + 1}. {songList[i].song} - {songList[i].milsec}")
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
