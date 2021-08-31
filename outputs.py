@@ -33,3 +33,42 @@ def choices(list, userInput):
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
+
+    elif userInput == "3":
+        clear()
+        print("This output is not completed yet! Check back later.")
+        input("Press Enter to Go Back...")
+        clear()
+
+    elif userInput == "4":
+        clear()
+        minutes = convertMillitoMin(totalTime(list))
+        print(f"Total Time Listened - Starting from {list[0].endTime}")
+        print("----------------")
+        print(f"{minutes:,.2f} minutes")
+        print("----------------")
+        input("Press Enter to Go Back...")
+        clear()
+
+    elif userInput == "5":
+        clear()
+        year = int(input("Year: "))
+        if year == "":
+            print ("No Year Selected")
+            input("Press Enter to Go Back...")
+            clear()
+        else:
+            clear()
+            minutes = convertMillitoMin(totalTimeInYear(list, year))
+            print(f"Total Time Listened in {year}")
+            print("----------------")
+            print(f"{minutes:,.2f} minutes")
+            print("----------------")
+            input("Press Enter to Go Back...")
+            clear()
+
+    elif userInput == "6":
+        clear()
+        print("This output is not completed yet! Check back later.")
+        input("Press Enter to Go Back...")
+        clear()
