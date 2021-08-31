@@ -12,8 +12,9 @@ class spotifyInfo:
 # Time Class to hold duration and listing times of each song
 class time:
     year = []
-    date = []
+    #date = []
     milsec = []
+    totalTime = 0
 
 # Converts milsecond time to mins
 def convertMillitoMin(millis):
@@ -81,16 +82,19 @@ def yearSort(list, year):
 # Returns top songs instances based on listening time
 def topList(list, int):
     listA = []
+    sort(listA)
+    b = True
     for i in range(int):
         listA.append(list.pop(0))
-    b = True
     for i in list:
         for top in listA:
-            if(i.milsec > top.milsec and len(listA) == int and b):
+            if(i.milsec > top.milsec and b):
                 listA.append(i)
-                listA = removeLowestTime(listA)
+                listA = sort(listA)
+                listA.pop(int)
                 b = False
         b = True
+    listA = sort(listA)
     return listA
 
 # Returns list of Song Names from 0 to int
@@ -145,6 +149,16 @@ def removeLowestTime(list):
             a = list[i].milsec
             b = i
     list.pop(i)
+    return list
+
+def sort(list):
+    for i in range(0, len(list)):
+        key_item = list[i]
+        j = i - 1
+        while j >= 0 and list[j].milsec < key_item.milsec:
+            list[j + 1] = list[j]
+            j -= 1
+        list[j + 1] = key_item
     return list
 
 # Returns the total milliseconds throughout the data given
