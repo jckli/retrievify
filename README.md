@@ -1,7 +1,7 @@
 <br>
 <p align="center">
   <a href="https://github.com/ohashizu/SpotiStats">
-    <img src="https://github.com/ohashizu/ohashizu/blob/master/assets/img/SpotiStats.png" alt="Logo" width="100" height="100">
+    <img src="https://raw.githubusercontent.com/ohashizu/SpotiStats/master/assets/img/SpotiStats.png" alt="Logo" width="100" height="100">
   </a>
 
   <h2 align="center">SpotiStats</h2>
