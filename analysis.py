@@ -38,7 +38,7 @@ def get_files(dirName):
 # PLaces all the information into classes
 def get_list(streamingHistory, dirname):
     listA = []
-    dupIndicate = True
+    dupIndicate = False
 
     # Goes through all the files
     for i in range(0,len(streamingHistory)):
@@ -62,7 +62,7 @@ def get_list(streamingHistory, dirname):
                     a.song = item["trackName"]
                     a.artist = item["artistName"]
                     a.endTime = item["endTime"]
-                    a.milsec = int(item["msPlayed"])
+                    a.milsec = item["msPlayed"]
                     listA.append(a)
 
                 # Resets duplicate indicator for the next item in list
@@ -77,7 +77,6 @@ def yearSort(list, year):
         if(year == i.endTime[0:4]):
             a.append(i)
     return a
-
  
 # Returns top songs instances based on listening time
 def topList(list, int):
@@ -141,9 +140,9 @@ def printList(list):
 def removeLowestTime(list):
     a = list[0].milsec
     b = 0
-    for i in range(len(list) - 1):
+    for i in range(len(list)):
         if a < list[i].milsec:
             a = list[i].milsec
             b = i
-    list.pop(b)
+    list.pop(i)
     return list

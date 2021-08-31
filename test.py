@@ -8,6 +8,7 @@ root.withdraw()
 dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the MyData folder")
 
 list = get_info(dirname)
+
 print("Pulled Info")
 
 listA = topList(list, 10)
