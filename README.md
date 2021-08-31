@@ -4,7 +4,7 @@
     <img src="https://raw.githubusercontent.com/ohashizu/SpotiStats/master/assets/img/SpotiStats.png" alt="Logo" width="100" height="100">
   </a>
 
-  <h2 align="center">SpotiStats</h2>
+  <h3 align="center">SpotiStats</h3>
 
   <p align="center">
     A simple python script that allows you to view how many minutes you've spent listening to music on Spotify this year as well as other stats.
