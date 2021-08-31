@@ -11,7 +11,7 @@ list = get_info(dirname)
 
 print("Pulled Info")
 
-listA = topList(list, 10)
+listA = topList(list, 25)
 
 print("\nTop List is \n\n")
 printList(listA)
