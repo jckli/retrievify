@@ -9,6 +9,4 @@ dirname = filedialog.askdirectory(parent=root,initialdir="/",title="Select the M
 
 list = get_info(dirname)
 
-for i in list:
-    with open("fuck.txt", "w", encoding="utf-8") as f:
-        f.write(i.song + "\n")
+print(totalTime(list))
