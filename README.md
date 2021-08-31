@@ -1,7 +1,19 @@
-# SpotiStats
-SpotiStats is a simple python script that allows you to see how many minutes you've spent listening to music on Spotify this year.
+<br>
+<p align="center">
+  <a href="https://github.com/ohashizu/SpotiStats">
+    <img src="https://github.com/ohashizu/ohashizu/blob/master/assets/img/SpotiStats.png" alt="Logo" width="100" height="100">
+  </a>
 
-> **Note**: This application is not affiliated with Spotify. This application uses personal Spotify data, and though this application does not store any of your data, use at your own risk.
+  <h2 align="center">SpotiStats</h2>
+
+  <p align="center">
+    A simple python script that allows you to view how many minutes you've spent listening to music on Spotify this year as well as other stats.
+  </p>
+</p>
+
+<br>
+
+> **Note**: Neither this application nor the logo is affiliated with Spotify. This application uses personal Spotify data, and though this application does not store any of your data, use at your own risk.
 
 ## Why?
 
