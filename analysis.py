@@ -71,11 +71,11 @@ def get_list(streamingHistory, dirname):
     #printList(listA)
     return listA
 
-# Returns a list that contains all the songs in a given year
-def yearSort(list, year):
+# Returns a list that contains all the songs in a given year from given list
+def yearList(list, year):
     a = []
     for i in list:
-        if(year == i.endTime[0:4]):
+        if(str(year) == i.endTime[0:4]):
             a.append(i)
     return a
  
@@ -130,26 +130,20 @@ def totalTimeListened(list):
     
 # Returns Total milseconds listen on spotify, given year
 def totalTimeListenedInYear(list, year):
-    return totalTimeListened.yearSort(list, year)
+    return totalTimeListened(yearList(list, year))
 
 # Prints the list with song name, artist, when it was listened to and the milseconds it was listened for
 def printList(list):
     for i in list:
+        
+        # Print Option 1
         print(i.song + "        " + i.artist + "        " + i.endTime + "        " + str(i.milsec))
-        #print(i.artist + "\n")
-        #print(i.endTime + "\n")
-        #print("   " + str(i.milsec))
-
-# Removes the lowest time from the list
-def removeLowestTime(list):
-    a = list[0].milsec
-    b = 0
-    for i in range(len(list)):
-        if a < list[i].milsec:
-            a = list[i].milsec
-            b = i
-    list.pop(i)
-    return list
+        
+        # Print Option 2
+        #print(i.song)
+        #print(i.artist)
+        #print(i.endTime)
+        #print(str(i.milsec) + "\n")
 
 def sort(list):
     for i in range(0, len(list)):
