@@ -26,7 +26,7 @@ Since this python script directly uses Spotify data retrieved from the user's ac
  - Python 3.8
  - tkinter
 
- > **Note**: You will need to install these manually, this readme does not cover the installation of these dependancies.
+ > **Note**: You will need to install these manually, this readme does not cover the installation of these dependancies. This could also be avoided by using the precompiled .exe file in the Releases. Using this, everything is done and the only thing that is needed is the spotify data to import.
 
 You will also need to retrieve your data from Spotify. This can be done by going to the Spotify website, and then clicking on the "Privacy" tab in the account settings and then 
 requesting the data. After this is done, you will need to wait for a few days for them to send it to you.
