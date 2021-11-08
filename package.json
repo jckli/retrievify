@@ -1,9 +1,0 @@
-{
-  "name": "statsify",
-  "version": "0.0.0",
-  "description": "Statsify",
-  "main": "server.js",
-  "author": {
-    "name": ""
-  }
-}
