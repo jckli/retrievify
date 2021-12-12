@@ -1,0 +1,80 @@
+@font-face {
+    font-family: Gotham;
+    src: url(../fonts/GothamMedium.ttf);
+}
+@font-face {
+    font-family: GothamBold;
+    src: url(../fonts/GothamBold.ttf);
+}
+body {
+    font-family: Gotham;
+    margin: 0px;
+    background: #101010;
+    display: block;
+}
+#content {
+    color: #ffffff;
+}
+#intro {
+    min-height: 90vh;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    display: flex;
+}
+#intro > .title {
+    max-width: 750px;
+    padding: 0 40px;
+    margin: 0 auto;
+    text-align: center;
+}
+#intro > .title > .logo {
+    text-align: center;
+}
+#intro > .title > .logo > img {
+    display: inline-block;
+    vertical-align: middle;
+    width: 128px;
+    height: 128px;
+    margin-right: 16px;
+}
+#intro > .title > .logo > h1 {
+    margin: 0;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 100px;
+    font-family: GothamBold;
+    color: #1DB954;
+}
+#intro > .title > p {
+    font-family: Gotham;
+    font-size: 18px;
+    margin-bottom: 0px;
+}
+#intro > .title > a {
+    font-family: Gotham;
+    line-height: 1.3;
+    padding: 9px 12px;
+    display: inline-block;
+    color: #007bff;
+    border: 1px solid #313338;
+    background: #1a1c21;
+    border-radius: 10px;
+}
+#intro > .title > a:hover {
+    background: rgba(217, 210, 255, 0.2);
+    border: 1px solid #4b4b4b;
+    transition: 200ms ease-out background,200ms ease-out border;
+    text-decoration: none;
+}
+#footer > div {
+    min-height: 10vh;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#footer > div > div {
+    font-size: 16px;
+}
