@@ -12,12 +12,12 @@ def choices(list, userInput):
     if userInput == "1":
         clear()
         songCount = int(input("How many songs (default 10): ") or 10)
-        songList = topList(list, songCount)
         print("Top Songs")
         print("----------------")
-        for i in range(songCount):
-            minutes = convertMillitoMin(songList[i].milsec)
-            print(f"{i + 1}. {songList[i].song} - {minutes:,.2f} minutes")
+        songList = topSongTime(songCount)
+        #for i in range(songCount):
+            #minutes = convertMillitoMin(findSongTime(songList[i]))
+            #print(f"{i + 1}. {songList[i].song} - {minutes:,.2f} minutes")
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
@@ -42,7 +42,7 @@ def choices(list, userInput):
 
     elif userInput == "4":
         clear()
-        minutes = convertMillitoMin(totalTime(list))
+        minutes = convertMillitoMin(totalTimeListened())
         print(f"Total Time Listened - Starting from {list[0].endTime}")
         print("----------------")
         print(f"{minutes:,.2f} minutes")
@@ -59,7 +59,7 @@ def choices(list, userInput):
             clear()
         else:
             clear()
-            minutes = convertMillitoMin(totalTimeInYear(list, year))
+            minutes = convertMillitoMin(totalTimeListenedInYear(year))
             print(f"Total Time Listened in {year}")
             print("----------------")
             print(f"{minutes:,.2f} minutes")
@@ -72,3 +72,8 @@ def choices(list, userInput):
         print("This output is not completed yet! Check back later.")
         input("Press Enter to Go Back...")
         clear()
+
+# Converts milsecond time to mins
+def convertMillitoMin(millis):
+    minutes=(millis/(60000))
+    return minutes
