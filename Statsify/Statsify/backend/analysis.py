@@ -32,76 +32,56 @@ def get_info(dirName):
             data = json.load(f)
 
             for item in data:
-                    songDic[item["endTime"][0:4]] = {}
+                #print(item["endTime"][0:4])
+                songDic[item["endTime"][0:4]] = {}
             
-            print(songDic)
             # Opens the each "STREAMING HISTORY" file
             for item in data:
-                songDic[item["endTime"][0:4]][(item["trackName"], item["artistName"])] = int(item["msPlayed"])
+               ms = songDic[item["endTime"][0:4]].get((item["trackName"], item["artistName"]), 0)
+               songDic[item["endTime"][0:4]][(item["trackName"], item["artistName"])] = int(item["msPlayed"]) + ms
+               print(item["trackName"] + ", " + item["artistName"] + "for " + str(item["msPlayed"]) + " ms")
 
     print("Finished Receiving Data")
 
+def findSong(song, artist):
+        for list in songDic:
+            a = a + (list[(song, artist)])
+        return a
+
+def findSong(song, artist, year):
+    return(songDic[year][(song, artist)])
 
 # Returns a list that contains all the songs in a given year from given list
 def yearList(list, year):
-    a = []
-    for i in list:
-        if(str(year) == i.endTime[0:4]):
-            a.append(i)
-    return a
+    print()
  
 # Returns top songs instances based on listening time
 def topList(list, int):
-    listA = []
-    sort(listA)
-    b = True
-    for i in range(int):
-        listA.append(list.pop(0))
-    for i in list:
-        for top in listA:
-            if(i.milsec > top.milsec and b):
-                listA.append(i)
-                listA = sort(listA)
-                listA.pop(int)
-                b = False
-        b = True
-    listA = sort(listA)
-    return listA
+    print()
 
 # Returns list of Song Names from 0 to int
 def topIntSongNames(list,int):
-    listA = topList(list, int)
-    listB = []
-    for i in listA:
-        listB.append(i.song)
-    return listB
+    print()
 
 # Default List of top 10 Songs
 def topSongNames(list):
-    return topIntSongNames(list, 10)
+    print()
     
 # Returns list of Artist Names from 0 to int
 def topIntArtistNames(list, int):
-    listA = topList(list, int)
-    listB = []
-    for i in listA:
-        listB.append(i.artist)
-    return listB
+    print()
 
 # Default List of top 10 Artist
 def topArtistNames(list):
-    return topIntArtistNames(list, 10)
+    print()
 
 # Returns Total Milseconds listened on spotify
 def totalTimeListened(list):
-    a = 0
-    for i in list:
-        a += i.milsec
-    return a
+    print()
     
 # Returns Total milseconds listen on spotify, given year
 def totalTimeListenedInYear(list, year):
-    return totalTimeListened(yearList(list, year))
+    print()
 
 # Prints the list with song name, artist, when it was listened to and the milseconds it was listened for
 def printList(list):
