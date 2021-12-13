@@ -25,11 +25,11 @@ def choices(list, userInput):
     elif userInput == "2":
         clear()
         artistCount = int(input("How many artists (default 10): ") or 10)
-        artistList = topList(list, artistCount)
         print("Top Artists")
         print("----------------")
-        for i in range(artistCount):
-            print(f"{i + 1}. {artistList[i].artist} - {artistList[i].milsec}")
+        artistList = topArtistTime(list, artistCount)
+        #for i in range(artistCount):
+            #print(f"{i + 1}. {artistList[i].artist} - {artistList[i].milsec}")
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
