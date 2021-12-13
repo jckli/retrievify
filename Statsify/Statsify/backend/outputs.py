@@ -12,12 +12,13 @@ def choices(list, userInput):
     if userInput == "1":
         clear()
         songCount = int(input("How many songs (default 10): ") or 10)
-        print("Top Songs")
+        songList, songTime = topSongTime(songCount)
+        ("Top Songs")
         print("----------------")
-        songList = topSongTime(songCount)
-        #for i in range(songCount):
+        for i in range(songCount):
             #minutes = convertMillitoMin(findSongTime(songList[i]))
             #print(f"{i + 1}. {songList[i].song} - {minutes:,.2f} minutes")
+            print(songList[i][0] + " - " + songList[i][1] + " - " + songTime[i])
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
@@ -27,9 +28,10 @@ def choices(list, userInput):
         artistCount = int(input("How many artists (default 10): ") or 10)
         print("Top Artists")
         print("----------------")
-        artistList = topArtistTime(list, artistCount)
-        #for i in range(artistCount):
+        artistList, artistTime = topArtistTime(list, artistCount)
+        for i in range(artistCount):
             #print(f"{i + 1}. {artistList[i].artist} - {artistList[i].milsec}")
+            print(artistList[i][0] + " - " + artistList[i][1] + " - " + artistTime[i])
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
