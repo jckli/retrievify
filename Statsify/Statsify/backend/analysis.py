@@ -4,6 +4,7 @@ import heapq
 
 songDict = {}
 artistDict = {}
+firstTime = ""
 
 # Gets all the files and puts all the songs into classes instances 
 # and into lists that contain total time played separated by years
@@ -28,6 +29,9 @@ def get_info(dirName):
         with open(abspath, "r",  encoding='utf-8') as f:
             data = json.load(f)
 
+            if(i == 0):
+                firstTime = str(data[0]["endTime"][0:10])
+
             # makes a dic for every year in songDict
             for item in data:
                 songDict[item["endTime"][0:4]] = {}
@@ -48,17 +52,16 @@ def get_info(dirName):
                 artistDict[item["endTime"][0:4]][songArtist[1]] = int(item["msPlayed"]) + artistDict[item["endTime"][0:4]].get(songArtist[1], 0)
                 artistDict["Total"][songArtist[1]] = int(item["msPlayed"]) + artistDict["Total"].get(songArtist[1], 0)
             
-
     print("Finished Receiving Data")
 
 # TOP SONGS
 # Returns the time one song is played across all years, songArtist is tuple (song, artist)
 def findSongTime(song, artist):
-    return convertMilliseconds(songDict["Total"][(song, artist)])
+    return songDict["Total"][(song, artist)]
 
 # Returns the time one song is played in a year, songArtist is tuple (song, artist)
-def findSongTimeYear(songArtist, year):
-    return convertMilliseconds(songDict[year][songArtist])
+def findSongTimeYear(song, artist, year):
+    return songDict[str(year)][(song, artist)]
 
 # Returns top songs instances based on listening time across all years
 def topSongTime(num):
@@ -75,11 +78,11 @@ def topSongTimeYear(year, num):
 # TOP ARTISTS
 # Returns list of Artist Names from 0 to int
 def findArtistTime(artist):
-    return convertMilliseconds(artistDict["Total"][artist])
+    return artistDict["Total"][artist]
 
 # Returns the time one song is played in of the years
 def findArtistTimeYear(artist, year):
-    return(convertMilliseconds(artistDict[year][artist]))
+    return(artistDict[year][artist])
 
 # Returns top songs instances based on listening time across all years
 def topArtistTime(num):
@@ -94,26 +97,19 @@ def topArtistTimeYear(year, num):
     return heapq.nlargest(num, artistDict[year], key=artistDict[year].get)
 
 # TIME CALCULATIONS
-# Converts miliseoncds to hours, minutes, and seconds
-def convertMilliseconds(millis):
-    hours = int(millis/3600000)
-    minutes = int((millis % 3600000)/60000)
-    seconds = round((millis% 60000)/1000, 2)
-    return ("{0} hours {1} mins {2} seconds".format(hours, minutes, seconds))
-    #reutrn [hours, minutes, seconds]
-    #return str(millis)
-
 # Returns Total timed listened on spotify in string form (hours:minutes:seconds)
 def totalTimeListened():
-    for year in songDict:
-        a = a + totalTimeListenedInYear(year)
-    return convertMilliseconds(a)
+    a = 0
+    for song in songDict["Total"]:
+        a = a + int(songDict["Total"][song])
+    return a
     
 # Returns Total time listened on in a year in string form (hours:minutes:seconds)
 def totalTimeListenedInYear(year):
+    a = 0
     for song in songDict[year]:
-            a = a + songDict[year][song]
-    return convertMilliseconds(a)
+            a = a + int(songDict[year][song])
+    return a
 
 # Prints out all the songs
 # Prints song name, artist, when it was listened to and the milseconds it was listened for
@@ -122,3 +118,6 @@ def printListAllSongs():
     #for year in songDict:
     #    for song in songDict[year]:
     #        print(song[0] + " " + song[1] + " " + year + " " + convertMilliseconds(songDict[year][song]))
+
+def getFirstTime():
+    return firstTime
