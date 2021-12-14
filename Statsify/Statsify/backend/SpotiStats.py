@@ -35,7 +35,7 @@ def clear():
 
 list = get_info(dirname)
 sleep(1)
-clear()
+#clear()
 
 #print(f"Your minutes listened in 2021 is {timeListened2021:,.2f} minutes. That's a lot OwO")
 print("~ What would you like to see?")
@@ -44,7 +44,7 @@ print("2. Top Artists (Not working)")
 print("3. Top Genre (Not working - prolly gonna use api)")
 print("4. Total Time Listened")
 print("5. Total Time Listened by Year")
-print("6. Total Time Listened by Song (Not working)")
+print("6. Total Time Listened by Song")
 
 userInput = input("Enter a Number: ")
 choices(list, userInput)

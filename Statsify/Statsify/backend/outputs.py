@@ -22,16 +22,29 @@ def choices(list, userInput):
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
+    
+    elif userInput == "1.1":
+        clear()
+        artistCount, year = int(input("How many artists (default 10): ") or 10, "Total").split("\\s")
+        print("Top Artists")
+        print("----------------")
+        artistList, artistTime = topArtistTimeYear(artistCount, year)
+        for i in range(artistCount):
+            #print(f"{i + 1}. {artistList[i].artist} - {artistList[i].milsec}")
+            print(artistList[i] + " - " + artistTime[i])
+        print("----------------")
+        input("Press Enter to Go Back...")
+        clear()
 
     elif userInput == "2":
         clear()
         artistCount = int(input("How many artists (default 10): ") or 10)
         print("Top Artists")
         print("----------------")
-        artistList, artistTime = topArtistTime(list, artistCount)
+        artistList, artistTime = topArtistTime(artistCount)
         for i in range(artistCount):
             #print(f"{i + 1}. {artistList[i].artist} - {artistList[i].milsec}")
-            print(artistList[i][0] + " - " + artistList[i][1] + " - " + artistTime[i])
+            print(artistList[i] + " - " + artistTime[i])
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
@@ -44,10 +57,11 @@ def choices(list, userInput):
 
     elif userInput == "4":
         clear()
-        minutes = convertMillitoMin(totalTimeListened())
+        #minutes = convertMillitoMin(totalTimeListened())
         print(f"Total Time Listened - Starting from {list[0].endTime}")
         print("----------------")
-        print(f"{minutes:,.2f} minutes")
+        #print(f"{minutes:,.2f} minutes")
+        print(totalTimeListened())
         print("----------------")
         input("Press Enter to Go Back...")
         clear()
@@ -61,20 +75,26 @@ def choices(list, userInput):
             clear()
         else:
             clear()
-            minutes = convertMillitoMin(totalTimeListenedInYear(year))
+            #minutes = convertMillitoMin(totalTimeListenedInYear(year))
             print(f"Total Time Listened in {year}")
             print("----------------")
-            print(f"{minutes:,.2f} minutes")
+            #print(f"{minutes:,.2f} minutes")
+            print(totalTimeListenedInYear(year))
             print("----------------")
             input("Press Enter to Go Back...")
             clear()
 
     elif userInput == "6":
         clear()
-        print("This output is not completed yet! Check back later.")
+        #print("This output is not completed yet! Check back later.")
+        song, artist = input("Enter in song name and artist name separated by a ';' : ").split(";")
+        print("----------------")
+        print(song + " - "  + artist + " - " +findSongTime(song, artist))
         input("Press Enter to Go Back...")
         clear()
-
+    
+    elif userInput == "7":
+        printListAllSongs()
 # Converts milsecond time to mins
 def convertMillitoMin(millis):
     minutes=(millis/(60000))
