@@ -29,10 +29,13 @@
   <ItemGroup>
     <Compile Include="runserver.py" />
     <Compile Include="Statsify\backend\analysis.py" />
+    <Compile Include="Statsify\backend\outputs.py" />
+    <Compile Include="Statsify\backend\SpotiStats.py" />
     <Compile Include="Statsify\__init__.py" />
     <Compile Include="Statsify\views.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="config\" />
     <Folder Include="Statsify\" />
     <Folder Include="Statsify\backend\" />
     <Folder Include="Statsify\static\imgs\" />
@@ -42,7 +45,7 @@
     <Folder Include="Statsify\templates\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="requirements.txt" />
+    <Content Include="config\config.env" />
     <Content Include="Statsify\static\content\bootstrap.css" />
     <Content Include="Statsify\static\content\bootstrap.min.css" />
     <Content Include="Statsify\static\content\site.css" />
