@@ -5,6 +5,7 @@ import heapq
 songDict = {}
 artistDict = {}
 firstTime = ""
+currentYear = ""
 
 # Gets all the files and puts all the songs into classes instances 
 # and into lists that contain total time played separated by years
@@ -19,6 +20,7 @@ def get_info(dirName):
     # Makes dictonary for each individual song and artist total time
     songDict["Total"] = {}
     artistDict["Total"] = {}
+    currentYear = ""
 
     # Goes through all the "STREAMING HISTORY" files and places data into arrays
     for i in range(0,len(streamingHistory)):
@@ -31,25 +33,26 @@ def get_info(dirName):
 
             if(i == 0):
                 firstTime = str(data[0]["endTime"][0:10])
-
-            # makes a dic for every year in songDict
-            for item in data:
-                songDict[item["endTime"][0:4]] = {}
-                artistDict[item["endTime"][0:4]] = {}
             
             # Opens the each "STREAMING HISTORY" file
             for item in data:
                 
+                # makes a dic for every year in songDict
+                if str(currentYear[0:4]) != str(item["endTime"][0:4]):
+                    currentYear = str(item["endTime"][0:10])
+                    songDict[str(currentYear[0:4])] = {}
+                    artistDict[str(currentYear[0:4])] = {}
+
                 # adds every song into dict
                 # songDict[item["endTime"][0:4]].get(songArtist, 0)
                 songArtist = (item["trackName"], item["artistName"])
                 
-                songDict[item["endTime"][0:4]][songArtist] = int(item["msPlayed"]) + songDict[item["endTime"][0:4]].get(songArtist,0)
+                songDict[str(item["endTime"][0:4])][songArtist] = int(item["msPlayed"]) + songDict[str(item["endTime"][0:4])].get(songArtist,0)
                 songDict["Total"][songArtist] = int(item["msPlayed"]) + songDict["Total"].get(songArtist, 0)
 
                 # addes every artist into dict
                 # artistDict[item["endTime"][0:4]].get(item["artistName"], 0)
-                artistDict[item["endTime"][0:4]][songArtist[1]] = int(item["msPlayed"]) + artistDict[item["endTime"][0:4]].get(songArtist[1], 0)
+                artistDict[str(item["endTime"][0:4])][songArtist[1]] = int(item["msPlayed"]) + artistDict[str(item["endTime"][0:4])].get(songArtist[1], 0)
                 artistDict["Total"][songArtist[1]] = int(item["msPlayed"]) + artistDict["Total"].get(songArtist[1], 0)
             
     print("Finished Receiving Data")
