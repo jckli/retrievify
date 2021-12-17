@@ -38,21 +38,21 @@ def get_info(dirName):
             for item in data:
                 
                 # makes a dic for every year in songDict
-                if str(currentYear[0:4]) != str(item["endTime"][0:4]):
-                    currentYear = str(item["endTime"][0:10])
-                    songDict[str(currentYear[0:4])] = {}
-                    artistDict[str(currentYear[0:4])] = {}
+                if currentYear[0:4] != item["endTime"][0:4]:
+                    currentYear = item["endTime"][0:10]
+                    songDict[currentYear[0:4]] = {}
+                    artistDict[currentYear[0:4]] = {}
 
                 # adds every song into dict
                 # songDict[item["endTime"][0:4]].get(songArtist, 0)
                 songArtist = (item["trackName"], item["artistName"])
                 
-                songDict[str(item["endTime"][0:4])][songArtist] = int(item["msPlayed"]) + songDict[str(item["endTime"][0:4])].get(songArtist,0)
+                songDict[item["endTime"][0:4]][songArtist] = int(item["msPlayed"]) + songDict[item["endTime"][0:4]].get(songArtist,0)
                 songDict["Total"][songArtist] = int(item["msPlayed"]) + songDict["Total"].get(songArtist, 0)
 
                 # addes every artist into dict
                 # artistDict[item["endTime"][0:4]].get(item["artistName"], 0)
-                artistDict[str(item["endTime"][0:4])][songArtist[1]] = int(item["msPlayed"]) + artistDict[str(item["endTime"][0:4])].get(songArtist[1], 0)
+                artistDict[item["endTime"][0:4]][songArtist[1]] = int(item["msPlayed"]) + artistDict[item["endTime"][0:4]].get(songArtist[1], 0)
                 artistDict["Total"][songArtist[1]] = int(item["msPlayed"]) + artistDict["Total"].get(songArtist[1], 0)
             
     print("Finished Receiving Data")
@@ -64,7 +64,7 @@ def findSongTime(song, artist):
 
 # Returns the time one song is played in a year, songArtist is tuple (song, artist)
 def findSongTimeYear(song, artist, year):
-    return songDict[str(year)][(song, artist)]
+    return songDict[year][(song, artist)]
 
 # Returns top songs instances based on listening time across all years
 def topSongTime(num):
@@ -85,7 +85,7 @@ def findArtistTime(artist):
 
 # Returns the time one song is played in of the years
 def findArtistTimeYear(artist, year):
-    return(artistDict[year][artist])
+    return artistDict[year][artist]
 
 # Returns top songs instances based on listening time across all years
 def topArtistTime(num):
