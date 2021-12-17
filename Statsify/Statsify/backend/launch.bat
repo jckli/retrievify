@@ -1,5 +1,5 @@
 @echo off
 cls
-title SpotiStats
-py -3.8 SpotiStats.py
+title Statsify
+py -3.8 Statsify.py
 pause
