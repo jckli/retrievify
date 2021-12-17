@@ -160,7 +160,7 @@ def choices(list):
         
         elif userInput == "10":
             clear()
-            exit()
+            break
         
 # Converts miliseoncds to hours, minutes, and seconds
 def convertMilliseconds(millis):
