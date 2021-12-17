@@ -9,7 +9,7 @@ currentYear = ""
 
 # Gets all the files and puts all the songs into classes instances 
 # and into lists that contain total time played separated by years
-#item["trackName"] item["artistName"] and item["endTime"][0:4]
+# item["trackName"] item["artistName"] item["endTime"][0:4]
 def get_info(dirName):
     # Gets the number of "STREAMING HISTORY" files in the folder
     streamingHistory = []
@@ -37,21 +37,21 @@ def get_info(dirName):
             # Opens the each "STREAMING HISTORY" file
             for item in data:
                 
-                # makes a dic for every year in songDict
+                # makes a dictionary for every year in songDict
                 if currentYear[0:4] != item["endTime"][0:4]:
                     currentYear = item["endTime"][0:10]
                     songDict[currentYear[0:4]] = {}
                     artistDict[currentYear[0:4]] = {}
 
-                # adds every song into dict
-                # songDict[item["endTime"][0:4]].get(songArtist, 0)
+                # adds every song into the songDict
+                # songDict[year][(song, artist)] = time
                 songArtist = (item["trackName"], item["artistName"])
                 
                 songDict[item["endTime"][0:4]][songArtist] = int(item["msPlayed"]) + songDict[item["endTime"][0:4]].get(songArtist,0)
                 songDict["Total"][songArtist] = int(item["msPlayed"]) + songDict["Total"].get(songArtist, 0)
 
-                # addes every artist into dict
-                # artistDict[item["endTime"][0:4]].get(item["artistName"], 0)
+                # addes every artist into the artistDict
+                # artistDict[year][artist] = time
                 artistDict[item["endTime"][0:4]][songArtist[1]] = int(item["msPlayed"]) + artistDict[item["endTime"][0:4]].get(songArtist[1], 0)
                 artistDict["Total"][songArtist[1]] = int(item["msPlayed"]) + artistDict["Total"].get(songArtist[1], 0)
             
@@ -118,9 +118,9 @@ def totalTimeListenedInYear(year):
 # Prints song name, artist, when it was listened to and the milseconds it was listened for
 def printListAllSongs():
     print(songDict)
-    #for year in songDict:
-    #    for song in songDict[year]:
-    #        print(song[0] + " " + song[1] + " " + year + " " + convertMilliseconds(songDict[year][song]))
 
 def getFirstTime():
     return firstTime
+
+def getCurrentYear():
+    return currentYear[0:4]

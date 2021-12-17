@@ -142,6 +142,12 @@ def choices(list, userInput):
             print("Invalid Input")
             input("Press Enter to Go Back...")
             clear()
+    
+    elif userInput == "10":
+        clear()
+        print(getFirstTime())
+        input("Press Enter to Go Back...")
+        clear()
         
 # Converts miliseoncds to hours, minutes, and seconds
 def convertMilliseconds(millis):

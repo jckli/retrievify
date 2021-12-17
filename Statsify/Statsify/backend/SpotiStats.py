@@ -51,6 +51,12 @@ print("6. Total Time Listened to Song")
 print("7. Total Time Listened to Song in a Year")
 print("8. Total Time Listened to Artist")
 print("9. Total Time Listened to Artist in a Year")
+print("10. Starting Date of Data")
+#print("10. Number of Time Song is Played (Not working)")
+#print("11. Number of Time Song is Played in a Year (Not working)")
+#print("12. Number of Time Artist is Played (Not working)")
+#print("13. Number of Time Artist is Played in a Year (Not working)")
+
 
 userInput = input("Enter a Number: ")
 choices(list, userInput)
