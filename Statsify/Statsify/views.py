@@ -3,7 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, session, make_response, redirect, current_app
+from flask import render_template, session, make_response, redirect, flash, request
 import os
 from urllib.parse import urlencode
 from Statsify import app
@@ -11,7 +11,6 @@ import secrets
 
 @app.route('/')
 def home():
-    """Renders the home page."""
     return render_template(
         'index.html'
     )
@@ -33,4 +32,15 @@ def login():
 
 @app.route("/callback")
 def callback():
-    return "yo"
+    code = request.args.get("code")
+    if code is None:
+        flash(u'You did not sign in. Please try again.')
+        return redirect("/")
+    session["spotify_access_token"] = code
+    return redirect("/home")
+
+@app.route("/home")
+def main():
+    return render_template(
+        'home.html'
+    )
