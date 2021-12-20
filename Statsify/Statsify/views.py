@@ -4,6 +4,7 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, session, make_response, redirect, flash, request
+from Statsify import api
 import os
 from urllib.parse import urlencode
 from Statsify import app
@@ -32,15 +33,29 @@ def login():
 
 @app.route("/callback")
 def callback():
-    code = request.args.get("code")
-    if code is None:
-        flash(u'You did not sign in. Please try again.')
-        return redirect("/")
-    session["spotify_access_token"] = code
-    return redirect("/home")
+    if request.args.get("state") != session["state_key"]:
+        return render_template("index.html", error="State failed.")
+    if request.args.get("error"):
+        return render_template("index.html", error="Error")
+    else:
+        code = request.args.get("code")
+        tokenRaw = api.getToken(code)
+        if tokenRaw is None:
+            flash(u'You did not sign in. Please try again.')
+            return redirect("/")
+        elif tokenRaw != None:
+            session["token"] = tokenRaw[0]
+            session["refresh_token"] = tokenRaw[1]
+            session["token_expire"] = tokenRaw[2]
+            return redirect("/home")
 
 @app.route("/home")
 def main():
+    userInfo = api.getUserInfo(session["token"])
+    userpfp = userInfo["images"][0]["url"]
+    userName = userInfo["display_name"]
     return render_template(
-        'home.html'
+        'home.html',
+        userpfp=userpfp,
+        userName=userName
     )
