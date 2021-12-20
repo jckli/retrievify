@@ -60,6 +60,7 @@ body {
     border: 1px solid #313338;
     background: #1a1c21;
     border-radius: 10px;
+    text-decoration: none;
 }
 #intro > .title > a:hover {
     background: rgba(217, 210, 255, 0.2);
