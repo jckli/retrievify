@@ -52,8 +52,10 @@ def get_info(dirName):
 
                 # addes every artist into the artistDict
                 # artistDict[year][artist] = time
-                artistDict[item["endTime"][0:4]][songArtist[1]] = int(item["msPlayed"]) + artistDict[item["endTime"][0:4]].get(songArtist[1], 0)
-                artistDict["Total"][songArtist[1]] = int(item["msPlayed"]) + artistDict["Total"].get(songArtist[1], 0)
+                split = str(item["artistName"]).split(", ")
+                for artist in split:
+                    artistDict[item["endTime"][0:4]][artist] = int(item["msPlayed"]) + artistDict[item["endTime"][0:4]].get(artist, 0)
+                    artistDict["Total"][artist] = int(item["msPlayed"]) + artistDict["Total"].get(artist, 0)
             
     print("Finished Receiving Data")
 
