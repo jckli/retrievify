@@ -3,8 +3,8 @@
     src: url(../fonts/GothamMedium.ttf);
 }
 @font-face {
-    font-family: GothamBold;
-    src: url(../fonts/GothamBold.ttf);
+    font-family: ProximaNova;
+    src: url("../fonts/ProximaNovaBold.otf");
 }
 body {
     font-family: Gotham;
@@ -42,8 +42,8 @@ body {
     margin: 0;
     display: inline-block;
     vertical-align: middle;
-    font-size: 100px;
-    font-family: GothamBold;
+    font-size: 125px;
+    font-family: ProximaNova;
     color: #1DB954;
 }
 #intro > .title > p {
