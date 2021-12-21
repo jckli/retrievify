@@ -33,3 +33,14 @@ def getUserInfo(token):
 	else:
 		print('getUserInfo:' + str(get_response.status_code))
 		return None
+	
+def getCurrentlyPlaying(token):
+	url = 'https://api.spotify.com/v1/me/player/currently-playing'
+	headers = {'Authorization': 'Bearer ' + token}
+	get_response = requests.get(url, headers=headers)
+	if get_response.status_code == 200:
+		json = get_response.json()
+		return json
+	else:
+		print('getCurrentlyPlaying:' + str(get_response.status_code))
+		return None

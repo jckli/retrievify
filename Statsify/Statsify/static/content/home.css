@@ -1,5 +1,53 @@
+@font-face {
+    font-family: CircularBold;
+    src: url("../fonts/CircularBold.ttf");
+}
+@font-face {
+    font-family: Circular;
+    src: url("../fonts/CircularBook.ttf");
+}
 body {
     margin: 0px;
     background: #101010;
-    display: block;
 }
+h1 {
+    font-family: CircularBold;
+    color: #ffffff;
+    font-size: 30px;
+}
+p {
+    font-family: Circular;
+    color: #ffffff;
+    font-size: 21px;
+    margin-bottom: 0px;
+}
+#content {
+    margin-left: 280px;
+    overflow: auto;
+}
+#content > .now-playing {
+    background-color: #202020;
+    margin: 20px 20px;
+    width: 60%;
+    border-radius: 12px;
+}
+#content > .now-playing > div {
+    padding: 20px 20px;
+}
+#content > .now-playing > div > .song {
+    display: flex;
+}
+#content > .now-playing > div > .song > img {
+    border-radius: 12px;
+    margin-right: 16px;
+}
+#content > .now-playing > div > .song > .song-info {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+#content > .now-playing > div > .song > .song-info > #song-title {
+    font-family: CircularBold;
+    font-size: 26px;
+    line-height: 2.7vh;
+}
+

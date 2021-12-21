@@ -54,8 +54,14 @@ def main():
     userInfo = api.getUserInfo(session["token"])
     userpfp = userInfo["images"][0]["url"]
     userName = userInfo["display_name"]
-    return render_template(
-        'home.html',
-        userpfp=userpfp,
-        userName=userName
-    )
+
+    currentlyPlaying = api.getCurrentlyPlaying(session["token"])
+    if currentlyPlaying is None:
+        cpSong = None
+    else:
+        cpSong = currentlyPlaying["item"]["name"]
+        cpArtist = currentlyPlaying["item"]["artists"][0]["name"]
+        cpCover = currentlyPlaying["item"]["album"]["images"][0]["url"]
+        cpAlbum = currentlyPlaying["item"]["album"]["name"]
+
+    return render_template('home.html', **locals())
