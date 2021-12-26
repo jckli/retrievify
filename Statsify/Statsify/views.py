@@ -56,12 +56,16 @@ def main():
     userName = userInfo["display_name"]
 
     currentlyPlaying = api.getCurrentlyPlaying(session["token"])
-    if currentlyPlaying is None:
-        cpSong = None
-    else:
-        cpSong = currentlyPlaying["item"]["name"]
-        cpArtist = currentlyPlaying["item"]["artists"][0]["name"]
-        cpCover = currentlyPlaying["item"]["album"]["images"][0]["url"]
-        cpAlbum = currentlyPlaying["item"]["album"]["name"]
+    class cp:
+        title = currentlyPlaying["item"]["name"]
+        artistsRaw = []
+        for artist in currentlyPlaying["item"]["artists"]:
+            artistsRaw.append(artist["name"])
+        artists = ", ".join(artistsRaw)
+        cover = currentlyPlaying["item"]["album"]["images"][0]["url"]
+        album = currentlyPlaying["item"]["album"]["name"]
+
+    topArtists = api.getTopArtists(session["token"], "long_term", 10, 0)
+    ta = topArtists["items"]
 
     return render_template('home.html', **locals())

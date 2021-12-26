@@ -21,13 +21,20 @@ p {
     font-size: 21px;
     margin-bottom: 0px;
 }
+h2 {
+    font-family: CircularBold;
+    font-size: 26px;
+    line-height: 2.7vh;
+    color: #ffffff;
+}
 #content {
     margin-left: 280px;
     overflow: auto;
 }
 #content > .now-playing {
     background-color: #202020;
-    margin: 20px 20px;
+    margin: 0px 20px;
+    margin-top: 20px;
     width: 60%;
     border-radius: 12px;
 }
@@ -45,9 +52,21 @@ p {
     flex-grow: 1;
     flex-shrink: 1;
 }
-#content > .now-playing > div > .song > .song-info > #song-title {
-    font-family: CircularBold;
-    font-size: 26px;
-    line-height: 2.7vh;
+#content > .top-artists {
+    background-color: #202020;
+    margin: 20px 20px;
+    width: 30%;
+    border-radius: 12px;
 }
-
+#content > .top-artists > div {
+    padding: 20px 20px;
+}
+#content > .top-artists > div > .top-artists-list > .artist {
+    display: flex;
+}
+#content > .top-artists > div > .top-artists-list > .artist > img {
+    border-radius: 12px;
+    margin-right: 16px;
+    height: 50px;
+    width: 50px;
+}
