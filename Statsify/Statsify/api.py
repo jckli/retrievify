@@ -55,3 +55,14 @@ def getTopArtists(token, timeRange, limit, offset):
 	else:
 		print('getTopArtists:' + str(get_response.status_code))
 		return None
+
+def getTopSongs(token, timeRange, limit, offset):
+	url = f'https://api.spotify.com/v1/me/top/tracks?time_range={timeRange}&limit={limit}&offset={offset}'
+	headers = {'Authorization': 'Bearer ' + token}
+	get_response = requests.get(url, headers=headers)
+	if get_response.status_code == 200:
+		json = get_response.json()
+		return json
+	else:
+		print('getTopSongs:' + str(get_response.status_code))
+		return None

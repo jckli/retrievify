@@ -68,4 +68,14 @@ def main():
     topArtists = api.getTopArtists(session["token"], "long_term", 10, 0)
     ta = topArtists["items"]
 
+    topTracks = api.getTopSongs(session["token"], "long_term", 10, 0)
+    tt = topTracks["items"]
+    topTracksArtists = []
+    for track in tt:
+        artistsRaw = []
+        for artist in track["artists"]:
+            artistsRaw.append(artist["name"])
+        ttArtists = ", ".join(artistsRaw)
+        topTracksArtists.append(ttArtists)
+
     return render_template('home.html', **locals())

@@ -21,20 +21,39 @@
         </div>
     </div>
 </div>
-<div class="top-artists">
-    <div>
-        <h1>Top Artists</h1>
-        <br>
-        <div class="top-artists-list">
-            {% for artist in ta %}
-                <div class="artist">
-                    <img src='{{ artist["images"][0]["url"] }}' width="150" height="150"/>
-                    <div class="artist-info">
-                        <h2 id="artist-name">{{ artist["name"] }}</p>
-                        <p id="artist-plays">{{ artist["genres"][0] }}</p>
+<div class="top-lists">
+    <div class="top-artists">
+        <div>
+            <h1>Top Artists</h1>
+            <br>
+            <div class="top-artists-list">
+                {% for artist in ta %}
+                    <div class="artist">
+                        <img src='{{ artist["images"][0]["url"] }}' width="150" height="150"/>
+                        <div class="artist-info">
+                            <h2 id="artist-name">{{ artist["name"] }}</p>
+                            <p id="artist-plays">{{ artist["genres"][0] }}</p>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="top-songs">
+        <div>
+            <h1>Top Songs</h1>
+            <br>
+            <div class="top-songs-list">
+                {% for songs in tt %}
+                    <div class="song">
+                        <img src='{{ songs["album"]["images"][0]["url"] }}' width="150" height="150"/>
+                        <div class="songs-info">
+                            <h2 id="songs-name">{{ songs["name"] }}</p>
+                            <p id="songs-artist">{{ topTracksArtists[loop.index-1] }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

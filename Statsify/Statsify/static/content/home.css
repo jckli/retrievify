@@ -52,19 +52,42 @@ h2 {
     flex-grow: 1;
     flex-shrink: 1;
 }
-#content > .top-artists {
-    background-color: #202020;
+#content > .top-lists {
+    display: flex;
+    width: 60%;
     margin: 20px 20px;
-    width: 30%;
+}
+#content > .top-lists > .top-artists {
+    background-color: #202020;
+    margin-right: 10px;
+    width: 50%;
     border-radius: 12px;
 }
-#content > .top-artists > div {
+#content > .top-lists > .top-artists > div {
     padding: 20px 20px;
 }
-#content > .top-artists > div > .top-artists-list > .artist {
+#content > .top-lists > .top-artists > div > .top-artists-list > .artist {
     display: flex;
 }
-#content > .top-artists > div > .top-artists-list > .artist > img {
+#content > .top-lists > .top-artists > div > .top-artists-list > .artist > img {
+    border-radius: 12px;
+    margin-right: 16px;
+    height: 50px;
+    width: 50px;
+}
+#content > .top-lists > .top-songs {
+    background-color: #202020;
+    margin-left: 10px;
+    width: 50%;
+    border-radius: 12px;
+}
+#content > .top-lists > .top-songs > div {
+    padding: 20px 20px;
+}
+#content > .top-lists > .top-songs > div > .top-songs-list > .song {
+    display: flex;
+}
+#content > .top-lists > .top-songs > div > .top-songs-list > .song > img {
     border-radius: 12px;
     margin-right: 16px;
     height: 50px;
