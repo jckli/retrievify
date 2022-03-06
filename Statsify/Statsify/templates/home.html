@@ -4,20 +4,35 @@
 <link rel="stylesheet" href="static/content/home.css">
 {% endblock %}
 {% block content %}
-<div class="now-playing">
-    <div>
-        <h1>Now Playing</h1>
-        <br>
-        <div class="song now-playing">
-            {% if cp is not none %}
-                <img src="{{ cp.cover }}" width="150" height="150"/>
-                <div class="song-info">
-                    <h2 id="song-title">{{ cp.title }}</h2>
-                    <p id="song-artist">{{ cp.artists }}</p>
-                </div>
-            {% else %}
-                <h2 id="song-title">No song is playing currently.</p>
-            {% endif %}
+<div class="top-area">
+    <div class="now-playing">
+        <div>
+            <h1>Now Playing</h1>
+            <br>
+            <div class="song now-playing">
+                {% if cp is not none %}
+                    <img src="{{ cp.cover }}" width="150" height="150"/>
+                    <div class="song-info">
+                        <h2 id="song-title">{{ cp.title }}</h2>
+                        <p id="song-artist">{{ cp.artists }}</p>
+                    </div>
+                {% else %}
+                    <h2 id="song-title">No song is playing currently.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="top-genre">
+        <div>
+            <h1>Top Genres</h1>
+            <br>
+            <div class="genre-list">
+                {% for genre in sortedGenres %}
+                    <div class="genre-item">
+                        <h2>{{loop.index}}. {{ genre }}</h2>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

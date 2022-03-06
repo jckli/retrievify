@@ -93,6 +93,7 @@ def main():
     sortedGenres = []
     for key, value in genremc:
         sortedGenres.append(key)
+    topgenres = sortedGenres[:5]
 
     return render_template('home.html', **locals())
 
@@ -170,3 +171,11 @@ def ajax_currentlyplaying():
         return jsonify({"error": "Invalid request"})
     cp = currentlyPlaying
     return jsonify(cp)
+
+@app.route("/dpe")
+def dpe():
+    userInfo = api.getUserInfo(session["token"])
+    userpfp = userInfo["images"][0]["url"]
+    userName = userInfo["display_name"]
+
+    return render_template("datapackage.html", **locals())

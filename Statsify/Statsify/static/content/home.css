@@ -37,25 +37,50 @@ h2 {
     margin-left: 280px;
     overflow: auto;
 }
-#content > .now-playing {
+#content > .top-area {
+    display: flex;
+    margin: 20px 20px;
+}
+#content > .top-area > .now-playing {
     background-color: #202020;
-    margin: 0px 20px;
+    margin-right: 10px;
     margin-top: 20px;
     border-radius: 12px;
+    min-width: 700px;
 }
-#content > .now-playing > div {
+#content > .top-area > .now-playing > div {
     padding: 20px 20px;
 }
-#content > .now-playing > div > .song {
+#content > .top-area > .now-playing > div > .song {
     display: flex;
 }
-#content > .now-playing > div > .song > img {
+#content > .top-area > .now-playing > div > .song > img {
     border-radius: 12px;
     margin-right: 16px;
 }
-#content > .now-playing > div > .song > .song-info {
+#content > .top-area > .now-playing > div > .song > .song-info {
     flex-grow: 1;
     flex-shrink: 1;
+}
+#content > .top-area > .top-genre {
+    background-color: #202020;
+    margin-left: 10px;
+    margin-top: 20px;
+    border-radius: 12px;
+    flex-grow: 1;
+}
+#content > .top-area > .top-genre > div {
+    padding: 20px 20px;
+}
+#content > .top-area > .top-genre > div > .genre-list > .genre-item {
+    background-color: #404040;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 0px 10px;
+    margin-bottom: 10px;
+}
+#content > .top-area > .top-genre > div > .genre-list > .genre-item > h2 {
+    margin: 10px 10px;
 }
 #content > .top-lists {
     display: flex;
