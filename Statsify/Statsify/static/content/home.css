@@ -6,6 +6,9 @@
     font-family: Circular;
     src: url("../fonts/CircularBook.ttf");
 }
+.home-active {
+    background-color: #606060 !important;
+}
 body {
     margin: 0px;
     background: #101010;
@@ -14,6 +17,9 @@ h1 {
     font-family: CircularBold;
     color: #ffffff;
     font-size: 30px;
+}
+h2 {
+    margin-bottom: 0px;
 }
 p {
     font-family: Circular;
@@ -35,7 +41,6 @@ h2 {
     background-color: #202020;
     margin: 0px 20px;
     margin-top: 20px;
-    width: 60%;
     border-radius: 12px;
 }
 #content > .now-playing > div {
@@ -54,7 +59,6 @@ h2 {
 }
 #content > .top-lists {
     display: flex;
-    width: 60%;
     margin: 20px 20px;
 }
 #content > .top-lists > .top-artists {
@@ -92,4 +96,34 @@ h2 {
     margin-right: 16px;
     height: 50px;
     width: 50px;
+}
+.top-song-item {
+    margin-bottom: 10px;
+}
+.top-artist-item {
+    margin-bottom: 10px;
+}
+.card-title {
+    display: flex;
+    justify-content: space-between;
+}
+.card-title > .dropdown {
+    margin-right: 10px;
+}
+.btn {
+    border-color: #fff;
+    background-color: #202020;
+    font-family: CircularBold;
+}
+.btn:hover {
+    background-color: #505050;
+    border-color: #fff;
+}
+.btn-secondary:focus {
+    border-color: #fff;
+    background-color: #303030;
+    box-shadow: 0 0 0 .25rem #303030;
+}
+.dropdown-menu-dark .dropdown-item.active, .dropdown-menu-dark .dropdown-item:active {
+    background-color: #606060;
 }

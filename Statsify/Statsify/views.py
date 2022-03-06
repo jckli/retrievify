@@ -3,12 +3,13 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, session, make_response, redirect, flash, request
+from flask import render_template, session, make_response, redirect, flash, request, jsonify
 from Statsify import api
 import os
 from urllib.parse import urlencode
 from Statsify import app
 import secrets
+from collections import Counter
 
 @app.route('/')
 def home():
@@ -54,21 +55,22 @@ def main():
     userInfo = api.getUserInfo(session["token"])
     userpfp = userInfo["images"][0]["url"]
     userName = userInfo["display_name"]
-
+    
+    # add local song functionality
     currentlyPlaying = api.getCurrentlyPlaying(session["token"])
+
     class cp:
         title = currentlyPlaying["item"]["name"]
-        artistsRaw = []
-        for artist in currentlyPlaying["item"]["artists"]:
-            artistsRaw.append(artist["name"])
+        artistsRaw = [artist["name"] for artist in currentlyPlaying["item"]["artists"]]
         artists = ", ".join(artistsRaw)
         cover = currentlyPlaying["item"]["album"]["images"][0]["url"]
         album = currentlyPlaying["item"]["album"]["name"]
 
-    topArtists = api.getTopArtists(session["token"], "long_term", 10, 0)
-    ta = topArtists["items"]
+    topArtists = api.getTopArtists(session["token"], "short_term", 100, 0)
+    ta = topArtists["items"][:10]
 
-    topTracks = api.getTopSongs(session["token"], "long_term", 10, 0)
+    topTracks = api.getTopSongs(session["token"], "short_term", 10, 0)
+    
     tt = topTracks["items"]
     topTracksArtists = []
     for track in tt:
@@ -78,4 +80,75 @@ def main():
         ttArtists = ", ".join(artistsRaw)
         topTracksArtists.append(ttArtists)
 
+    # do something with genres someday
+    genreRaw = []
+    for artist in topArtists["items"]:
+        for genre in artist["genres"]:
+            genreRaw.append(genre)
+    cnt = Counter()
+    for genre in genreRaw:
+        cnt[genre] += 1
+    genremc = cnt.most_common(10)
+    sortedGenres = []
+    for key, value in genremc:
+        sortedGenres.append(key)
+
     return render_template('home.html', **locals())
+
+@app.route("/ajax")
+def ajax():
+    return redirect("/home")
+
+@app.route("/ajax/top_songs", methods=["GET"])
+def ajax_topsongs():
+    if request.args.get("type") == "current":
+        try:
+            topTracks = api.getTopSongs(session["token"], "short_term", 10, 0)
+        except:
+            return jsonify({"error": "Invalid token"})
+    elif request.args.get("type") == "six-month":
+        try:   
+            topTracks = api.getTopSongs(session["token"], "medium_term", 10, 0)
+        except:
+            return jsonify({"error": "Invalid token"})
+    elif request.args.get("type") == "all-time":
+        try:
+            topTracks = api.getTopSongs(session["token"], "long_term", 10, 0)
+        except:
+            return jsonify({"error": "Invalid token"})
+    else:
+        return jsonify({"error": "Invalid request"})
+    tt = topTracks["items"]
+    topTracksArtists = []
+    for track in tt:
+        artistsRaw = []
+        for artist in track["artists"]:
+            artistsRaw.append(artist["name"])
+        ttArtists = ", ".join(artistsRaw)
+        topTracksArtists.append(ttArtists)
+    tracks = {"tracks": []}
+    for i in range(len(tt)):
+        tracks["tracks"].append({"name": tt[i]["name"], "artists": topTracksArtists[i], "image": tt[i]["album"]["images"][0]["url"]})
+    return jsonify(tracks)
+
+@app.route("/ajax/top_artists", methods=["GET"])
+def ajax_topartists():
+    if request.args.get("type") == "current":
+        try:
+            topTracks = api.getTopArtists(session["token"], "short_term", 10, 0)
+        except:
+            return jsonify({"error": "Invalid token"})
+    elif request.args.get("type") == "six-month":
+        try:
+            topTracks = api.getTopArtists(session["token"], "medium_term", 10, 0)
+        except:
+            return jsonify({"error": "Invalid token"})
+    elif request.args.get("type") == "all-time":
+        try:
+            topTracks = api.getTopArtists(session["token"], "long_term", 10, 0)
+        except:
+            return jsonify({"error": "Invalid token"})
+    else:
+        return jsonify({"error": "Invalid request"})
+    ta = topTracks["items"]
+    return jsonify(ta)
