@@ -8,12 +8,12 @@
     <div>
         <h1>Now Playing</h1>
         <br>
-        <div class="song">
+        <div class="song now-playing">
             {% if cp is not none %}
                 <img src="{{ cp.cover }}" width="150" height="150"/>
                 <div class="song-info">
-                    <h2 id="song-title">{{ cp.title }}</p>
-                        <p id="song-artist">{{ cp.artists }}</p>
+                    <h2 id="song-title">{{ cp.title }}</h2>
+                    <p id="song-artist">{{ cp.artists }}</p>
                 </div>
             {% else %}
                 <h2 id="song-title">No song is playing currently.</p>

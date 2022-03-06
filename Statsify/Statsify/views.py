@@ -58,6 +58,7 @@ def main():
     
     # add local song functionality
     currentlyPlaying = api.getCurrentlyPlaying(session["token"])
+    session["orig_cp"] = currentlyPlaying
 
     class cp:
         title = currentlyPlaying["item"]["name"]
@@ -152,3 +153,20 @@ def ajax_topartists():
         return jsonify({"error": "Invalid request"})
     ta = topTracks["items"]
     return jsonify(ta)
+
+@app.route("/ajax/currently_playing", methods=["GET"])
+def ajax_currentlyplaying():
+    if request.args.get("type") == "now":
+        try:
+            currentlyPlaying = api.getCurrentlyPlaying(session["token"])
+        except:
+            return jsonify({"error": "Invalid token"})
+    elif request.args.get("type") == "original":
+        try:
+            currentlyPlaying = session["orig_cp"]
+        except:
+            return jsonify({"error": "Something went wrong"})
+    else:
+        return jsonify({"error": "Invalid request"})
+    cp = currentlyPlaying
+    return jsonify(cp)
