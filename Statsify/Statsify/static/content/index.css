@@ -79,3 +79,11 @@ body {
 #footer > div > div {
     font-size: 16px;
 }
+.name-credit {
+    text-decoration: none;
+    color: #ffffff;
+}
+.name-credit:hover {
+    color: #808080;
+    transition: 200ms ease-out color;
+}
