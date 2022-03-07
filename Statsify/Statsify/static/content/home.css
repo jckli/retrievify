@@ -62,6 +62,9 @@ h2 {
     flex-grow: 1;
     flex-shrink: 1;
 }
+#content > .top-area > .now-playing > div > .song > .no-playing {
+    color: #808080;
+}
 #content > .top-area > .top-genre {
     background-color: #202020;
     margin-left: 10px;
