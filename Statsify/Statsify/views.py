@@ -60,12 +60,15 @@ def main():
     currentlyPlaying = api.getCurrentlyPlaying(session["token"])
     session["orig_cp"] = currentlyPlaying
 
-    class cp:
-        title = currentlyPlaying["item"]["name"]
-        artistsRaw = [artist["name"] for artist in currentlyPlaying["item"]["artists"]]
-        artists = ", ".join(artistsRaw)
-        cover = currentlyPlaying["item"]["album"]["images"][0]["url"]
-        album = currentlyPlaying["item"]["album"]["name"]
+    if currentlyPlaying is not None:
+        class cp:
+            title = currentlyPlaying["item"]["name"]
+            artistsRaw = [artist["name"] for artist in currentlyPlaying["item"]["artists"]]
+            artists = ", ".join(artistsRaw)
+            cover = currentlyPlaying["item"]["album"]["images"][0]["url"]
+            album = currentlyPlaying["item"]["album"]["name"]
+    else:
+        cp = None
 
     topArtists = api.getTopArtists(session["token"], "short_term", 100, 0)
     ta = topArtists["items"][:10]
@@ -99,7 +102,7 @@ def main():
 
 @app.route("/ajax")
 def ajax():
-    return redirect("/home")
+    return jsonify({"error": "Invalid request"})
 
 @app.route("/ajax/top_songs", methods=["GET"])
 def ajax_topsongs():
@@ -179,3 +182,19 @@ def dpe():
     userName = userInfo["display_name"]
 
     return render_template("datapackage.html", **locals())
+
+@app.route("/ajax/upload", methods=["POST"])
+def dpe_upload():
+    if request.method == "POST":
+        if "file" not in request.files:
+            return jsonify({"status": "No file part"})
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"status": "No file selected"})
+        if file:
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], file.filename))
+            return jsonify({"status": "File uploaded successfully"})
+        else:
+            return jsonify({"status": "Invalid file"})
+    else:
+        return jsonify({"error": "Invalid request"})
