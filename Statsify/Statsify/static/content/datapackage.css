@@ -1,0 +1,63 @@
+@font-face {
+    font-family: CircularBold;
+    src: url("../fonts/CircularBold.ttf");
+}
+@font-face {
+    font-family: Circular;
+    src: url("../fonts/CircularBook.ttf");
+}
+.data-package-active {
+    background-color: #606060 !important;
+}
+body {
+    margin: 0px;
+    background: #101010;
+}
+h1 {
+    font-family: CircularBold;
+    color: #ffffff;
+    font-size: 30px;
+}
+h2 {
+    margin-bottom: 0px;
+}
+p {
+    font-family: Circular;
+    color: #ffffff;
+    font-size: 21px;
+    margin-bottom: 0px;
+}
+h2 {
+    font-family: CircularBold;
+    font-size: 26px;
+    line-height: 2.7vh;
+    color: #ffffff;
+}
+#content {
+    margin-left: 280px;
+    overflow: auto;
+}
+#upload {
+    display: none;
+}
+.import {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.import > a {
+    text-decoration: none;
+}
+.upload-box {
+    border: 0.18rem dashed #585858;
+    border-radius: 13px;
+}
+.upload-content {
+    padding: 20px 20px;
+    text-align: center;
+}
+.fa-cloud-arrow-up {
+    color: #1ed760;
+    margin-bottom: 20px
+}

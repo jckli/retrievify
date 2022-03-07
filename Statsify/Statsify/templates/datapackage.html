@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="static/content/datapackage.css">
+{% endblock %}
+{% block content %}
+<input id="upload" type="file" name="Import your Spotify package" />
+<div class="import">
+    <a class="upload-link" href="">
+        <div class="upload-box">
+            <div class="upload-content">
+                <i class="fa-solid fa-cloud-arrow-up fa-4x"></i>
+                <h1>Import your Spotify data here</h1>
+            </div>
+        </div>
+    </a>
+</div>
+<script type="text/javascript" src="static/js/datapackage.js"></script>
+{% endblock %}
