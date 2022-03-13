@@ -10,6 +10,8 @@ from urllib.parse import urlencode
 from Statsify import app
 import secrets
 from collections import Counter
+import zipfile
+import json
 
 @app.route('/')
 def home():
@@ -192,8 +194,11 @@ def dpe_upload():
         if file.filename == "":
             return jsonify({"status": "No file selected"})
         if file:
-            file.save(os.path.join(app.config["UPLOAD_FOLDER"], file.filename))
-            return jsonify({"status": "File uploaded successfully"})
+            try:
+                zf = zipfile.ZipFile(file, mode="r")
+                return jsonify({"status": "File uploaded successfully"})
+            except:
+                return jsonify({"status": "Not a zip file"})
         else:
             return jsonify({"status": "Invalid file"})
     else:
