@@ -17,7 +17,9 @@ $("#upload").on("change", function () {
         processData: false,
         success: function(data) {
             if (data.status == "Uploaded") {
-                location.replace("/dp/stats");
+                $("#content").fadeOut("fast", function() {
+                    location.replace("/dp/stats");
+                });
             } else {
                 $(".error").show();
             }
