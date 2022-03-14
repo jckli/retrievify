@@ -37,89 +37,87 @@ h2 {
     margin-left: 280px;
     overflow: auto;
 }
-#content > .top-area {
+#content > .stats > .top-area {
     display: flex;
     margin: 20px 20px;
 }
-#content > .top-area > .now-playing {
+#content > .stats > .top-area > .now-playing {
     background-color: #202020;
     margin-right: 10px;
-    margin-top: 20px;
     border-radius: 12px;
     min-width: 700px;
 }
-#content > .top-area > .now-playing > div {
+#content > .stats > .top-area > .now-playing > div {
     padding: 20px 20px;
 }
-#content > .top-area > .now-playing > div > .song {
+#content > .stats > .top-area > .now-playing > div > .song {
     display: flex;
 }
-#content > .top-area > .now-playing > div > .song > img {
+#content > .stats > .top-area > .now-playing > div > .song > img {
     border-radius: 12px;
     margin-right: 16px;
 }
-#content > .top-area > .now-playing > div > .song > .song-info {
+#content > .stats > .top-area > .now-playing > div > .song > .song-info {
     flex-grow: 1;
     flex-shrink: 1;
 }
-#content > .top-area > .now-playing > div > .song > .no-playing {
+#content > .stats > .top-area > .now-playing > div > .song > .no-playing {
     color: #808080;
 }
-#content > .top-area > .top-genre {
+#content > .stats > .top-area > .top-genre {
     background-color: #202020;
     margin-left: 10px;
-    margin-top: 20px;
     border-radius: 12px;
     flex-grow: 1;
 }
-#content > .top-area > .top-genre > div {
+#content > .stats > .top-area > .top-genre > div {
     padding: 20px 20px;
 }
-#content > .top-area > .top-genre > div > .genre-list > .genre-item {
+#content > .stats > .top-area > .top-genre > div > .genre-list > .genre-item {
     background-color: #404040;
     border-radius: 8px;
     display: inline-block;
     margin: 0px 10px;
     margin-bottom: 10px;
 }
-#content > .top-area > .top-genre > div > .genre-list > .genre-item > h2 {
+#content > .stats > .top-area > .top-genre > div > .genre-list > .genre-item > h2 {
     margin: 10px 10px;
 }
-#content > .top-lists {
+#content > .stats > .top-lists {
     display: flex;
     margin: 20px 20px;
 }
-#content > .top-lists > .top-artists {
+#content > .stats > .top-lists > .top-artists {
     background-color: #202020;
     margin-right: 10px;
     width: 50%;
     border-radius: 12px;
 }
-#content > .top-lists > .top-artists > div {
+#content > .stats > .top-lists > .top-artists > div {
     padding: 20px 20px;
 }
-#content > .top-lists > .top-artists > div > .top-artists-list > .artist {
+#content > .stats > .top-lists > .top-artists > div > .top-artists-list > .artist {
     display: flex;
 }
-#content > .top-lists > .top-artists > div > .top-artists-list > .artist > img {
+#content > .stats > .top-lists > .top-artists > div > .top-artists-list > .artist > img {
     border-radius: 12px;
     margin-right: 16px;
     height: 50px;
     width: 50px;
 }
-#content > .top-lists > .top-songs {
+#content > .stats > .top-lists > .top-songs {
     background-color: #202020;
     margin-left: 10px;
     width: 50%;
     border-radius: 12px;
 }
-#content > .top-lists > .top-songs > div {
+#content > .stats > .top-lists > .top-songs > div {
     padding: 20px 20px;
 }
-#content > .top-lists > .top-songs > div > .top-songs-list > .song {
+#content > .stats > .top-lists > .top-songs > div > .top-songs-list > .song {
     display: flex;
 }
-#content > .top-lists > .top-songs > div > .top-songs-list > .song > img {
+#content > .stats > .top-lists > .top-songs > div > .top-songs-list > .song > img {
     border-radius: 12px;
     margin-right: 16px;
     height: 50px;
