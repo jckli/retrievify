@@ -20,6 +20,7 @@ h1 {
 }
 h2 {
     margin-bottom: 0px;
+    font-family: Circular;
 }
 p {
     font-family: Circular;
@@ -32,6 +33,14 @@ h2 {
     font-size: 26px;
     line-height: 2.7vh;
     color: #ffffff;
+}
+a {
+    color: #ffffff;
+    font-family: CircularBold;
+}
+a:hover {
+    color: #1ed760;
+    transition: 200ms ease-out color;
 }
 #content {
     margin-left: 280px;
@@ -61,6 +70,10 @@ h2 {
 .fa-cloud-arrow-up {
     color: #1ed760;
     margin-bottom: 20px
+}
+.info {
+    margin-top: 10px;
+    font-size: 18px;
 }
 .error {
     margin-top: 10px;

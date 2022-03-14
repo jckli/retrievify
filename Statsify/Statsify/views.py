@@ -200,10 +200,14 @@ def dp_upload():
         if file.filename == "":
             return jsonify({"status": "No file selected"})
         if file:
-            zf = zipfile.ZipFile(file, mode="r")
-            dp = parsedata.get_info(zf)
-            zf.close()
-            return jsonify({"status": "Uploaded"})
+            try:
+                zf = zipfile.ZipFile(file, mode="r")
+                dp = parsedata.get_info(zf)
+                dp[0]
+                zf.close()
+                return jsonify({"status": "Uploaded"})
+            except:
+                return jsonify({"status": "Invalid zip file uploaded"})
         else:
             return jsonify({"status": "Invalid file"})
     else:
