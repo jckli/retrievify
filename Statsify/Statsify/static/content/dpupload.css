@@ -45,6 +45,7 @@ h2 {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    flex-direction: column;
 }
 .import > a {
     text-decoration: none;
@@ -60,4 +61,12 @@ h2 {
 .fa-cloud-arrow-up {
     color: #1ed760;
     margin-bottom: 20px
+}
+.error {
+    margin-top: 10px;
+    text-align:center;
+    padding: 0px 20px;
+    color: #d8000c;
+    font-size: 20px;
+    display: none;
 }

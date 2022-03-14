@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block head %}
 {{ super() }}
-<link rel="stylesheet" href="static/content/datapackage.css">
+<link rel="stylesheet" href="static/content/dpupload.css">
 {% endblock %}
 {% block content %}
 <input id="upload" type="file" name="Import your Spotify package" />
@@ -14,6 +14,7 @@
             </div>
         </div>
     </a>
+    <h1 class="error">Your package seems to be corrupted. Please select your package zip file again.</h1>
 </div>
-<script type="text/javascript" src="static/js/datapackage.js"></script>
+<script type="text/javascript" src="static/js/dpupload.js"></script>
 {% endblock %}

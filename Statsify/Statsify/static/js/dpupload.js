@@ -16,7 +16,11 @@ $("#upload").on("change", function () {
         cache: false,
         processData: false,
         success: function(data) {
-            alert(data.status);
+            if (data.status == "Uploaded") {
+                location.replace("/dp/stats");
+            } else {
+                $(".error").show();
+            }
         },
     });
 });

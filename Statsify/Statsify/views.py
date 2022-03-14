@@ -3,15 +3,15 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, session, make_response, redirect, flash, request, jsonify
+from flask import render_template, session, make_response, redirect, flash, request, jsonify, g
 from Statsify import api
 import os
 from urllib.parse import urlencode
-from Statsify import app
+from Statsify import app, dp
 import secrets
 from collections import Counter
 import zipfile
-import json
+from Statsify.backend import parsedata
 
 @app.route('/')
 def home():
@@ -177,16 +177,22 @@ def ajax_currentlyplaying():
     cp = currentlyPlaying
     return jsonify(cp)
 
-@app.route("/dpe")
-def dpe():
+@app.route("/dp")
+@app.route("/dp/stats")
+def dp_main():
+    global dp
     userInfo = api.getUserInfo(session["token"])
     userpfp = userInfo["images"][0]["url"]
     userName = userInfo["display_name"]
 
-    return render_template("datapackage.html", **locals())
+    if request.path == "/dp/stats":
+        return render_template("dpstats.html", **locals())
+    else:
+        return render_template("dpupload.html", **locals())
 
 @app.route("/ajax/upload", methods=["POST"])
-def dpe_upload():
+def dp_upload():
+    global dp
     if request.method == "POST":
         if "file" not in request.files:
             return jsonify({"status": "No file part"})
@@ -194,11 +200,10 @@ def dpe_upload():
         if file.filename == "":
             return jsonify({"status": "No file selected"})
         if file:
-            try:
-                zf = zipfile.ZipFile(file, mode="r")
-                return jsonify({"status": "File uploaded successfully"})
-            except:
-                return jsonify({"status": "Not a zip file"})
+            zf = zipfile.ZipFile(file, mode="r")
+            dp = parsedata.get_info(zf)
+            zf.close()
+            return jsonify({"status": "Uploaded"})
         else:
             return jsonify({"status": "Invalid file"})
     else:
