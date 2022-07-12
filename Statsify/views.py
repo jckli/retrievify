@@ -11,7 +11,7 @@ from Statsify import app, dp
 import secrets
 from collections import Counter
 import zipfile
-from Statsify.backend import parsedata
+from Statsify.backend import parsedata, dpanalysis
 
 @app.route('/')
 def home():
@@ -86,7 +86,7 @@ def main():
         ttArtists = ", ".join(artistsRaw)
         topTracksArtists.append(ttArtists)
 
-    # do something with genres someday
+    # add genre sort by functionality
     genreRaw = []
     for artist in topArtists["items"]:
         for genre in artist["genres"]:
@@ -186,6 +186,11 @@ def dp_main():
     userName = userInfo["display_name"]
 
     if request.path == "/dp/stats":
+        start_date = dp[2]
+        form_sd = datetime.strptime(start_date, "%Y-%m-%d").strftime("%d/%m/%Y")
+        
+        spotifyttl = dpanalysis.totalTimeListened(dp[0])
+        
         return render_template("dpstats.html", **locals())
     else:
         return render_template("dpupload.html", **locals())
@@ -205,7 +210,13 @@ def dp_upload():
                 dp = parsedata.get_info(zf)
                 dp[0]
                 zf.close()
-                return jsonify({"status": "Uploaded"})
+                return jsonify({
+                    "status": "Uploaded",
+                    "songDict": dp[0],
+                    "artistDict": dp[1],
+                    "firstTime": dp[2],
+                    "currentYear": dp[3]
+                })
             except:
                 return jsonify({"status": "Invalid zip file uploaded"})
         else:

@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="/static/content/dpstats.css">
+{% endblock %}
+{% block content %}
+<div class="info">
+    <div class="total-time">
+        <div>
+            <h1>Total Time Listened - Spotify Package</h1>
+            <br>
+            <h1 class="time">{{ spotifyttl }}</h1>
+            <br>
+            <p><i>Starting from {{ form_sd }}</i></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

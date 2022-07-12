@@ -8,11 +8,11 @@ from dotenv import load_dotenv
 
 if __name__ == '__main__':
     app.config.from_pyfile('settings.py')
-    app.secret_key = "6upNRfAhgf5sL1SW7KOIGDngu4cJ7gas"
+    app.secret_key = environ.get("SECRET_KEY")
     HOST = environ.get('SERVER_HOST', 'localhost')
-    DEBUG=True
+    DEBUG=False
     try:
         PORT = int(environ.get('SERVER_PORT', '5555'))
     except ValueError:
         PORT = 5555
-    app.run(HOST, PORT, DEBUG)
+    app.run(HOST, PORT, DEBUG, threaded=True)

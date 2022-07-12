@@ -1,7 +1,7 @@
 .vs
+__pycache__
 Statsify/__pycache__
-Statsify/Statsify/__pycache__
-Statsify/obj
-Statsify/.env
-Statsify/Statsify.pyproj
-Statsify/Statsify/backend/__pycache__
+obj
+.env
+Statsify.pyproj
+Statsify/backend/__pycache__

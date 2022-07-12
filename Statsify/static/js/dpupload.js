@@ -17,6 +17,10 @@ $("#upload").on("change", function () {
         processData: false,
         success: function(data) {
             if (data.status == "Uploaded") {
+                localStorage.setItem("songDict", JSON.stringify(data.songDict));
+                localStorage.setItem("artistDict", JSON.stringify(data.artistDict));
+                localStorage.setItem("firstTime", data.firstTime);
+                localStorage.setItem("currentYear", data.currentYear);
                 $("#content").fadeOut("fast", function() {
                     location.replace("/dp/stats");
                 });
