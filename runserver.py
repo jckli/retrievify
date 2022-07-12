@@ -6,6 +6,8 @@ from os import environ
 from Statsify import app
 from dotenv import load_dotenv
 
+load_dotenv()
+
 if __name__ == '__main__':
     app.config.from_pyfile('settings.py')
     app.secret_key = environ.get("SECRET_KEY")

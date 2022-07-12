@@ -3,8 +3,8 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, session, make_response, redirect, flash, request, jsonify, g
-from Statsify import api
+from flask import render_template, session, make_response, redirect, flash, request, jsonify
+from Statsify.api import Spotify
 import os
 from urllib.parse import urlencode
 from Statsify import app, dp
@@ -36,6 +36,7 @@ def login():
 
 @app.route("/callback")
 def callback():
+    api = Spotify()
     if request.args.get("state") != session["state_key"]:
         return render_template("index.html", error="State failed.")
     if request.args.get("error"):
@@ -47,6 +48,7 @@ def callback():
             flash(u'You did not sign in. Please try again.')
             return redirect("/")
         elif tokenRaw != None:
+            print("here")
             session["token"] = tokenRaw[0]
             session["refresh_token"] = tokenRaw[1]
             session["token_expire"] = tokenRaw[2]
@@ -54,6 +56,7 @@ def callback():
 
 @app.route("/home")
 def main():
+    api = Spotify()
     userInfo = api.getUserInfo(session["token"])
     userpfp = userInfo["images"][0]["url"]
     userName = userInfo["display_name"]
@@ -108,6 +111,7 @@ def ajax():
 
 @app.route("/ajax/top_songs", methods=["GET"])
 def ajax_topsongs():
+    api = Spotify()
     if request.args.get("type") == "current":
         try:
             topTracks = api.getTopSongs(session["token"], "short_term", 10, 0)
@@ -140,6 +144,7 @@ def ajax_topsongs():
 
 @app.route("/ajax/top_artists", methods=["GET"])
 def ajax_topartists():
+    api = Spotify()
     if request.args.get("type") == "current":
         try:
             topTracks = api.getTopArtists(session["token"], "short_term", 10, 0)
@@ -162,6 +167,7 @@ def ajax_topartists():
 
 @app.route("/ajax/currently_playing", methods=["GET"])
 def ajax_currentlyplaying():
+    api = Spotify()
     if request.args.get("type") == "now":
         try:
             currentlyPlaying = api.getCurrentlyPlaying(session["token"])
@@ -180,6 +186,7 @@ def ajax_currentlyplaying():
 @app.route("/dp")
 @app.route("/dp/stats")
 def dp_main():
+    api = Spotify()
     global dp
     userInfo = api.getUserInfo(session["token"])
     userpfp = userInfo["images"][0]["url"]
