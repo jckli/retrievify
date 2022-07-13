@@ -13,7 +13,7 @@ def get_info(zipfolder):
             streamingHistory.append(file)
 
     # Makes dictonary for each individual song and artist total time
-    songDict["Total"] = {}
+    songDict["Total"] = {"All": {}, "Songs": {}}
     artistDict["Total"] = {}
     currentYear = ""
 
@@ -35,20 +35,52 @@ def get_info(zipfolder):
                 currentYear = item["endTime"][0:10]
                 songDict[currentYear[0:4]] = {}
                 artistDict[currentYear[0:4]] = {}
+                songDict["Total"]["All"][currentYear[0:4]] = 0
 
             # adds every song into the songDict
             # songDict[year][(song, artist)] = time
+            songDict["Total"]["All"][item["endTime"][0:4]] += int(item["msPlayed"])
+
             songArtist = (item["trackName"], item["artistName"])
-            
-            songDict[item["endTime"][0:4]][songArtist] = int(item["msPlayed"]) + songDict[item["endTime"][0:4]].get(songArtist,0)
-            songDict["Total"][songArtist] = int(item["msPlayed"]) + songDict["Total"].get(songArtist, 0)
+            eachSongDict = {"Time": int(item["msPlayed"]), "Song": item["trackName"], "Artist": item["artistName"]}
+            if songArtist in songDict["Total"]["Songs"]:
+                songDict["Total"]["Songs"][songArtist]["Time"] += int(item["msPlayed"])
+            else:
+                songDict["Total"]["Songs"][songArtist] = eachSongDict
+                
+            if songArtist in songDict[item["endTime"][0:4]].keys():
+                # Just adds the time
+                songDict[item["endTime"][0:4]][songArtist] = songDict[item["endTime"][0:4]].get(songArtist[0],0) + int(item["msPlayed"])
+            else:
+                # Adds the song to the songDict
+                songDict[item["endTime"][0:4]][songArtist] = eachSongDict
+                 
 
             # addes every artist into the artistDict
             # artistDict[year][artist] = time
             split = str(item["artistName"]).split(", ")
             for artist in split:
-                artistDict[item["endTime"][0:4]][artist] = int(item["msPlayed"]) + artistDict[item["endTime"][0:4]].get(artist, 0)
-                artistDict["Total"][artist] = int(item["msPlayed"]) + artistDict["Total"].get(artist, 0)
-                
+                if artist not in artistDict["Total"]:
+                    artistDict["Total"][artist] = 0
+                artistDict["Total"][artist] += int(item["msPlayed"])
+                if artist in artistDict[item["endTime"][0:4]].keys():
+                    # Just adds the time
+                    artistDict[item["endTime"][0:4]][artist] = artistDict[item["endTime"][0:4]][artist] + int(item["msPlayed"])
+                else:
+                    # Adds the artist to the artistDict
+                    artistDict[item["endTime"][0:4]][artist] = int(item["msPlayed"])
+        
         print("Finished Receiving Data")
-        return songDict, artistDict, firstTime, currentYear
+
+    newSongDict = {"Total": {"All": {}, "Songs": []}}
+    for year in songDict:
+        if year == "Total":
+            newSongDict["Total"]["All"] = songDict["Total"]["All"]
+            for song in songDict["Total"]["Songs"]:
+                newSongDict["Total"]["Songs"].append(songDict["Total"]["Songs"][song])
+        else:
+            newSongDict[year] = []
+            for song in songDict[year]:
+                newSongDict[year].append(songDict[year][song])
+
+    return newSongDict, artistDict, firstTime, currentYear

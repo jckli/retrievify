@@ -48,15 +48,15 @@ def topArtistTimeYear(year, num, artistDict):
 # Returns Total timed listened on spotify in string form (hours:minutes:seconds)
 def totalTimeListened(songDict):
     a = 0
-    for song in songDict["Total"]:
-        a = a + int(songDict["Total"][song])
+    for year in songDict["Total"]["All"]:
+        a = a + int(songDict["Total"][year])
     return a
     
 # Returns Total time listened on in a year in string form (hours:minutes:seconds)
 def totalTimeListenedInYear(year, songDict):
     a = 0
     for song in songDict[year]:
-            a = a + int(songDict[year][song])
+        a = a + int(songDict[year][song])
     return a
 
 # Prints out all the songs
