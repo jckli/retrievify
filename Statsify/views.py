@@ -187,24 +187,16 @@ def ajax_currentlyplaying():
 @app.route("/dp/stats")
 def dp_main():
     api = Spotify()
-    global dp
     userInfo = api.getUserInfo(session["token"])
     userpfp = userInfo["images"][0]["url"]
     userName = userInfo["display_name"]
-
     if request.path == "/dp/stats":
-        start_date = dp[2]
-        form_sd = datetime.strptime(start_date, "%Y-%m-%d").strftime("%d/%m/%Y")
-        
-        spotifyttl = dpanalysis.totalTimeListened(dp[0])
-        
         return render_template("dpstats.html", **locals())
     else:
         return render_template("dpupload.html", **locals())
 
 @app.route("/ajax/upload", methods=["POST"])
 def dp_upload():
-    global dp
     if request.method == "POST":
         if "file" not in request.files:
             return jsonify({"status": "No file part"})
@@ -215,8 +207,9 @@ def dp_upload():
             try:
                 zf = zipfile.ZipFile(file, mode="r")
                 dp = parsedata.get_info(zf)
-                dp[0]
                 zf.close()
+                if dp[2] == "":
+                    return jsonify({"status": "Invalid zip file uploaded"})
                 return jsonify({
                     "status": "Uploaded",
                     "songDict": dp[0],
