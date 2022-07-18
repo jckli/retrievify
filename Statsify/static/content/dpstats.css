@@ -40,10 +40,57 @@ h2 {
 .info {
     margin: 20px 20px;
 }
+.top-area {
+    display: flex;
+}
 .total-time {
     background-color: #202020;
     border-radius: 12px;
+    width: 50%;
+    display: inline-block;
 }
 .total-time > div {
     padding: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+.total-time > div > .time {
+    font-size: 26px;
+    margin: 24px 0;
+}
+.total-time > div > .first-time {
+    margin-top: auto;
+}
+.all {
+    margin-right: 10px;
+}
+.year {
+    margin-left: 10px;
+}
+.year-select {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+}
+.year-select > .dropdown {
+    margin-left: 10px;
+}
+.btn {
+    border-color: #fff;
+    background-color: #202020;
+    font-family: CircularBold;
+}
+.btn:hover {
+    background-color: #505050;
+    border-color: #fff;
+}
+.btn-secondary:focus {
+    border-color: #fff;
+    background-color: #303030;
+    box-shadow: 0 0 0 .25rem #303030;
+}
+.dropdown-menu-dark .dropdown-item.active, .dropdown-menu-dark .dropdown-item:active {
+    background-color: #606060;
 }

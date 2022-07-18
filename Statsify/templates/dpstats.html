@@ -5,14 +5,32 @@
 {% endblock %}
 {% block content %}
 <div class="info">
-    <div class="total-time">
-        <div>
-            <h1>Total Time Listened - Spotify Package</h1>
-            <br>
-            <h1 class="time">{{ spotifyttl }}</h1>
-            <br>
-            <p><i>Starting from {{ form_sd }}</i></p>
+    <div class="top-area">
+        <div class="total-time all">
+            <div>
+                <h1>Total Time Listened - Entire Package</h1>
+                <h1 class="time">Loading...</h1>
+                <p class="first-time"><i>Starting from </i></p>
+            </div>
+        </div>
+        <div class="total-time year">
+            <div>
+                <h1>Total Time Listened - Year</h1>
+                <h1 class="time">Loading...</h1>
+                <div class="year-select">
+                    <p class="first-time"><i>Year of </i></p>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Year
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item ttl-year active" id="year">Year</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<script type="text/javascript" src="/static/js/dpstats.js"></script>
 {% endblock %}
