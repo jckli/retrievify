@@ -4,7 +4,7 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, session, make_response, redirect, flash, request, jsonify
-from Statsify.api import Spotify
+from Statsify.backend.api import Spotify
 import os
 from urllib.parse import urlencode
 from Statsify import app, dp
