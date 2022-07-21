@@ -12,6 +12,7 @@ import secrets
 from collections import Counter
 import zipfile
 from Statsify.backend import parsedata, dpanalysis
+import json
 
 @app.route('/')
 def home():
@@ -221,5 +222,55 @@ def dp_upload():
                 return jsonify({"status": "Invalid zip file uploaded"})
         else:
             return jsonify({"status": "Invalid file"})
+    else:
+        return jsonify({"error": "Invalid request"})
+
+@app.route("/ajax/data_top_artists", methods=["POST"])
+def dp_data_topartists():
+    if request.method == "POST":
+        data = request.get_json()
+        artistData = json.loads(data)
+        topArtists = dpanalysis.topArtistTime(10, artistData)
+        return jsonify({
+            "status": "Success",
+            "topArtists": topArtists
+        })
+    else:
+        return jsonify({"error": "Invalid request"})
+
+@app.route("/ajax/data_top_songs", methods=["POST"])
+def dp_data_topsongs():
+    if request.method == "POST":
+        data = request.get_json()
+        songData = json.loads(data)
+        topSongs = dpanalysis.topSongTime(20, songData)
+        return jsonify({
+            "status": "Success",
+            "topSongs": topSongs
+        })
+    else:
+        return jsonify({"error": "Invalid request"})
+
+@app.route("/ajax/search", methods=["POST"])
+def dp_search():
+    api = Spotify()
+    if request.method == "POST":
+        data = request.get_json()
+        if data["type"] == "artist":
+            results = api.search(session["token"], data["topArtists"]["name"], data["type"])
+            return jsonify({
+                "status": "Success",
+                "results": results,
+                "topArtists": data["topArtists"]
+            })
+        elif data["type"] == "track":
+            results = api.search(session["token"], data["topSongs"]["Song"] + " " + data["topSongs"]["Artist"], data["type"])
+            return jsonify({
+                "status": "Success",
+                "results": results,
+                "topSongs": data["topSongs"]
+            })
+        else:
+            return jsonify({"error": "Invalid request"})
     else:
         return jsonify({"error": "Invalid request"})

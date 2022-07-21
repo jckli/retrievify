@@ -13,11 +13,8 @@ def findSongTimeYear(song, artist, year, songDict):
 
 # Returns top songs instances based on listening time across all years
 def topSongTime(num, songDict):
-    list = heapq.nlargest(num, songDict["Total"], key=songDict["Total"].get)
-    list2 = []
-    for i in range(len(list)):
-        list2.append(findSongTime(list[i][0], list[i][1]))
-    return list, list2
+    list = heapq.nlargest(num, songDict["Total"]["Songs"], key=lambda i: i["Time"])
+    return list
 
 # Returns top songs instances based on listening time in a year
 def topSongTimeYear(year, num, songDict):
@@ -32,13 +29,13 @@ def findArtistTime(artist, artistDict):
 def findArtistTimeYear(artist, year, artistDict):
     return artistDict[year][artist]
 
-# Returns top songs instances based on listening time across all years
+# Returns top artist instances based on listening time across all years
 def topArtistTime(num, artistDict):
-    list = heapq.nlargest(num, artistDict["Total"], key=artistDict["Total"].get)
+    list = heapq.nlargest(num, artistDict["Total"].items(), key=lambda i: i[1])
     list2 = []
-    for i in range(len(list)):
-        list2.append(findArtistTime(list[i]))
-    return list, list2
+    for i in list:
+        list2.append({"name": i[0], "time": i[1]})
+    return list2
 
 # Returns top songs instances based on listening time in a year
 def topArtistTimeYear(year, num, artistDict):

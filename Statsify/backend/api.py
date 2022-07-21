@@ -120,3 +120,19 @@ class Spotify:
 					cp = cp_new
 					return cp
 			await asyncio.sleep(5)
+
+	def search(self, token, query, type):
+		url = f'https://api.spotify.com/v1/search?q={query}&type={type}&limit=1'
+		headers = {'Authorization': 'Bearer ' + token}
+		get_response = requests.get(url, headers=headers)
+		if get_response.status_code == 200:
+			json = get_response.json()
+			return json
+		elif get_response.status_code == 401:
+			refresh = self.refreshToken(session["refresh_token"])
+			session["token"] = refresh[0]
+			session["expires_in"] = refresh[1]
+			return self.getUserInfo(refresh[0])
+		else:
+			print('search:' + str(get_response.status_code))
+			return None

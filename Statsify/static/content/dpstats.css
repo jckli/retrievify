@@ -47,7 +47,6 @@ h2 {
     background-color: #202020;
     border-radius: 12px;
     width: 50%;
-    display: inline-block;
 }
 .total-time > div {
     padding: 20px 20px;
@@ -93,4 +92,42 @@ h2 {
 }
 .dropdown-menu-dark .dropdown-item.active, .dropdown-menu-dark .dropdown-item:active {
     background-color: #606060;
+}
+.top-lists {
+    margin-top: 20px;
+    display: flex;
+}
+.top-list {
+    background-color: #202020;
+    width: 50%;
+    border-radius: 12px;
+}
+.top-artists {
+    margin-right: 10px;
+}
+.top-songs {
+    margin-left: 10px;
+}
+.top-list > div {
+    padding: 20px 20px;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+.top-list > div > .list {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+.top-list > div > .list > .item {
+    display: flex;
+    margin-bottom: 10px;
+}
+.top-list > div > .list > .item > img {
+    border-radius: 12px;
+    margin-right: 16px;
+    height: 50px;
+    width: 50px;
 }
