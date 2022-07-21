@@ -87,3 +87,11 @@ body {
     color: #808080;
     transition: 200ms ease-out color;
 }
+.extra-links {
+    color: #505050;
+    margin-right: 10px;
+}
+.extra-links:hover {
+    color: #808080;
+    transition: 200ms ease-out color;
+}

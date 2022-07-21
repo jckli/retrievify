@@ -55,6 +55,10 @@ def callback():
             session["token_expire"] = tokenRaw[2]
             return redirect("/home")
 
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
 @app.route("/home")
 def main():
     api = Spotify()
