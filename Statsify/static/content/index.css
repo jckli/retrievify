@@ -95,3 +95,22 @@ body {
     color: #808080;
     transition: 200ms ease-out color;
 }
+@media (max-width: 765px) {
+    #footer > div {
+        display: block;
+        text-align: center;
+    }
+}
+@media (max-width: 650px) {
+    #intro > .title > .logo > h1 {
+        font-size: 80px;
+    }
+    #intro > .title > .logo > img {
+        margin-right: 0px;
+    }
+}
+@media (max-width: 500px) {
+    #footer > .container > .first {
+        display: none;
+    }
+}

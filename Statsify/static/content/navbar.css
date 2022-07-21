@@ -15,10 +15,28 @@
 a {
     font-family: ProximaNova;
 }
+.sidebar {
+    width: 280px;
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+}
 .main > .dropdown {
     margin-left: auto;
     margin-right: auto;
 }
 .dropdown-menu-dark .dropdown-item {
     color: #ffffff;
+}
+@media (max-width: 900px) {
+    .mb-3 {
+        margin: 1rem 0;
+    }
+    .sidebar {
+        position: static;
+        width: 100%;
+    }
+    .nav {
+        text-align: center;
+    }
 }

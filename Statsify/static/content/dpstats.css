@@ -130,3 +130,34 @@ h2 {
     height: 50px;
     width: 50px;
 }
+@media (max-width: 900px) {
+    #content {
+        margin-left: 0px;
+    }
+    .top-area  {
+        display: block;
+    }
+    .total-time {
+        width: 100%;
+    }
+    .all {
+        margin-right: 0px;
+        margin-bottom: 20px;
+    }
+    .year {
+        margin-left: 0px;
+    }
+    .top-lists {
+        display: block;
+    }
+    .top-list {
+        width: 100%;
+    }
+    .top-artists {
+        margin-right: 0px;
+        margin-bottom: 20px;
+    }
+    .top-songs {
+        margin-left: 0px;
+    }
+}

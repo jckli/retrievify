@@ -171,3 +171,45 @@ h2 {
 .dropdown-menu-dark .dropdown-item.active, .dropdown-menu-dark .dropdown-item:active {
     background-color: #606060;
 }
+@media (max-width: 1500px) {
+    #content > .stats > .top-area  {
+        display: block;
+    }
+    #content > .stats > .top-area > .now-playing {
+        min-width: 0px;
+        margin-right: 0px;
+        margin-bottom: 20px;
+    }
+    #content > .stats > .top-area > .top-genre {
+        margin-left: 0px;
+    }
+}
+@media (max-width: 900px) {
+    #content {
+        margin-left: 0px;
+    }
+}
+@media (max-width: 750px) {
+    #content > .stats > .top-lists {
+        display: block;
+    }
+    #content > .stats > .top-lists > .top-artists {
+        margin-right: 0px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    #content > .stats > .top-lists > .top-songs {
+        margin-left: 0px;
+        width: 100%;
+    }
+}
+@media (max-width: 500px) {
+    #content > .stats > .top-area > .now-playing > div > .song {
+        display: block;
+        text-align: center;
+    }
+    #content > .stats > .top-area > .now-playing > div > .song > img {
+        margin-right: 0px;
+        margin-bottom: 10px;
+    }
+}
