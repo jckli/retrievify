@@ -162,6 +162,10 @@ def choices(list):
             clear()
             break
         
+        elif userInput == "11":
+            printListAllSongs()
+            break
+        
 # Converts miliseoncds to hours, minutes, and seconds
 def convertMilliseconds(millis):
     hours = int(millis/3600000)

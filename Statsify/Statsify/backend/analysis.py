@@ -48,7 +48,7 @@ def get_info(dirName):
                 # songDict[year][(song, artist)] = [song, artist, ms, # ofTimes Listened]
                 songArtist = (item["trackName"], item["artistName"])
                 
-                if(songDict[item["endTime"][0:4]].haskey(songArtist)):
+                if songArtist in songDict[item["endTime"][0:4]]:
                     # ms
                     songDict[item["endTime"][0:4]][songArtist]["ms"] = songDict[item["endTime"][0:4]][songArtist]["ms"] + int(item["msPlayed"])
                     songDict["Total"][songArtist]["ms"] = songDict["Total"][songArtist]["ms"] + int(item["msPlayed"])
@@ -59,21 +59,21 @@ def get_info(dirName):
                 else:
                     # Song Not Played Before
                     songDict[item["endTime"][0:4]][songArtist] = {"ms": int(item["msPlayed"]), "Times": 1, "Song": item["trackName"], "Artist": item["artistName"]}
-                    if(songDict[item["Total"][0:4]].haskey(songArtist) == False):
+                    if songArtist not in songDict["Total"]:
                         songDict["Total"][songArtist] = {"ms": int(item["msPlayed"]), "Times": 1, "Song": item["trackName"], "Artist": item["artistName"]}
 
 
                 # addes every artist into the artistDict
                 # artistDict[year][artist] = time
-                split = str(item["artistName"]).split(", ")
-                for artist in split:
+                #split = str(item["artistName"]).split(", ")
+                #for artist in split:
 
-                    if(artistDict[item["endTime"][0:4]].haskey(songArtist)):
+                    #if(artistDict[item["endTime"][0:4]].has_key(songArtist)):
                         # Just adds the time
-                        artistDict[item["endTime"][0:4]][songArtist][0] = artistDict[item["endTime"][0:4]][songArtist][0] + int(item["msPlayed"])
-                    else:
+                        #artistDict[item["endTime"][0:4]][songArtist][0] = artistDict[item["endTime"][0:4]][songArtist][0] + int(item["msPlayed"])
+                    #else:
                         # Adds the song to the songDict
-                        artistDict[item["endTime"][0:4]] = {"ms": int(item["msPlayed"]), "Times": 1, "Artist": item["artistName"]}
+                        #artistDict[item["endTime"][0:4]] = {"ms": int(item["msPlayed"]), "Times": 1, "Artist": item["artistName"]}
             
     print("Finished Receiving Data")
 
