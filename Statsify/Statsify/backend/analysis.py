@@ -1,6 +1,8 @@
+from audioop import reverse
 import json
 import os
 import heapq
+from tkinter import ALL
 
 songDict = {}
 artistDict = {}
@@ -77,10 +79,17 @@ def get_info(dirName):
             
     print("Finished Receiving Data")
 
+def getMS(dict):
+    return dict.get("ms")
+
 # TOP SONGS
 # Returns the time one song is played across all years, songArtist is tuple (song, artist)
 def findSongTime(song, artist):
     return songDict["Total"][(song, artist)]["ms"]
+
+# Returns the time one song is played across all years, songArtist is tuple (song, artist)
+def findSongTimeTup(songArtist):
+    return songDict["Total"][(songArtist[0], songArtist[1])]["ms"]
 
 # Returns the time one song is played in a year, songArtist is tuple (song, artist)
 def findSongTimeYear(song, artist, year):
@@ -88,7 +97,11 @@ def findSongTimeYear(song, artist, year):
 
 # Returns top songs instances based on listening time across all years  
 def topSongTime(num):
-    list = heapq.nlargest(num, songDict["Total"], key=songDict["Total"].get()["ms"])
+    list = heapq.nlargest(num + 1, songDict["Total"], key = findSongTimeTup)
+
+    if ('Unknown Track', 'Unknown Artist') in list:
+        list.remove(('Unknown Track', 'Unknown Artist'))
+
     list2 = []
     for i in range(len(list)):
         list2.append(findSongTime(list[i][0], list[i][1]))
