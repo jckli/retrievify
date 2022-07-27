@@ -13,6 +13,7 @@ from collections import Counter
 import zipfile
 from Statsify.backend import parsedata, dpanalysis
 import json
+import sys
 
 @app.route('/')
 def home():
@@ -51,6 +52,7 @@ def callback():
         elif tokenRaw != None:
             print("here")
             session["token"] = tokenRaw[0]
+            print(f"callback {session['token']}", file=sys.stdout)
             session["refresh_token"] = tokenRaw[1]
             session["token_expire"] = tokenRaw[2]
             return redirect("/home")
@@ -62,8 +64,12 @@ def privacy():
 @app.route("/home")
 def main():
     api = Spotify()
+    print(f"home {session['token']}", file=sys.stdout)
     userInfo = api.getUserInfo(session["token"])
-    userpfp = userInfo["images"][0]["url"]
+    try:
+        userpfp = userInfo["images"][0]["url"]
+    except:
+        userpfp = "/static/imgs/defaultpfp.jpg"
     userName = userInfo["display_name"]
     
     # add local song functionality
@@ -198,6 +204,7 @@ def dp_main():
     if request.path == "/dp/stats":
         return render_template("dpstats.html", **locals())
     else:
+        app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
         return render_template("dpupload.html", **locals())
 
 @app.route("/ajax/upload", methods=["POST"])

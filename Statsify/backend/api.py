@@ -3,6 +3,7 @@ import requests
 import base64
 import asyncio
 from flask import session
+import sys
 
 class Spotify:
 	def __init__(self):
@@ -14,21 +15,14 @@ class Spotify:
 		self.base64Message = base64Bytes.decode("ascii")
 
 	def getToken(self, code):
-		print(self.message)
 		url = 'https://accounts.spotify.com/api/token'
 		authorization = "Basic " + self.base64Message
 		redirect_uri = os.environ.get("REDIRECT_URI")
 		headers = {'Authorization': authorization, 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded'}
 		data = {'code': code, 'redirect_uri': redirect_uri, 'grant_type': 'authorization_code'}
-		print(authorization)
-		print(redirect_uri)
-		print(headers)
-		print(data)
 		post_response = requests.post(url, headers=headers, data=data)
-		print(post_response)
 		if post_response.status_code == 200:
 			json = post_response.json()
-			print(json)
 			return json['access_token'], json['refresh_token'], json['expires_in']
 		else:
 			print('getToken:' + str(post_response.status_code))
@@ -51,9 +45,11 @@ class Spotify:
 	def getUserInfo(self, token):
 		url = 'https://api.spotify.com/v1/me'
 		headers = {'Authorization': 'Bearer ' + token}
+		print(headers, file=sys.stdout)
 		get_response = requests.get(url, headers=headers)
 		if get_response.status_code == 200:
 			json = get_response.json()
+			print(json, file=sys.stdout)
 			return json
 		elif get_response.status_code == 401:
 			refresh = self.refreshToken(session["refresh_token"])

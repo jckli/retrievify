@@ -1,1 +1,1 @@
-.venv\Scripts\python.exe runserver.py
+.venv\Scripts\python.exe main.py

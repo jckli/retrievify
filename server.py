@@ -13,5 +13,5 @@ if __name__ == '__main__':
         PORT = 5555
 
     d = PathInfoDispatcher({'/': app})
-    server = WSGIServer((HOST, PORT), d, numthreads=2)
+    server = WSGIServer((HOST, PORT), d)
     server.start()
