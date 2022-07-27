@@ -15,7 +15,7 @@
     </head>
     <body>
         {% block nav %}
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark main" style="width:280px; height: 100%; position: fixed; z-index: 1;">
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark main sidebar">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none title">
                 <img class="me-2" width="32" height="32" src="/static/imgs/logo.png"></img>
                 <span class="fs-4">Statsify</span>
@@ -34,24 +34,6 @@
                     Data Package
                 </a>
             </li>
-            <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-                    Recommendations
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-                    (placeholder)
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-                    (placeholder)
-                </a>
-            </li>
             </ul>
             <hr>
             <div class="dropdown">
@@ -60,8 +42,7 @@
                     {{ userName }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="https://www.spotify.com/us/account/apps/" target="_blank">Terms of Service</a></li>
-                    <li><a class="dropdown-item" href="https://www.spotify.com/us/account/apps/" target="_blank">Privacy Policy</a></li>
+                    <li><a class="dropdown-item" href="/privacy" target="_blank">Privacy Policy</a></li>
                     <li><a class="dropdown-item" href="https://www.spotify.com/us/account/apps/" target="_blank">Remove Account</a></li>
                     <li><a class="dropdown-item" href="https://www.spotify.com/logout/" target="_blank">Sign Out</a></li>
                 </ul>

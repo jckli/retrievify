@@ -1,0 +1,163 @@
+@font-face {
+    font-family: CircularBold;
+    src: url("../fonts/CircularBold.ttf");
+}
+@font-face {
+    font-family: Circular;
+    src: url("../fonts/CircularBook.ttf");
+}
+.data-package-active {
+    background-color: #606060 !important;
+}
+body {
+    margin: 0px;
+    background: #101010;
+}
+h1 {
+    font-family: CircularBold;
+    color: #ffffff;
+    font-size: 30px;
+}
+h2 {
+    margin-bottom: 0px;
+}
+p {
+    font-family: Circular;
+    color: #ffffff;
+    font-size: 21px;
+    margin-bottom: 0px;
+}
+h2 {
+    font-family: CircularBold;
+    font-size: 26px;
+    line-height: 2.7vh;
+    color: #ffffff;
+}
+#content {
+    margin-left: 280px;
+    overflow: auto;
+}
+.info {
+    margin: 20px 20px;
+}
+.top-area {
+    display: flex;
+}
+.total-time {
+    background-color: #202020;
+    border-radius: 12px;
+    width: 50%;
+}
+.total-time > div {
+    padding: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+.total-time > div > .time {
+    font-size: 26px;
+    margin: 24px 0;
+}
+.total-time > div > .first-time {
+    margin-top: auto;
+}
+.all {
+    margin-right: 10px;
+}
+.year {
+    margin-left: 10px;
+}
+.year-select {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+}
+.year-select > .dropdown {
+    margin-left: 10px;
+}
+.btn {
+    border-color: #fff;
+    background-color: #202020;
+    font-family: CircularBold;
+}
+.btn:hover {
+    background-color: #505050;
+    border-color: #fff;
+}
+.btn-secondary:focus {
+    border-color: #fff;
+    background-color: #303030;
+    box-shadow: 0 0 0 .25rem #303030;
+}
+.dropdown-menu-dark .dropdown-item.active, .dropdown-menu-dark .dropdown-item:active {
+    background-color: #606060;
+}
+.top-lists {
+    margin-top: 20px;
+    display: flex;
+}
+.top-list {
+    background-color: #202020;
+    width: 50%;
+    border-radius: 12px;
+}
+.top-artists {
+    margin-right: 10px;
+}
+.top-songs {
+    margin-left: 10px;
+}
+.top-list > div {
+    padding: 20px 20px;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+.top-list > div > .list {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+.top-list > div > .list > .item {
+    display: flex;
+    margin-bottom: 10px;
+}
+.top-list > div > .list > .item > img {
+    border-radius: 12px;
+    margin-right: 16px;
+    height: 50px;
+    width: 50px;
+}
+@media (max-width: 900px) {
+    #content {
+        margin-left: 0px;
+    }
+    .top-area  {
+        display: block;
+    }
+    .total-time {
+        width: 100%;
+    }
+    .all {
+        margin-right: 0px;
+        margin-bottom: 20px;
+    }
+    .year {
+        margin-left: 0px;
+    }
+    .top-lists {
+        display: block;
+    }
+    .top-list {
+        width: 100%;
+    }
+    .top-artists {
+        margin-right: 0px;
+        margin-bottom: 20px;
+    }
+    .top-songs {
+        margin-left: 0px;
+    }
+}

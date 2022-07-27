@@ -44,7 +44,7 @@ body {
     vertical-align: middle;
     font-size: 125px;
     font-family: ProximaNova;
-    color: #1DB954;
+    color: #1ed760;
 }
 #intro > .title > p {
     font-family: Gotham;
@@ -86,4 +86,31 @@ body {
 .name-credit:hover {
     color: #808080;
     transition: 200ms ease-out color;
+}
+.extra-links {
+    color: #505050;
+    margin-right: 10px;
+}
+.extra-links:hover {
+    color: #808080;
+    transition: 200ms ease-out color;
+}
+@media (max-width: 765px) {
+    #footer > div {
+        display: block;
+        text-align: center;
+    }
+}
+@media (max-width: 650px) {
+    #intro > .title > .logo > h1 {
+        font-size: 80px;
+    }
+    #intro > .title > .logo > img {
+        margin-right: 0px;
+    }
+}
+@media (max-width: 500px) {
+    #footer > .container > .first {
+        display: none;
+    }
 }

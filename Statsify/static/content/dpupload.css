@@ -83,3 +83,11 @@ a:hover {
     font-size: 20px;
     display: none;
 }
+@media (max-width: 900px) {
+    #content {
+        margin-left: 0px;
+    }
+    .upload-link {
+        padding: 0 20px;
+    }
+}
