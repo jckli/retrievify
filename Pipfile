@@ -9,6 +9,7 @@ python-dotenv = "*"
 requests = "*"
 markupsafe = "==2.0.1"
 jinja2 = "*"
+cheroot = "*"
 
 [dev-packages]
 
