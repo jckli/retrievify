@@ -40,31 +40,38 @@ def get_info(dirName):
             # Opens "STREAMING HISTORY" files
             for item in data:
 
-                # Dict for each Year
-                if currentYear[0:4] != item["endTime"][0:4]:
-                    currentYear = item["endTime"][0:10]
-                    songDict[currentYear[0:4]] = {}
-                    #artistDict[currentYear[0:4]] = {}
+                if item["trackName"] is not ('Unknown Track', 'Unknown Artist'):
+                    
+                    # Dict for each Year
+                    if currentYear[0:4] != item["endTime"][0:4]:
+                        currentYear = item["endTime"][0:10]
+                        songDict[currentYear[0:4]] = {}
+                        #artistDict[currentYear[0:4]] = {}
 
-                # adds every song into the songDict
-                # songDict[year][(song, artist)] = [song, artist, ms, # ofTimes Listened]
-                songArtist = (item["trackName"], item["artistName"])
-                
-                if songArtist in songDict[item["endTime"][0:4]]:
-                    # ms
-                    songDict[item["endTime"][0:4]][songArtist]["ms"] = songDict[item["endTime"][0:4]][songArtist]["ms"] + int(item["msPlayed"])
-                    songDict["Total"][songArtist]["ms"] = songDict["Total"][songArtist]["ms"] + int(item["msPlayed"])
-                    # num of times
-                    if(int(item["msPlayed"]) > 3000):
-                        songDict[item["endTime"][0:4]][songArtist]["Times"] = songDict[item["endTime"][0:4]][songArtist]["Times"] + 1
-                        songDict["Total"][songArtist]["ms"] = songDict["Total"][songArtist]["ms"] + 1
-                else:
-                    # Song Not Played Before
-                    songDict[item["endTime"][0:4]][songArtist] = {"ms": int(item["msPlayed"]), "Times": 1, "Song": item["trackName"], "Artist": item["artistName"]}
-                    if songArtist not in songDict["Total"]:
-                        songDict["Total"][songArtist] = {"ms": int(item["msPlayed"]), "Times": 1, "Song": item["trackName"], "Artist": item["artistName"]}
-
-
+                    # adds every song into the songDict
+                    # songDict[year][(song, artist)] = [song, artist, ms, Time -max(ms)]
+                    songArtist = (item["trackName"], item["artistName"])
+                    
+                    if songArtist in songDict[item["endTime"][0:4]]:
+                        #Played in Same Year
+                        # ms
+                        songDict[item["endTime"][0:4]][songArtist]["ms"] = songDict[item["endTime"][0:4]][songArtist]["ms"] + int(item["msPlayed"])
+                        songDict["Total"][songArtist]["ms"] = songDict["Total"][songArtist]["ms"] + int(item["msPlayed"])
+                        # times
+                        if(int(item["msPlayed"]) > songDict["Total"][songArtist]["Time"]):
+                            songDict["Total"][songArtist]["Time"] = int(item["msPlayed"])
+                            songDict[item["endTime"][0:4]][songArtist]["Time"] = songDict["Total"][songArtist]["Time"]
+                            
+                    elif songArtist in songDict["Total"]:
+                        # Played in different year
+                        songDict[item["endTime"][0:4]][songArtist] = {"ms": int(item["msPlayed"]), "Time": songDict["Total"][songArtist]["Time"], "Song": item["trackName"], "Artist": item["artistName"]}
+                        
+                    else:
+                        # Song Not Played Before
+                        songDict[item["endTime"][0:4]][songArtist] = {"ms": int(item["msPlayed"]), "Time": int(item["msPlayed"]), "Song": item["trackName"], "Artist": item["artistName"]}
+                        if songArtist not in songDict["Total"]:
+                            songDict["Total"][songArtist] = {"ms": int(item["msPlayed"]), "Time": int(item["msPlayed"]), "Song": item["trackName"], "Artist": item["artistName"]}
+                        
                 # addes every artist into the artistDict
                 # artistDict[year][artist] = time
                 #split = str(item["artistName"]).split(", ")
@@ -98,9 +105,6 @@ def findSongTimeYear(song, artist, year):
 # Returns top songs instances based on listening time across all years  
 def topSongTime(num):
     list = heapq.nlargest(num + 1, songDict["Total"], key = findSongTimeTup)
-
-    if ('Unknown Track', 'Unknown Artist') in list:
-        list.remove(('Unknown Track', 'Unknown Artist'))
 
     list2 = []
     for i in range(len(list)):
