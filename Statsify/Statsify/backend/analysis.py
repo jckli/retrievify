@@ -106,6 +106,14 @@ def findSongTimeTupTotal(songArtist):
 def findSongTimeYear(song, artist, year):
     return songDict[year][(song, artist)]["ms"]
 
+# Returns Number of times song is listened to
+def numTimeSongListened(song, artist):
+    return songDict["Total"][(song, artist)]["ms"]/songDict["Total"][(song, artist)]["Time"]
+
+# Returns Number of times song is listened to in a year
+def numTimeSongListenedYear(song, artist, year):
+    return songDict[year][(song, artist)]["ms"]/songDict[year][(song, artist)]["Time"]
+
 # Returns top n songs based on listening time across all years  
 def topSongTime(num):
     list = heapq.nlargest(num + 1, songDict["Total"], key = findSongTimeTupTotal)

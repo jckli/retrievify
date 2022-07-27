@@ -162,9 +162,17 @@ def choices(list):
             clear()
             break
         
-        elif userInput == "11":
-            printListAllSongs()
-            break
+        # test outputs
+        #elif userInput == "11":
+        #    printListAllSongs()
+        #    break
+        
+        #elif userInput == "12":
+            #print("This output is not completed yet! Check back later.")
+            #song, artist, year = input("Enter in song name, artist name, and year separated by a ';' : ").split(";")
+            #print(numTimeSongListened(song, artist))
+            #print(numTimeSongListenedYear(song, artist, year))
+            #break
         
 # Converts miliseoncds to hours, minutes, and seconds
 def convertMilliseconds(millis):
