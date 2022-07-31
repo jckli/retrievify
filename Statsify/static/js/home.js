@@ -43,26 +43,47 @@ $(".ta").click(function(){
 
 $( document ).ready(function() {
     $.get("/ajax/currently_playing?type=original", function(data) {
-        let oldname = data.item.name;
-        let oldimage = data.item.album.images[0].url;
+        let oldname = null;
+        let oldimage = null;
+        if (data != null) {
+            oldname = data.item.name;
+            oldimage = data.item.album.images[0].url;
+        }
         setInterval(function() {
             $.get("/ajax/currently_playing?type=now", function(data) {
-                var song_name = data.item.name;
-                var image = data.item.album.images[0].url;
-                if (oldname != song_name && oldimage != image) {
+                if (data == null) {
+                    oldname = null;
+                    oldimage = null;
+                    $(".song-now-playing").text("");
+                    $(".song-now-playing").append(
+                        `<h2 id="song-title" class="no-playing"><i>No song is playing currently.</i></h2>`
+                    );
+                } else {
+                    var song_name = data.item.name;
+                    var image = data.item.album.images[0].url;
                     var artistsRaw = data.item.artists;
                     var artistsName = [];
                     for (var i = 0; i < artistsRaw.length; i++) {
                         artistsName.push(artistsRaw[i].name);
                     }
                     var artist = artistsName.join(", ");
-                    
-                    var now_playing = $("div.now-playing");
-                    now_playing.find("img").attr("src", image);
-                    now_playing.find(".song-info").find("#song-title").text(song_name);
-                    now_playing.find(".song-info").find("#song-artist").text(artist);
-                    oldname = song_name;
-                    oldimage = image;
+                    if ((oldname == null && oldimage == null)) {
+                        $(".song-now-playing").text("");
+                        $(".song-now-playing").append(
+                            `<img src="${image}" width="150" height="150"/>`
+                        );
+                        $(".song-now-playing").append('<div class="song-info song-info-np"></div>');
+                        $(".song-info-np").append(`<h2 id="song-title">${song_name}</h2>`);
+                        $(".song-info-np").append(`<p id="song-artist">${artist}</p>`);
+                    }
+                    if (oldname != song_name && oldimage != image) {
+                        var now_playing = $("div.now-playing");
+                        now_playing.find("img").attr("src", image);
+                        now_playing.find(".song-info").find("#song-title").text(song_name);
+                        now_playing.find(".song-info").find("#song-artist").text(artist);
+                        oldname = song_name;
+                        oldimage = image;
+                    }
                 }
             });
         }, 10000);

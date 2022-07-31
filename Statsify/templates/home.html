@@ -10,15 +10,15 @@
             <div>
                 <h1>Now Playing</h1>
                 <br>
-                <div class="song now-playing">
+                <div class="song now-playing song-now-playing">
                     {% if cp is not none %}
                         <img src="{{ cp.cover }}" width="150" height="150"/>
-                        <div class="song-info">
+                        <div class="song-info song-info-np">
                             <h2 id="song-title">{{ cp.title }}</h2>
                             <p id="song-artist">{{ cp.artists }}</p>
                         </div>
                     {% else %}
-                        <h2 id="song-title" class="no-playing"><i>No song is playing currently.</i></p>
+                        <h2 id="song-title" class="no-playing"><i>No song is playing currently.</i></h2>
                     {% endif %}
                 </div>
             </div>
