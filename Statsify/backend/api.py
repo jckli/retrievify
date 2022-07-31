@@ -71,7 +71,7 @@ class Spotify:
 			refresh = self.refreshToken(session["refresh_token"])
 			session["token"] = refresh[0]
 			session["expires_in"] = refresh[1]
-			return self.getUserInfo(refresh[0])
+			return self.getCurrentlyPlaying(refresh[0])
 		else:
 			print('getCurrentlyPlaying:' + str(get_response.status_code))
 			
@@ -87,7 +87,7 @@ class Spotify:
 			refresh = self.refreshToken(session["refresh_token"])
 			session["token"] = refresh[0]
 			session["expires_in"] = refresh[1]
-			return self.getUserInfo(refresh[0])
+			return self.getTopArtists(refresh[0], timeRange, limit, offset)
 		else:
 			print('getTopArtists:' + str(get_response.status_code))
 			return None
@@ -103,7 +103,7 @@ class Spotify:
 			refresh = self.refreshToken(session["refresh_token"])
 			session["token"] = refresh[0]
 			session["expires_in"] = refresh[1]
-			return self.getUserInfo(refresh[0])
+			return self.getTopSongs(refresh[0], timeRange, limit, offset)
 		else:
 			print('getTopSongs:' + str(get_response.status_code))
 			return None
@@ -128,7 +128,7 @@ class Spotify:
 			refresh = self.refreshToken(session["refresh_token"])
 			session["token"] = refresh[0]
 			session["expires_in"] = refresh[1]
-			return self.getUserInfo(refresh[0])
+			return self.search(refresh[0], query, type)
 		else:
 			print('search:' + str(get_response.status_code))
 			return None
