@@ -44,7 +44,6 @@ h2 {
 #content > .stats > .top-area > .now-playing {
     background-color: #202020;
     margin-right: 10px;
-    border-radius: 12px;
     min-width: 700px;
 }
 #content > .stats > .top-area > .now-playing > div {
@@ -54,7 +53,6 @@ h2 {
     display: flex;
 }
 #content > .stats > .top-area > .now-playing > div > .song > img {
-    border-radius: 12px;
     margin-right: 16px;
 }
 #content > .stats > .top-area > .now-playing > div > .song > .song-info {
@@ -109,7 +107,6 @@ h2 {
     display: flex;
 }
 #content > .stats > .top-lists > .top-artists > div > .top-artists-list > .artist > img {
-    border-radius: 12px;
     margin-right: 16px;
     height: 50px;
     width: 50px;
@@ -136,7 +133,6 @@ h2 {
     display: flex;
 }
 #content > .stats > .top-lists > .top-songs > div > .top-songs-list > .song > img {
-    border-radius: 12px;
     margin-right: 16px;
     height: 50px;
     width: 50px;
