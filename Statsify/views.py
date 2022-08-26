@@ -83,6 +83,7 @@ def main():
             artists = ", ".join(artistsRaw)
             cover = currentlyPlaying["item"]["album"]["images"][0]["url"]
             album = currentlyPlaying["item"]["album"]["name"]
+            link = currentlyPlaying["item"]["external_urls"]["spotify"]
     else:
         cp = None
 

@@ -60,8 +60,20 @@ h2 {
     flex-grow: 1;
     flex-shrink: 1;
 }
-#content > .stats > .top-area > .now-playing > div > .song > .no-playing {
-    color: #808080;
+#content > .stats > .top-area > .now-playing > div > .song > .song-info > .title-with-link {
+    display: flex;
+    align-items: center;
+}
+#content > .stats > .top-area > .now-playing > div > .song > .song-info > .title-with-link > #song-title {
+    display: inline-block;
+}
+#content > .stats > .top-area > .now-playing > div > .song > .song-info > .title-with-link > .spotify-link {
+    margin-left: 12px;
+    margin-top: 1px;
+    display: inline-block;
+}
+.fa-spotify {
+    color: #1ed760;
 }
 #content > .stats > .top-area > .top-genre {
     background-color: #202020;
