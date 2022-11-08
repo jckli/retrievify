@@ -132,7 +132,15 @@
               height="150"
             />
             <div class="song-info">
-              <h2 id="song-name">{{ songs["name"] }}</h2>
+              <div class="name-link">
+                <h2 id="song-name">{{ songs["name"] }}</h2>
+                <a
+                  href="{{ songs['external_urls']['spotify'] }}"
+                  class="spotify-link"
+                >
+                  <i class="fa-brands fa-spotify fa-lg"></i>
+                </a>
+              </div>
               <p id="song-artist">{{ topTracksArtists[loop.index-1] }}</p>
             </div>
           </div>

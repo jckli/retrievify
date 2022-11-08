@@ -14,8 +14,14 @@ $(".ts").click(function () {
       $(songs[i]).find("img").attr("src", data.tracks[i].image);
       $(songs[i])
         .find(".song-info")
+        .find(".name-link")
         .find("#song-name")
         .text(data.tracks[i].name);
+      $(songs[i])
+        .find(".song-info")
+        .find(".name-link")
+        .find(".spotify-link")
+        .attr("href", data.tracks[i].link);
       $(songs[i])
         .find(".song-info")
         .find("#song-artist")
