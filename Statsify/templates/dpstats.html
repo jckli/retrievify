@@ -1,58 +1,68 @@
-{% extends "layout.html" %}
-{% block head %}
-{{ super() }}
-<link rel="stylesheet" href="/static/content/dpstats.css">
-{% endblock %}
-{% block content %}
+{% extends "layout.html" %} {% block head %} {{ super() }}
+<link rel="stylesheet" href="/static/content/dpstats.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+/>
+{% endblock %} {% block content %}
 <div class="info">
-    <div class="top-area">
-        <div class="total-time all">
-            <div>
-                <h1>Total Time Listened - Entire Package</h1>
-                <h1 class="time">Loading...</h1>
-                <p class="first-time"><i>Starting from </i></p>
-            </div>
-        </div>
-        <div class="total-time year">
-            <div>
-                <h1>Total Time Listened - Year</h1>
-                <h1 class="time">Loading...</h1>
-                <div class="year-select">
-                    <p class="first-time"><i>Year of </i></p>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Year
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item ttl-year active" id="year">Year</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="top-area">
+    <div class="total-time all">
+      <div>
+        <h1>Total Time Listened - Entire Package</h1>
+        <h1 class="time">Loading...</h1>
+        <p class="first-time"><i>Starting from </i></p>
+      </div>
     </div>
-    <div class="top-lists">
-        <div class="top-list top-artists">
-            <div>
-                <div class="card-title">
-                    <h1>Top Artists</h1>
-                </div>
-                <br>
-                <div class="list">
-                </div>
-            </div>
+    <div class="total-time year">
+      <div>
+        <h1>Total Time Listened - Year</h1>
+        <h1 class="time">Loading...</h1>
+        <div class="year-select">
+          <p class="first-time"><i>Year of </i></p>
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Year
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-dark"
+              aria-labelledby="dropdownMenuButton1"
+            >
+              <li>
+                <a class="dropdown-item ttl-year active" id="year">Year</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="top-list top-songs">
-            <div>
-                <div class="card-title">
-                    <h1>Top Songs</h1>
-                </div>
-                <br>
-                <div class="list">
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+  <div class="top-lists">
+    <div class="top-list top-artists">
+      <div>
+        <div class="card-title">
+          <h1>Top Artists</h1>
+        </div>
+        <br />
+        <div class="list"></div>
+      </div>
+    </div>
+    <div class="top-list top-songs">
+      <div>
+        <div class="card-title">
+          <h1>Top Songs</h1>
+        </div>
+        <br />
+        <div class="list"></div>
+      </div>
+    </div>
+  </div>
 </div>
 <script type="text/javascript" src="/static/js/dpstats.js"></script>
 {% endblock %}
