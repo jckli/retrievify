@@ -1,116 +1,116 @@
 @font-face {
-    font-family: Gotham;
-    src: url(../fonts/GothamMedium.ttf);
+  font-family: Gotham;
+  src: url(../fonts/GothamMedium.ttf);
 }
 @font-face {
-    font-family: ProximaNova;
-    src: url("../fonts/ProximaNovaBold.otf");
+  font-family: ProximaNova;
+  src: url("../fonts/ProximaNovaBold.otf");
 }
 body {
-    font-family: Gotham;
-    margin: 0px;
-    background: #101010;
-    display: block;
+  font-family: Gotham;
+  margin: 0px;
+  background: #101010;
+  display: block;
 }
 #content {
-    color: #ffffff;
+  color: #ffffff;
 }
 #intro {
-    min-height: 90vh;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    display: flex;
+  min-height: 90vh;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  display: flex;
 }
 #intro > .title {
-    max-width: 750px;
-    padding: 0 40px;
-    margin: 0 auto;
-    text-align: center;
+  max-width: 750px;
+  padding: 0 40px;
+  margin: 0 auto;
+  text-align: center;
 }
 #intro > .title > .logo {
-    text-align: center;
+  text-align: center;
 }
 #intro > .title > .logo > img {
-    display: inline-block;
-    vertical-align: middle;
-    width: 128px;
-    height: 128px;
-    margin-right: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 128px;
+  height: 128px;
+  margin-right: 16px;
 }
 #intro > .title > .logo > h1 {
-    margin: 0;
-    display: inline-block;
-    vertical-align: middle;
-    font-size: 125px;
-    font-family: ProximaNova;
-    color: #1ed760;
+  margin: 0;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 125px;
+  font-family: ProximaNova;
+  color: #4ad3ff;
 }
 #intro > .title > p {
-    font-family: Gotham;
-    font-size: 18px;
-    margin-bottom: 0px;
+  font-family: Gotham;
+  font-size: 18px;
+  margin-bottom: 0px;
 }
 #intro > .title > a {
-    font-family: Gotham;
-    line-height: 1.3;
-    padding: 9px 12px;
-    display: inline-block;
-    color: #007bff;
-    border: 1px solid #313338;
-    background: #1a1c21;
-    border-radius: 10px;
-    text-decoration: none;
+  font-family: Gotham;
+  line-height: 1.3;
+  padding: 9px 12px;
+  display: inline-block;
+  color: #007bff;
+  border: 1px solid #313338;
+  background: #1a1c21;
+  border-radius: 10px;
+  text-decoration: none;
 }
 #intro > .title > a:hover {
-    background: rgba(217, 210, 255, 0.2);
-    border: 1px solid #4b4b4b;
-    transition: 200ms ease-out background,200ms ease-out border;
-    text-decoration: none;
+  background: rgba(217, 210, 255, 0.2);
+  border: 1px solid #4b4b4b;
+  transition: 200ms ease-out background, 200ms ease-out border;
+  text-decoration: none;
 }
 #footer > div {
-    min-height: 10vh;
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  min-height: 10vh;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 #footer > div > div {
-    font-size: 16px;
+  font-size: 16px;
 }
 .name-credit {
-    text-decoration: none;
-    color: #ffffff;
+  text-decoration: none;
+  color: #ffffff;
 }
 .name-credit:hover {
-    color: #808080;
-    transition: 200ms ease-out color;
+  color: #808080;
+  transition: 200ms ease-out color;
 }
 .extra-links {
-    color: #505050;
-    margin-right: 10px;
+  color: #505050;
+  margin-right: 10px;
 }
 .extra-links:hover {
-    color: #808080;
-    transition: 200ms ease-out color;
+  color: #808080;
+  transition: 200ms ease-out color;
 }
 @media (max-width: 765px) {
-    #footer > div {
-        display: block;
-        text-align: center;
-    }
+  #footer > div {
+    display: block;
+    text-align: center;
+  }
 }
 @media (max-width: 650px) {
-    #intro > .title > .logo > h1 {
-        font-size: 80px;
-    }
-    #intro > .title > .logo > img {
-        margin-right: 0px;
-    }
+  #intro > .title > .logo > h1 {
+    font-size: 80px;
+  }
+  #intro > .title > .logo > img {
+    margin-right: 0px;
+  }
 }
 @media (max-width: 500px) {
-    #footer > .container > .first {
-        display: none;
-    }
+  #footer > .container > .first {
+    display: none;
+  }
 }
