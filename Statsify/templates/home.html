@@ -1,102 +1,154 @@
-{% extends "layout.html" %}
-{% block head %}
-{{ super() }}
-<link rel="stylesheet" href="static/content/home.css">
-{% endblock %}
-{% block content %}
+{% extends "layout.html" %} {% block head %} {{ super() }}
+<link rel="stylesheet" href="static/content/home.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+/>
+{% endblock %} {% block content %}
 <div class="stats">
-    <div class="top-area">
-        <div class="now-playing">
-            <div>
-                <h1>Now Playing</h1>
-                <br>
-                <div class="song now-playing song-now-playing">
-                    {% if cp is not none %}
-                        <img src="{{ cp.cover }}" width="150" height="150"/>
-                        <div class="song-info song-info-np">
-                            <h2 id="song-title">{{ cp.title }}</h2>
-                            <p id="song-artist">{{ cp.artists }}</p>
-                        </div>
-                    {% else %}
-                        <h2 id="song-title" class="no-playing"><i>No song is playing currently.</i></h2>
-                    {% endif %}
-                </div>
+  <div class="top-area">
+    <div class="now-playing">
+      <div>
+        <h1>Now Playing</h1>
+        <br />
+        <div class="song now-playing song-now-playing">
+          {% if cp is not none %}
+          <img src="{{ cp.cover }}" width="150" height="150" />
+          <div class="song-info song-info-np">
+            <div class="title-with-link">
+              <h2 id="song-title">{{ cp.title }}</h2>
             </div>
+            <p id="song-artist">{{ cp.artists }}</p>
+            <a href="{{ cp.link }}" class="spotify-link">
+              <i class="fa-brands fa-spotify fa-xl"></i>
+            </a>
+          </div>
+          {% else %}
+          <h2 id="song-title" class="no-playing">
+            <i>No song is playing currently.</i>
+          </h2>
+          {% endif %}
         </div>
-        <div class="top-genre">
-            <div>
-                <h1>Top Genres</h1>
-                <br>
-                <div class="genre-list">
-                    {% for genre in sortedGenres %}
-                        <div class="genre-item">
-                            <h2>{{loop.index}}. {{ genre }}</h2>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-    <div class="top-lists">
-        <div class="top-artists">
-            <div>
-                <div class="card-title">
-                    <h1>Top Artists</h1>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Current
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item ta active" id="current">Current</a></li>
-                        <li><a class="dropdown-item ta" id="six-month">6 Months</a></li>
-                        <li><a class="dropdown-item ta" id="all-time">All Time</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <br>
-                <div class="top-artists-list">
-                    {% for artist in ta %}
-                        <div class="artist top-artist-item">
-                            <img src='{{ artist["images"][0]["url"] }}' width="150" height="150"/>
-                            <div class="artist-info">
-                                <h2 id="artist-name">{{ artist["name"] }}</h2>
-                                <p id="artist-genre">{{ artist["genres"][0] }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+    <div class="top-genre">
+      <div>
+        <h1>Top Genres</h1>
+        <br />
+        <div class="genre-list">
+          {% for genre in sortedGenres %}
+          <div class="genre-item">
+            <h2>{{loop.index}}. {{ genre }}</h2>
+          </div>
+          {% endfor %}
         </div>
-        <div class="top-songs">
-            <div>
-                <div class="card-title">
-                    <h1>Top Songs</h1>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Current
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
-                        <a class="dropdown-item ts active" id="current">Current</a>
-                        <a class="dropdown-item ts" id="six-month">6 Months</a>
-                        <a class="dropdown-item ts" id="all-time">All Time</a>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div class="top-songs-list">
-                    {% for songs in tt %}
-                        <div class="song top-song-item">
-                            <img src='{{ songs["album"]["images"][0]["url"] }}' width="150" height="150"/>
-                            <div class="song-info">
-                                <h2 id="song-name">{{ songs["name"] }}</h2>
-                                <p id="song-artist">{{ topTracksArtists[loop.index-1] }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+  <div class="top-lists">
+    <div class="top-artists">
+      <div>
+        <div class="card-title">
+          <h1>Top Artists</h1>
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Current
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-dark"
+              aria-labelledby="dropdownMenuButton1"
+            >
+              <li>
+                <a class="dropdown-item ta active" id="current">Current</a>
+              </li>
+              <li><a class="dropdown-item ta" id="six-month">6 Months</a></li>
+              <li><a class="dropdown-item ta" id="all-time">All Time</a></li>
+            </ul>
+          </div>
+        </div>
+        <br />
+        <div class="top-artists-list">
+          {% for artist in ta %}
+          <div class="artist top-artist-item">
+            <img
+              src='{{ artist["images"][0]["url"] }}'
+              width="150"
+              height="150"
+            />
+            <div class="artist-info">
+              <div class="name-link">
+                <h2 id="artist-name">{{ artist["name"] }}</h2>
+                <a
+                  href="{{ artist['external_urls']['spotify'] }}"
+                  class="spotify-link"
+                >
+                  <i class="fa-brands fa-spotify fa-lg"></i>
+                </a>
+              </div>
+              <p id="artist-genre">{{ artist["genres"][0] }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="top-songs">
+      <div>
+        <div class="card-title">
+          <h1>Top Songs</h1>
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Current
+            </button>
+            <div
+              class="dropdown-menu dropdown-menu-dark"
+              aria-labelledby="dropdownMenuButton1"
+            >
+              <a class="dropdown-item ts active" id="current">Current</a>
+              <a class="dropdown-item ts" id="six-month">6 Months</a>
+              <a class="dropdown-item ts" id="all-time">All Time</a>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="top-songs-list">
+          {% for songs in tt %}
+          <div class="song top-song-item">
+            <img
+              src='{{ songs["album"]["images"][0]["url"] }}'
+              width="150"
+              height="150"
+            />
+            <div class="song-info">
+              <div class="name-link">
+                <h2 id="song-name">{{ songs["name"] }}</h2>
+                <a
+                  href="{{ songs['external_urls']['spotify'] }}"
+                  class="spotify-link"
+                >
+                  <i class="fa-brands fa-spotify fa-lg"></i>
+                </a>
+              </div>
+              <p id="song-artist">{{ topTracksArtists[loop.index-1] }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <script type="text/javascript" src="static/js/home.js"></script>
 {% endblock %}

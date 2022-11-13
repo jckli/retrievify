@@ -1,3 +1,4 @@
+// prettier-ignore
 $( document ).ready(function() {
     var songjson = JSON.parse(localStorage.getItem("songDict"));
     var firstTime = localStorage.getItem("firstTime");
@@ -56,7 +57,15 @@ $( document ).ready(function() {
                                     `<div class="artist item">
                                         <img src="${data2.results.artists.items[0].images[0].url}" width="150" height="150"/>
                                         <div class="artist-info">
-                                            <h2 id="artist-name">${data2.topArtists.name}</h2>
+                                            <div class="name-link">
+                                                <h2 id="artist-name">${data2.topArtists.name}</h2>
+                                                <a
+                                                    href="${data2.results.artists.items[0].external_urls.spotify}"
+                                                    class="spotify-link"
+                                                >
+                                                    <i class="fa-brands fa-spotify fa-lg"></i>
+                                                </a>
+                                            </div>
                                             <p id="artist-genre">${data2.results.artists.items[0].genres[0]}  - ${msToTime(data.topArtists[i].time)}</p>
                                         </div>
                                     </div>`
@@ -99,7 +108,15 @@ $( document ).ready(function() {
                                         `<div class="song item">
                                             <img src="${data2.results.tracks.items[0].album.images[0].url}" width="150" height="150"/>
                                             <div class="song-info">
-                                                <h2 id="song-title">${data2.topSongs.Song}</h2>
+                                                <div class="name-link">
+                                                    <h2 id="song-title">${data2.topSongs.Song}</h2>
+                                                    <a
+                                                        href="${data2.results.tracks.items[0].external_urls.spotify}"
+                                                        class="spotify-link"
+                                                    >
+                                                        <i class="fa-brands fa-spotify fa-lg"></i>
+                                                    </a>
+                                                </div>
                                                 <p id="song-artist">${data2.topSongs.Artist} - ${msToTime(data.topSongs[k].Time)}</p>
                                             </div>
                                         </div>`
@@ -115,27 +132,31 @@ $( document ).ready(function() {
     });
 });
 
-$(".year-select > .dropdown > .dropdown-menu").on("click", ".ttl-year", function() {
+$(".year-select > .dropdown > .dropdown-menu").on(
+  "click",
+  ".ttl-year",
+  function () {
     $(".ttl-year").removeClass("active");
-    var btn = $(this).parents(".dropdown").find('.btn')
-    var value = $("span", $(this))
-    btn.text("")
-    btn.attr("value", value.attr("value"))
-    btn.append(
-        `<span>${$(this).text()}</span>`
-    );
+    var btn = $(this).parents(".dropdown").find(".btn");
+    var value = $("span", $(this));
+    btn.text("");
+    btn.attr("value", value.attr("value"));
+    btn.append(`<span>${$(this).text()}</span>`);
     $(this).addClass("active");
     var selection = $(this).attr("id");
-    unconvertedTime = JSON.parse(localStorage.getItem("songDict")).Total.All[selection];
+    unconvertedTime = JSON.parse(localStorage.getItem("songDict")).Total.All[
+      selection
+    ];
     convertedTime = msToTime(unconvertedTime);
     $(".year > div > .time").text(convertedTime);
-});
+  }
+);
 
 function msToTime(ms) {
-    let seconds = ms / 1000;
-    const hours = parseInt( seconds / 3600 );
-    seconds = seconds % 3600;
-    const minutes = parseInt( seconds / 60 );
-    seconds = Math.round(seconds % 60);
-    return hours + " hrs, " + minutes + " mins, " + seconds + " secs";
+  let seconds = ms / 1000;
+  const hours = parseInt(seconds / 3600);
+  seconds = seconds % 3600;
+  const minutes = parseInt(seconds / 60);
+  seconds = Math.round(seconds % 60);
+  return hours + " hrs, " + minutes + " mins, " + seconds + " secs";
 }

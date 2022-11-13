@@ -83,6 +83,7 @@ def main():
             artists = ", ".join(artistsRaw)
             cover = currentlyPlaying["item"]["album"]["images"][0]["url"]
             album = currentlyPlaying["item"]["album"]["name"]
+            link = currentlyPlaying["item"]["external_urls"]["spotify"]
     else:
         cp = None
 
@@ -150,7 +151,7 @@ def ajax_topsongs():
         topTracksArtists.append(ttArtists)
     tracks = {"tracks": []}
     for i in range(len(tt)):
-        tracks["tracks"].append({"name": tt[i]["name"], "artists": topTracksArtists[i], "image": tt[i]["album"]["images"][0]["url"]})
+        tracks["tracks"].append({"name": tt[i]["name"], "artists": topTracksArtists[i], "image": tt[i]["album"]["images"][0]["url"], "link": tt[i]["external_urls"]["spotify"]})
     return jsonify(tracks)
 
 @app.route("/ajax/top_artists", methods=["GET"])
