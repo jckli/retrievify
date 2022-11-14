@@ -1,13 +1,13 @@
 <br>
 <p align="center">
-  <a href="https://github.com/ohashizu/Statsify">
-    <img src="https://raw.githubusercontent.com/ohashizu/Statsify/master/assets/img/SpotiStats.png" alt="Logo" width="100" height="100">
+  <a href="https://github.com/jckli/Statsify">
+    <img src="https://raw.githubusercontent.com/jckli/Statsify/v2/Statsify/static/imgs/logo.png" alt="Logo" width="100" height="100">
   </a>
 
   <h3 align="center">Statsify</h3>
 
   <p align="center">
-    A simple python script (currently) that allows you to view how many minutes you've spent listening to music on Spotify this year as well as other stats.
+    A web app that allows you to view how many minutes you've spent listening to music on Spotify this year as well as other stats.
   </p>
 </p>
 
@@ -23,10 +23,10 @@ Since this python script directly uses Spotify data retrieved from the user's ac
 
 ## Usage & Pre-requisites
 
- - Python 3.8
- - tkinter
+- Python 3.8
+- tkinter
 
- > **Note**: You will need to install these manually, this readme does not cover the installation of these dependancies.
+> **Note**: You will need to install these manually, this readme does not cover the installation of these dependancies.
 
-You will also need to retrieve your data from Spotify. This can be done by going to the Spotify website, and then clicking on the "Privacy" tab in the account settings and then 
+You will also need to retrieve your data from Spotify. This can be done by going to the Spotify website, and then clicking on the "Privacy" tab in the account settings and then
 requesting the data. After this is done, you will need to wait for a few days for them to send it to you.
