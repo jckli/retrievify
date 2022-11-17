@@ -11,7 +11,7 @@ const Home: NextPage = () => {
                 <div className="px-[40px] mx-auto max-w-[750px]">
                     <div className="flex flex-col md:flex-row items-center justify-center gap-4">
                         <div className="relative h-[128px] w-[128px]">
-                            <Image alt="statsifyLogo" src="/img/logo.png" layout="fill" />
+                            <Image alt="statsifyLogo" draggable={false} src="/img/logo.png" layout="fill" />
                         </div>
                         <h1 className="text-primary font-proximaNova text-7xl md:text-9xl font-bold">Statsify</h1>
                     </div>
