@@ -1,32 +1,21 @@
-<br>
-<p align="center">
-  <a href="https://github.com/jckli/Statsify">
-    <img src="https://raw.githubusercontent.com/jckli/Statsify/v2/Statsify/static/imgs/logo.png" alt="Logo" width="100" height="100">
-  </a>
+# jckli's next.js template
 
-  <h3 align="center">Statsify</h3>
+Next.js boilerplate using TypeScript + useful packages. Bit opinionated, barebones, nice, and simple to help get started with projects.
 
-  <p align="center">
-    A web app that allows you to view how many minutes you've spent listening to music on Spotify this year as well as other stats.
-  </p>
-</p>
+## Getting Started
 
-<br>
+Run `git clone https://github.com/jckli/next-template.git .` to setup the project in your current folder.
 
-> **Note**: Neither this application nor the logo is affiliated with Spotify. This application uses personal Spotify data, and though this application does not store any of your data, use at your own risk.
+-   (or click the "use this template" on this repository page)
 
-## Why?
+Just run `npm install` (or `yarn install`) and start working on your project immediately.
 
-Though Spotify Wrapped shows this information every year, I wanted to see whether or not I could find the information in a similar way without having to wait for the year to end.
+## Included
 
-Since this python script directly uses Spotify data retrieved from the user's account, it is very accurate, taking in exactly how many milliseconds listened per track instead of the full track length, displaying exactly how much time was spent listening this year.
+This template comes with the following packages:
 
-## Usage & Pre-requisites
-
-- Python 3.8
-- tkinter
-
-> **Note**: You will need to install these manually, this readme does not cover the installation of these dependancies.
-
-You will also need to retrieve your data from Spotify. This can be done by going to the Spotify website, and then clicking on the "Privacy" tab in the account settings and then
-requesting the data. After this is done, you will need to wait for a few days for them to send it to you.
+-   TailwindCSS
+-   styled-components
+-   framer-motion
+-   prettier
+-   fontawesome (for icons)
