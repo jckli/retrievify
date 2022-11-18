@@ -1,0 +1,9 @@
+-i https://pypi.org/simple
+aiofiles==22.1.0 ; python_version >= '3.7' and python_version < '4.0'
+httptools==0.5.0 ; python_full_version >= '3.5.0'
+multidict==6.0.2 ; python_version >= '3.7'
+sanic==22.9.1
+sanic-routing==22.8.0
+ujson==5.5.0 ; sys_platform != 'win32' and implementation_name == 'cpython'
+uvloop==0.17.0 ; sys_platform != 'win32' and implementation_name == 'cpython'
+websockets==10.4 ; python_version >= '3.7'
