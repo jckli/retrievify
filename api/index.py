@@ -1,8 +1,13 @@
-from sanic import Sanic
-from sanic.response import json
+from sanic import Sanic, response
+import os
+import secrets
+import urllib
 
 app = Sanic("Statsify")
 
-@app.route('/')
+
+@app.route("/")
 async def index(request):
-    return json({"hello": "world"})
+    return response.json(
+        {"Hey!": "This is the Statsify API! Please go back to the main website."}
+    )
