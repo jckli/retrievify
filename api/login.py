@@ -12,7 +12,6 @@ async def login(request):
     scope = os.environ.get("SCOPE")
     redirect_uri = os.environ.get("REDIRECT_URI")
     state_key = secrets.token_urlsafe(15)
-    request.cookies["state_key"] = state_key
     params = {
         "response_type": "code",
         "client_id": client_id,
@@ -20,4 +19,6 @@ async def login(request):
         "scope": scope,
         "state": state_key,
     }
-    return response.redirect(authorize_url + urllib.parse.urlencode(params))
+    resp = response.redirect(authorize_url + urllib.parse.urlencode(params))
+    resp.cookies["state_key"] = state_key
+    return resp

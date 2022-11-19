@@ -1,7 +1,5 @@
 from sanic import Sanic, response
 import os
-import secrets
-import urllib
 
 app = Sanic("Statsify")
 
