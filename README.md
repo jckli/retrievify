@@ -1,21 +1,7 @@
-# jckli's next.js template
+# Statsify Rework (v3)
 
-Next.js boilerplate using TypeScript + useful packages. Bit opinionated, barebones, nice, and simple to help get started with projects.
+> **todo:** make this look nicer
 
-## Getting Started
+this is a rework of the original statsify website. the original website is made fully with flask, and uses jinja and flask's templating system to render the frontend. **this is a HORRIBLE system**. it's slow, it's ugly, and it's not very maintainable. i made it before i knew much about coding, and now i know that not seperating the frontend and backend is shit.
 
-Run `git clone https://github.com/jckli/next-template.git .` to setup the project in your current folder.
-
--   (or click the "use this template" on this repository page)
-
-Just run `npm install` (or `yarn install`) and start working on your project immediately.
-
-## Included
-
-This template comes with the following packages:
-
--   TailwindCSS
--   styled-components
--   framer-motion
--   prettier
--   fontawesome (for icons)
+this new rework uses next.js as the frontend, in combination with the sanic python framework as the backend. its _much, much_ faster and actually readable LMAO.
