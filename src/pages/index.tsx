@@ -19,7 +19,7 @@ const Home: NextPage = () => {
                         View all your listening statistics and see how you&apos;ve spent your time listening to music
                         with Statsify.
                     </p>
-                    <MainButton text="Login" href="/login" />
+                    <MainButton text="Login" href="/api/login" />
                 </div>
             </div>
             <div className="h-[10vh] flex justify-center items-center font-gotham font-normal">

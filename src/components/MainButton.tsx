@@ -6,7 +6,6 @@ export const MainButton = (props: any) => {
     return (
         <motion.a
             href={props.href}
-            target="_blank"
             className="
             leading-[1.3] py-[9px] px-[12px] mt-4 text-[20px] inline-block text-primary border-[#313338] border-solid border-[1px] 
             bg-[#1a1c21] rounded-[10px] hover:bg-[#38373d] hover:border-[#4b4b4b] hover:transition-all hover:duration-200 hover:ease-out
