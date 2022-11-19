@@ -32,8 +32,9 @@ bun.lockb
 # env
 .env
 
-# vercel
+# client files
 .vercel
+.vscode
 
 # typescript
 *.tsbuildinfo
