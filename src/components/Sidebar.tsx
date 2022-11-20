@@ -25,11 +25,15 @@ export const Sidebar = (props: any) => {
     return (
         <div className="flex-1 flex flex-col w-[280px] h-[100vh] fixed bg-mgray font-metropolis">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-                <div className="flex items-center flex-shrink-0 px-5">
-                    <div className="relative h-[38px] w-[38px]">
-                        <Image alt="statsifyLogo" draggable={false} src="/images/logo.png" layout="fill" />
-                    </div>
-                    <h1 className="text-white font-proximaNova text-2xl font-bold ml-2">Statsify</h1>
+                <div className="px-5">
+                    <Link href="/">
+                        <a className="flex items-center flex-shrink-0">
+                            <div className="relative h-[38px] w-[38px]">
+                                <Image alt="statsifyLogo" draggable={false} src="/images/logo.png" layout="fill" />
+                            </div>
+                            <h1 className="text-white font-proximaNova text-2xl font-bold ml-2">Statsify</h1>
+                        </a>
+                    </Link>
                 </div>
                 <nav className="mt-5 flex-1 px-4 bg-mgray space-y-1" aria-label="Sidebar">
                     {navigation.map(item => (
