@@ -1,5 +1,4 @@
 from sanic import Sanic, response
-import os
 
 app = Sanic("Statsify")
 

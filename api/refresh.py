@@ -1,9 +1,6 @@
 from .index import app
 from .utils._spotify import Spotify
 from sanic import response
-import os
-import secrets
-import urllib
 
 
 @app.route("/api/refresh")

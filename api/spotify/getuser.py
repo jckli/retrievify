@@ -1,7 +1,6 @@
 from ..index import app
 from ..utils._spotify import Spotify
 from sanic import response
-import aiohttp
 
 
 @app.route("/api/spotify/getuser")
@@ -28,7 +27,6 @@ async def get_user(request):
         user_resp = await spotify.get_user(access_token)
         resp = response.json(user_resp)
         resp.cookies["acct"] = access_token
-        resp.cookies["reft"] = ref["refresh_token"]
         resp.cookies["exp"] = str(ref["expires_in"])
     await spotify.close()
 
