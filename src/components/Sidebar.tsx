@@ -109,7 +109,6 @@ export const Sidebar = (props: any) => {
                                     {({ active }) => (
                                         <Link href="/privacy">
                                             <a
-                                                href=""
                                                 className="hover:bg-[#505050] transition-all ease-in-out duration-100
                                                 group flex w-full items-center rounded-md px-2 py-2 text-sm text-white"
                                             >
