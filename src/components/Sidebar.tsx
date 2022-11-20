@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import useSWR from "swr";
+import { Menu, Transition } from "@headlessui/react";
+import { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faBoxOpen, faB } from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
@@ -16,9 +18,9 @@ export const Sidebar = (props: any) => {
     ];
 
     const fetcher = (url: any) => fetch(url).then(r => r.json());
-    const { data, error } = useSWR("/api/spotify/getuser", fetcher);
+    const { data, error } = useSWR("/api/spotify/getuser", fetcher, { revalidateOnFocus: false });
     if (!data || error) {
-        return <div>error</div>;
+        return <div>Please log in again.</div>;
     }
     return (
         <div className="flex-1 flex flex-col w-[280px] h-[100vh] fixed bg-mgray font-metropolis">
@@ -39,7 +41,7 @@ export const Sidebar = (props: any) => {
                                     item.current
                                         ? "bg-[#303030] text-white"
                                         : "text-gray-300 hover:bg-[#404040] hover:text-white",
-                                    "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                                    "group flex items-center px-2 py-2 text-sm font-medium rounded-md ease-in-out duration-100"
                                 )}
                             >
                                 <FontAwesomeIcon
@@ -67,30 +69,81 @@ export const Sidebar = (props: any) => {
                 </nav>
             </div>
             <div className="flex-shrink-0 flex bg-[#303030] p-4">
-                <a href="#" className="flex-shrink-0 w-full group block">
-                    <div className="flex items-center">
-                        <div className="relative h-9 w-9 rounded-full overflow-hidden">
-                            <Image alt="user-pfp" src={data.images[0].url} layout="fill" />
+                <Menu>
+                    <Menu.Button className="flex-shrink-0 w-full group block">
+                        <div className="flex items-center">
+                            <div className="relative h-9 w-9 rounded-full overflow-hidden">
+                                <Image alt="user-pfp" src={data.images[0].url} layout="fill" />
+                            </div>
+                            <div className="ml-3 flex items-center">
+                                <p className="text-sm font-medium text-white">{data.display_name}</p>
+                                <svg
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    height="1em"
+                                    className="text-white ml-1 h-[18px] min-w-[18px] rotate-[270deg]"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M9 5l7 7-7 7"
+                                    ></path>
+                                </svg>
+                            </div>
                         </div>
-                        <div className="ml-3 flex items-center">
-                            <p className="text-sm font-medium text-white">{data.display_name}</p>
-                            <svg
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                height="1em"
-                                className="text-white ml-1 h-[18px] min-w-[18px] rotate-[270deg]"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M9 5l7 7-7 7"
-                                ></path>
-                            </svg>
-                        </div>
-                    </div>
-                </a>
+                    </Menu.Button>
+                    <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                    >
+                        <Menu.Items className="absolute bottom-16 mt-2 w-56 origin-bottom-left divide-y divide-gray-100 rounded-md bg-[#404040] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <div className="px-1 py-1 ">
+                                <Menu.Item>
+                                    {({ active }) => (
+                                        <Link href="/privacy">
+                                            <a
+                                                href=""
+                                                className="hover:bg-[#505050] transition-all ease-in-out duration-100
+                                                group flex w-full items-center rounded-md px-2 py-2 text-sm text-white"
+                                            >
+                                                Privacy Policy
+                                            </a>
+                                        </Link>
+                                    )}
+                                </Menu.Item>
+                                <Menu.Item>
+                                    {({ active }) => (
+                                        <a
+                                            href="https://spotify.com/us/account/apps"
+                                            className="hover:bg-[#505050] transition-all ease-in-out duration-100
+                                            group flex w-full items-center rounded-md px-2 py-2 text-sm text-white"
+                                        >
+                                            Remove Account
+                                        </a>
+                                    )}
+                                </Menu.Item>
+                                <Menu.Item>
+                                    {({ active }) => (
+                                        <a
+                                            href="https://spotify.com/logout"
+                                            className="hover:bg-[#505050] transition-all ease-in-out duration-100
+                                            group flex w-full items-center rounded-md px-2 py-2 text-sm text-white"
+                                        >
+                                            Sign Out
+                                        </a>
+                                    )}
+                                </Menu.Item>
+                            </div>
+                        </Menu.Items>
+                    </Transition>
+                </Menu>
             </div>
         </div>
     );
