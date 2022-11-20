@@ -16,6 +16,7 @@ async def get_user(request):
     access_token = request.cookies.get("acct")
     spotify = Spotify()
     user_resp = await spotify.get_user(access_token)
+    resp = response.json(user_resp)
     if user_resp is None:
         return response.redirect("/api/login")
     elif user_resp == 401:
@@ -25,5 +26,10 @@ async def get_user(request):
             return response.redirect("/api/login")
         access_token = ref["access_token"]
         user_resp = await spotify.get_user(access_token)
+        resp = response.json(user_resp)
+        resp.cookies["acct"] = access_token
+        resp.cookies["reft"] = ref["refresh_token"]
+        resp.cookies["exp"] = str(ref["expires_in"])
     await spotify.close()
-    return response.json(user_resp)
+
+    return resp
