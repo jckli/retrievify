@@ -12,7 +12,7 @@ export const MainButton = (props: any) => {
             "
             whileTap={{ scale: 0.95 }}
         >
-            <span className="font-gotham font-normal leading-4">{props.text}</span>
+            <span className="font-metropolis font-normal leading-4">{props.text}</span>
         </motion.a>
     );
 };

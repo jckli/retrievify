@@ -10,11 +10,11 @@ const Home: NextPage = () => {
                 <div className="px-[40px] mx-auto max-w-[750px]">
                     <div className="flex flex-col md:flex-row items-center justify-center gap-4">
                         <div className="relative h-[128px] w-[128px]">
-                            <Image alt="statsifyLogo" draggable={false} src="/img/logo.png" layout="fill" />
+                            <Image alt="statsifyLogo" draggable={false} src="/images/logo.png" layout="fill" />
                         </div>
                         <h1 className="text-primary font-proximaNova text-7xl md:text-9xl font-bold">Statsify</h1>
                     </div>
-                    <p className="mt-6 font-gotham text-base sm:text-lg font-normal block">
+                    <p className="mt-6 font-metropolis text-base sm:text-lg font-normal block">
                         View all your listening statistics and see how you&apos;ve spent your time listening to music
                         with Statsify.
                     </p>

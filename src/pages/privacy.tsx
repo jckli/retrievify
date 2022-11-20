@@ -5,7 +5,7 @@ import { Footer } from "../components/Footer";
 const Privacy: NextPage = () => {
     return (
         <>
-            <div className="mt-14 md:m-14 px-12 text-white font-gotham max-w-[1000px]">
+            <div className="mt-14 md:m-14 px-12 text-white font-metropolis max-w-[1000px]">
                 <div className="text-white font-proximaNova font-semibold text-xl">
                     <Link href="/">
                         <a className="flex items-center">

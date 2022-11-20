@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <>
             <Head>
                 <title>Statsify</title>
-                <link rel="icon" type="image/png" href="/img/logo.png" />
+                <link rel="icon" type="image/png" href="/images/logo.png" />
             </Head>
             <div>
                 <Component {...pageProps} />

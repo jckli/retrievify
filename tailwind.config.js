@@ -5,10 +5,11 @@ module.exports = {
         extend: {
             colors: {
                 primary: "#4ad3ff",
+                mgray: "#202020",
             },
             fontFamily: {
                 proximaNova: ["ProximaNova"],
-                gotham: ["Gotham"],
+                metropolis: ["Metropolis"],
             },
         },
     },

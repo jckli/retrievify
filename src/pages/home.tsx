@@ -1,9 +1,10 @@
 import type { NextPage } from "next";
+import { Sidebar } from "../components/Sidebar";
 
 const Home: NextPage = () => {
     return (
         <>
-            <h1>hello</h1>
+            <Sidebar active={1} />
         </>
     );
 };

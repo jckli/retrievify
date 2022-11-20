@@ -23,7 +23,16 @@ async def refresh_token(request):
     token_resp = await spotify.refresh_token(refresh_token)
     if token_resp is None:
         return response.redirect("/api/login")
-    resp = response.json({"data": {"status": 200, "message": "Refreshed"}})
+    resp = response.json(
+        {
+            "data": {
+                "status": 200,
+                "access_token": token_resp["access_token"],
+                "expires_in": token_resp["expires_in"],
+                "refresh_token": token_resp["refresh_token"],
+            }
+        }
+    )
     resp.cookies["acct"] = token_resp["access_token"]
     resp.cookies["reft"] = token_resp["refresh_token"]
     resp.cookies["exp"] = str(token_resp["expires_in"])

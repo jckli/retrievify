@@ -4,7 +4,7 @@ export const Footer = () => {
     const currentYear = new Date().getFullYear();
     return (
         <>
-            <div className="h-[10vh] flex justify-center items-center font-gotham font-normal">
+            <div className="h-[10vh] flex justify-center items-center font-metropolis font-normal">
                 <div className="text-white flex flex-col md:flex-row justify-between items-center xl:w-[1140px] lg:w-[930px] md:w-[720px] sm:w-[530px]">
                     <div className="inline-block">
                         Made with ❤️ by{" "}

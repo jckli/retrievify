@@ -7,8 +7,8 @@
     src: url("/fonts/ProximaNovaBold.otf");
 }
 @font-face {
-    font-family: Gotham;
-    src: url("/fonts/GothamMedium.ttf");
+    font-family: Metropolis;
+    src: url("/fonts/MetropolisSemiBold.ttf");
 }
 
 html,
@@ -28,4 +28,8 @@ a {
 
 * {
     box-sizing: border-box;
+}
+
+.font-metropolis {
+    letter-spacing: 0.2px;
 }
