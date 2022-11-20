@@ -7,7 +7,7 @@ module.exports = {
                 primary: "#4ad3ff",
             },
             fontFamily: {
-                proximaNova: ["Proxima Nova"],
+                proximaNova: ["ProximaNova"],
                 gotham: ["Gotham"],
             },
         },
