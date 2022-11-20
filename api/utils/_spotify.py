@@ -64,3 +64,14 @@ class Spotify:
                 return 401
             else:
                 return None
+
+    async def get_currently_playing(self, access_token):
+        url = "https://api.spotify.com/v1/me/player/currently-playing"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        async with self.session.get(url, headers=headers) as resp:
+            if resp.status == 200:
+                return await resp.json()
+            elif resp.status == 401:
+                return 401
+            else:
+                return None
