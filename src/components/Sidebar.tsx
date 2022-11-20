@@ -20,7 +20,11 @@ export const Sidebar = (props: any) => {
     const fetcher = (url: any) => fetch(url).then(r => r.json());
     const { data, error } = useSWR("/api/spotify/getuser", fetcher, { revalidateOnFocus: false });
     if (!data || error) {
-        return <div>Please log in again.</div>;
+        return (
+            <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
+                Loading...
+            </div>
+        );
     }
     return (
         <div className="flex-1 flex flex-col w-[280px] h-[100vh] fixed bg-mgray font-metropolis">
