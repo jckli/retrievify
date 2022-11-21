@@ -75,3 +75,18 @@ class Spotify:
                 return 401
             else:
                 return None
+
+    async def get_top_items(
+        self, access_token, top_type, time_range="medium_term", limit="20"
+    ):
+        if top_type not in ["artists", "tracks"]:
+            return None
+        url = f"https://api.spotify.com/v1/me/top/{top_type}?time_range={time_range}&limit={limit}"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        async with self.session.get(url, headers=headers) as resp:
+            if resp.status == 200:
+                return await resp.json()
+            elif resp.status == 401:
+                return 401
+            else:
+                return None
