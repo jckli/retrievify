@@ -59,7 +59,6 @@ export const Sidebar = (props: any) => {
                         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 font-metropolis">
                             <div className="relative flex items-center justify-between h-16">
                                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                                    {/* Mobile menu button*/}
                                     <Disclosure.Button className="inline-flex items-center justify-center rounded-md text-gray-400 hover:text-white hover:bg-[#404040] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                                         {({ open }) => <Hamburger toggled={open} size={24} />}
                                     </Disclosure.Button>
