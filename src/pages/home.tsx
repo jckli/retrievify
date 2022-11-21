@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Sidebar } from "../components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
+import { PeriodDropdown } from "../components/PeriodDropdown";
 
 const Home: NextPage = () => {
     const fetcher = (url: any) => fetch(url).then(r => r.json());
@@ -54,7 +55,7 @@ const Home: NextPage = () => {
     };
     const topGenres = get_top_genres(topArtists);
 
-    if (error1 || error2 || error3 || error4 || error5 || error6 || error7) {
+    if (error2 || error3 || error4 || error5 || error6 || error7) {
         return (
             <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
                 Loading...
@@ -66,39 +67,53 @@ const Home: NextPage = () => {
             <Sidebar active={1} />
             <div className="navbar:ml-[280px] flex font-metropolis text-white">
                 <div className="m-8 flex flex-col 1.5xl:flex-row">
-                    <div id="now-playing" className="bg-mgray rounded-md 1.5xl:min-w-[550px] h-fit">
+                    <div id="now-playing" className="bg-mgray rounded-md 1.5xl:min-w-[50%] h-fit">
                         <div className="p-5">
                             <h1 className="font-proximaNova text-3xl">Now Playing</h1>
                             <div className="mt-4">
-                                <div className="flex flex-col text-center xsm:text-left xsm:flex-row">
-                                    <div className="m-auto xsm:mx-0">
-                                        <div className="relative h-[128px] w-[128px]">
-                                            <Image
-                                                alt="albumArt"
-                                                draggable={false}
-                                                src={currently_playing?.item.album.images[0].url}
-                                                layout="fill"
-                                            />
+                                {currently_playing ? (
+                                    <div className="flex flex-col text-center xsm:text-left xsm:flex-row">
+                                        <div className="m-auto xsm:mx-0">
+                                            <div className="relative h-[128px] w-[128px]">
+                                                <Image
+                                                    alt="albumArt"
+                                                    draggable={false}
+                                                    src={currently_playing?.item.album.images[0].url}
+                                                    layout="fill"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="mt-4 xsm:mt-0 xsm:ml-4">
+                                            <h1 className="text-2xl">{currently_playing?.item.name}</h1>
+                                            <h2>
+                                                {currently_playing?.item.artists
+                                                    .map((artist: any) => artist.name)
+                                                    .join(", ")}
+                                            </h2>
+                                            <a
+                                                href={currently_playing?.item.external_urls.spotify}
+                                                className="block mt-1"
+                                            >
+                                                <FontAwesomeIcon icon={faSpotify} size="lg" />
+                                            </a>
                                         </div>
                                     </div>
-                                    <div className="mt-4 xsm:mt-0 xsm:ml-4">
-                                        <h1 className="text-2xl">{currently_playing?.item.name}</h1>
-                                        <h2>
-                                            {currently_playing?.item.artists
-                                                .map((artist: any) => artist.name)
-                                                .join(", ")}
-                                        </h2>
-                                        <a href={currently_playing?.item.external_urls.spotify} className="block mt-1">
-                                            <FontAwesomeIcon icon={faSpotify} size="lg" />
-                                        </a>
+                                ) : (
+                                    <div className="flex flex-col">
+                                        <h1 className="text-2xl">Nothing Playing</h1>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </div>
                     <div id="top-genres" className="bg-mgray rounded-md mt-8 1.5xl:ml-8 1.5xl:mt-0">
                         <div className="p-5">
-                            <h1 className="font-proximaNova text-3xl">Top Genres</h1>
+                            <div className="flex items-center justify-between sm:justify-start">
+                                <h1 className="font-proximaNova text-3xl">Top Genres</h1>
+                                <div className="ml-4">
+                                    <PeriodDropdown />
+                                </div>
+                            </div>
                             <div className="mt-4">
                                 <div className="flex flex-wrap gap-4">
                                     {topGenres.short_term.slice(0, 10).map((genre: string, index: number) => (
