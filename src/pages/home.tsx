@@ -20,13 +20,13 @@ const Home: NextPage = () => {
         <>
             <Sidebar active={1} />
             <div className="navbar:ml-[280px] flex font-metropolis text-white">
-                <div className="m-8">
+                <div className="m-8 w-[100%] sm:w-auto">
                     <div id="now-playing" className="bg-mgray rounded-md">
-                        <div className="p-5 w-[100%] sm:min-w-[550px]">
+                        <div className="p-5 sm:min-w-[550px]">
                             <h1 className="font-proximaNova text-3xl">Now Playing</h1>
                             <div className="mt-4">
-                                <div className="flex flex-col text-center xsm:flex-row">
-                                    <div className="m-auto">
+                                <div className="flex flex-col text-center xsm:text-left xsm:flex-row">
+                                    <div className="m-auto xsm:mx-0">
                                         <div className="relative h-[128px] w-[128px]">
                                             <Image
                                                 alt="albumArt"
