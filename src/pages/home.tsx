@@ -65,8 +65,8 @@ const Home: NextPage = () => {
         <>
             <Sidebar active={1} />
             <div className="navbar:ml-[280px] flex font-metropolis text-white">
-                <div className="m-8 flex flex-col 2xl:flex-row">
-                    <div id="now-playing" className="bg-mgray rounded-md 2xl:min-w-[550px] h-fit">
+                <div className="m-8 flex flex-col 1.5xl:flex-row">
+                    <div id="now-playing" className="bg-mgray rounded-md 1.5xl:min-w-[550px] h-fit">
                         <div className="p-5">
                             <h1 className="font-proximaNova text-3xl">Now Playing</h1>
                             <div className="mt-4">
@@ -96,13 +96,13 @@ const Home: NextPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div id="top-genres" className="bg-mgray rounded-md mt-8 2xl:ml-8 2xl:mt-0">
+                    <div id="top-genres" className="bg-mgray rounded-md mt-8 1.5xl:ml-8 1.5xl:mt-0">
                         <div className="p-5">
                             <h1 className="font-proximaNova text-3xl">Top Genres</h1>
                             <div className="mt-4">
                                 <div className="flex flex-wrap gap-4">
                                     {topGenres.short_term.slice(0, 10).map((genre: string, index: number) => (
-                                        <div key={index} className="bg-[#404040] rounded-lg">
+                                        <div key={index + 1} className="bg-[#404040] rounded-lg">
                                             <h1 className="text-2xl m-2 mx-3">
                                                 {index + 1}. {genre}
                                             </h1>
