@@ -19,22 +19,24 @@ const Home: NextPage = () => {
     return (
         <>
             <Sidebar active={1} />
-            <div className="ml-[280px] flex font-metropolis text-white">
+            <div className="navbar:ml-[280px] flex font-metropolis text-white">
                 <div className="m-8">
                     <div id="now-playing" className="bg-mgray rounded-md">
-                        <div className="p-5 min-w-[550px]">
+                        <div className="p-5 w-[100%] sm:min-w-[550px]">
                             <h1 className="font-proximaNova text-3xl">Now Playing</h1>
                             <div className="mt-4">
-                                <div className="flex">
-                                    <div className="relative h-[128px] min-w-[128px]">
-                                        <Image
-                                            alt="albumArt"
-                                            draggable={false}
-                                            src={data?.item.album.images[0].url}
-                                            layout="fill"
-                                        />
+                                <div className="flex flex-col text-center xsm:flex-row">
+                                    <div className="m-auto">
+                                        <div className="relative h-[128px] w-[128px]">
+                                            <Image
+                                                alt="albumArt"
+                                                draggable={false}
+                                                src={data?.item.album.images[0].url}
+                                                layout="fill"
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="ml-4">
+                                    <div className="mt-4 xsm:mt-0 xsm:ml-4">
                                         <h1 className="text-2xl">{data?.item.name}</h1>
                                         <h2>{data?.item.artists.map((artist: any) => artist.name).join(", ")}</h2>
                                         <a href={data?.item.external_urls.spotify} className="block mt-1">
