@@ -10,6 +10,7 @@ import { PeriodDropdown } from "../components/PeriodDropdown";
 const Home: NextPage = () => {
     const [periodGenre, setPeriodGenre] = useState("short_term");
     const [periodArtist, setPeriodArtist] = useState("short_term");
+    const [periodTrack, setPeriodTrack] = useState("short_term");
     const fetcher = (url: any) => fetch(url).then(r => r.json());
 
     // Fetch currently playing data
@@ -147,8 +148,8 @@ const Home: NextPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="1.5xl:w-[50%] flex flex-col">
-                        <div id="top-genres" className="bg-mgray rounded-md mt-8 1.5xl:ml-8 1.5xl:mt-0">
+                    <div className="1.5xl:w-[50%] flex flex-col 1.5xl:ml-8">
+                        <div id="top-genres" className="bg-mgray rounded-md mt-8 1.5xl:mt-0">
                             <div className="p-5">
                                 <div className="flex items-center justify-between sm:justify-start">
                                     <h1 className="font-proximaNova text-3xl">Top Genres</h1>
@@ -163,6 +164,40 @@ const Home: NextPage = () => {
                                                 <h1 className="text-2xl m-2 mx-3">
                                                     {index + 1}. {genre}
                                                 </h1>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="top-tracks" className="bg-mgray rounded-md mt-8">
+                            <div className="p-5">
+                                <div className="flex items-center justify-between sm:justify-start">
+                                    <h1 className="font-proximaNova text-3xl">Top Tracks</h1>
+                                    <div className="ml-4">
+                                        <PeriodDropdown setPeriod={setPeriodTrack} />
+                                    </div>
+                                </div>
+                                <div className="mt-4">
+                                    <div className="flex flex-col">
+                                        {topTracks[periodTrack].items.slice(0, 10).map((track: any, index: number) => (
+                                            <div key={index} className="flex items-center mt-4">
+                                                <div>
+                                                    <div className="relative h-[64px] w-[64px]">
+                                                        <Image
+                                                            alt="albumArt"
+                                                            draggable={false}
+                                                            src={track.album.images[0].url}
+                                                            layout="fill"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="ml-4">
+                                                    <h1 className="text-2xl">{track.name}</h1>
+                                                    <h2>
+                                                        {track.artists.map((artist: any) => artist.name).join(", ")}
+                                                    </h2>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
