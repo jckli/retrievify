@@ -6,11 +6,13 @@ import { Sidebar } from "../components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { PeriodDropdown } from "../components/PeriodDropdown";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 const Home: NextPage = () => {
     const [periodGenre, setPeriodGenre] = useState("short_term");
     const [periodArtist, setPeriodArtist] = useState("short_term");
     const [periodTrack, setPeriodTrack] = useState("short_term");
+    const navbarBreakpoint = useMediaQuery("1440px");
     const fetcher = (url: any) => fetch(url).then(r => r.json());
 
     // Fetch currently playing data
@@ -66,6 +68,44 @@ const Home: NextPage = () => {
             </div>
         );
     }
+
+    const TopArtistsBlock = () => {
+        return (
+            <div id="top-artists" className="bg-mgray rounded-md mt-8">
+                <div className="p-5">
+                    <div className="flex items-center justify-between sm:justify-start">
+                        <h1 className="font-proximaNova text-3xl">Top Artists</h1>
+                        <div className="ml-4">
+                            <PeriodDropdown setPeriod={setPeriodArtist} />
+                        </div>
+                    </div>
+                    <div className="mt-4">
+                        <div className="flex flex-col">
+                            {topArtists[periodArtist].items.slice(0, 10).map((artist: any, index: number) => (
+                                <div key={index} className="flex items-center mt-4">
+                                    <div>
+                                        <div className="relative h-[64px] w-[64px]">
+                                            <Image
+                                                alt="albumArt"
+                                                draggable={false}
+                                                src={artist.images[0].url}
+                                                layout="fill"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="ml-4">
+                                        <h1 className="text-2xl">{artist.name}</h1>
+                                        <h2>{artist.genres.length > 0 ? artist.genres[0] : "No Genre"}</h2>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <>
             <Sidebar active={1} />
@@ -111,42 +151,7 @@ const Home: NextPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div id="top-artists" className="bg-mgray rounded-md mt-8">
-                            <div className="p-5">
-                                <div className="flex items-center justify-between sm:justify-start">
-                                    <h1 className="font-proximaNova text-3xl">Top Artists</h1>
-                                    <div className="ml-4">
-                                        <PeriodDropdown setPeriod={setPeriodArtist} />
-                                    </div>
-                                </div>
-                                <div className="mt-4">
-                                    <div className="flex flex-col">
-                                        {topArtists[periodArtist].items
-                                            .slice(0, 10)
-                                            .map((artist: any, index: number) => (
-                                                <div key={index} className="flex items-center mt-4">
-                                                    <div>
-                                                        <div className="relative h-[64px] w-[64px]">
-                                                            <Image
-                                                                alt="albumArt"
-                                                                draggable={false}
-                                                                src={artist.images[0].url}
-                                                                layout="fill"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="ml-4">
-                                                        <h1 className="text-2xl">{artist.name}</h1>
-                                                        <h2>
-                                                            {artist.genres.length > 0 ? artist.genres[0] : "No Genre"}
-                                                        </h2>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {navbarBreakpoint ? <TopArtistsBlock /> : null}
                     </div>
                     <div className="1.5xl:w-[50%] flex flex-col 1.5xl:ml-8">
                         <div id="top-genres" className="bg-mgray rounded-md mt-8 1.5xl:mt-0">
@@ -170,6 +175,7 @@ const Home: NextPage = () => {
                                 </div>
                             </div>
                         </div>
+                        {navbarBreakpoint ? null : <TopArtistsBlock />}
                         <div id="top-tracks" className="bg-mgray rounded-md mt-8">
                             <div className="p-5">
                                 <div className="flex items-center justify-between sm:justify-start">
