@@ -1,12 +1,14 @@
 import type { NextPage } from "next";
 import useSWR from "swr";
 import Image from "next/image";
+import { useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { PeriodDropdown } from "../components/PeriodDropdown";
 
 const Home: NextPage = () => {
+    const [period, setPeriod] = useState("short_term");
     const fetcher = (url: any) => fetch(url).then(r => r.json());
 
     // Fetch currently playing data
@@ -111,12 +113,12 @@ const Home: NextPage = () => {
                             <div className="flex items-center justify-between sm:justify-start">
                                 <h1 className="font-proximaNova text-3xl">Top Genres</h1>
                                 <div className="ml-4">
-                                    <PeriodDropdown />
+                                    <PeriodDropdown setPeriod={setPeriod} />
                                 </div>
                             </div>
                             <div className="mt-4">
                                 <div className="flex flex-wrap gap-4">
-                                    {topGenres.short_term.slice(0, 10).map((genre: string, index: number) => (
+                                    {topGenres[period].slice(0, 10).map((genre: string, index: number) => (
                                         <div key={index + 1} className="bg-[#404040] rounded-lg">
                                             <h1 className="text-2xl m-2 mx-3">
                                                 {index + 1}. {genre}
