@@ -126,23 +126,30 @@ const Home: NextPage = () => {
                                         {topArtists[periodArtist]?.items
                                             .slice(0, 10)
                                             .map((artist: any, index: number) => (
-                                                <div key={index} className="flex items-center mt-4">
-                                                    <div>
-                                                        <div className="relative h-[64px] w-[64px]">
-                                                            <Image
-                                                                alt="albumArt"
-                                                                draggable={false}
-                                                                src={artist.images[0].url}
-                                                                layout="fill"
-                                                            />
+                                                <div key={index} className="flex items-center justify-between mt-4">
+                                                    <div className="flex items-center">
+                                                        <div>
+                                                            <div className="relative h-[64px] w-[64px]">
+                                                                <Image
+                                                                    alt="albumArt"
+                                                                    draggable={false}
+                                                                    src={artist.images[0].url}
+                                                                    layout="fill"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="ml-4">
+                                                            <h1 className="text-2xl">{artist.name}</h1>
+                                                            <h2>
+                                                                {artist.genres.length > 0
+                                                                    ? artist.genres[0]
+                                                                    : "No Genre"}
+                                                            </h2>
                                                         </div>
                                                     </div>
-                                                    <div className="ml-4">
-                                                        <h1 className="text-2xl">{artist.name}</h1>
-                                                        <h2>
-                                                            {artist.genres.length > 0 ? artist.genres[0] : "No Genre"}
-                                                        </h2>
-                                                    </div>
+                                                    <a href={artist.external_urls.spotify} className="ml-2">
+                                                        <FontAwesomeIcon icon={faSpotify} size="lg" />
+                                                    </a>
                                                 </div>
                                             ))}
                                     </div>
@@ -183,23 +190,28 @@ const Home: NextPage = () => {
                                 <div className="mt-4">
                                     <div className="flex flex-col">
                                         {topTracks[periodTrack]?.items.slice(0, 10).map((track: any, index: number) => (
-                                            <div key={index} className="flex items-center mt-4">
-                                                <div>
-                                                    <div className="relative h-[64px] w-[64px]">
-                                                        <Image
-                                                            alt="albumArt"
-                                                            draggable={false}
-                                                            src={track.album.images[0].url}
-                                                            layout="fill"
-                                                        />
+                                            <div key={index} className="flex items-center justify-between mt-4">
+                                                <div className="flex items-center">
+                                                    <div>
+                                                        <div className="relative h-[64px] w-[64px]">
+                                                            <Image
+                                                                alt="albumArt"
+                                                                draggable={false}
+                                                                src={track.album.images[0].url}
+                                                                layout="fill"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="ml-4">
+                                                        <h1 className="text-2xl">{track.name}</h1>
+                                                        <h2>
+                                                            {track.artists.map((artist: any) => artist.name).join(", ")}
+                                                        </h2>
                                                     </div>
                                                 </div>
-                                                <div className="ml-4">
-                                                    <h1 className="text-2xl">{track.name}</h1>
-                                                    <h2>
-                                                        {track.artists.map((artist: any) => artist.name).join(", ")}
-                                                    </h2>
-                                                </div>
+                                                <a href={track.external_urls.spotify} className="ml-2">
+                                                    <FontAwesomeIcon icon={faSpotify} size="lg" />
+                                                </a>
                                             </div>
                                         ))}
                                     </div>
