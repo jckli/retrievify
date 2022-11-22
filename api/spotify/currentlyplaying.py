@@ -17,7 +17,7 @@ async def currently_playing(request):
     user_resp = await spotify.get_currently_playing(access_token)
     resp = response.json(user_resp)
     if user_resp is None:
-        return response.redirect("/api/login")
+        return response.text("none")
     elif user_resp == 401:
         ref = await spotify.refresh_token(request.cookies.get("reft"))
         if "error" in ref:
