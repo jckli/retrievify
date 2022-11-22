@@ -5,33 +5,12 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
-import { useState, useCallback, useEffect } from "react";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import { Squash as Hamburger } from "hamburger-react";
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
 }
-
-const useMediaQuery = (width: string) => {
-    const [targetReached, setTargetReached] = useState(false);
-
-    const updateTarget = useCallback((e: MediaQueryListEvent) => {
-        if (e.matches) {
-            setTargetReached(true);
-        } else {
-            setTargetReached(false);
-        }
-    }, []);
-    useEffect(() => {
-        const media = window.matchMedia(`(min-width: ${width})`);
-        media.addEventListener("change", e => updateTarget(e));
-        if (media.matches) {
-            setTargetReached(true);
-        }
-        return () => media.removeEventListener("change", e => updateTarget(e));
-    }, [width, updateTarget]);
-    return targetReached;
-};
 
 export const Sidebar = (props: any) => {
     const isBreakpoint = useMediaQuery("894px");
