@@ -1,11 +1,13 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { Sidebar } from "../../components/Sidebar";
 
 const PackageIndex: NextPage = () => {
+    const [show, setShow] = useState(false);
+    const [error, setError] = useState("There has been an error");
     const router = useRouter();
     const fileRef = useRef<HTMLInputElement>(null);
     const importButton = async (event: any) => {
@@ -28,11 +30,16 @@ const PackageIndex: NextPage = () => {
             .then(data => {
                 return data;
             });
-        localStorage.setItem("songDict", JSON.stringify(resp.songDict));
-        localStorage.setItem("artistDict", JSON.stringify(resp.artistDict));
-        localStorage.setItem("firstTime", resp.firstTime);
-        localStorage.setItem("currentYear", resp.currentYear);
-        router.push("/package/overview");
+        if (resp.error) {
+            setShow(true);
+            setError(resp.error.message);
+        } else {
+            localStorage.setItem("songDict", JSON.stringify(resp.songDict));
+            localStorage.setItem("artistDict", JSON.stringify(resp.artistDict));
+            localStorage.setItem("firstTime", resp.firstTime);
+            localStorage.setItem("currentYear", resp.currentYear);
+            router.push("/package/overview");
+        }
     };
 
     return (
@@ -65,6 +72,7 @@ const PackageIndex: NextPage = () => {
                             .
                         </i>
                     </h1>
+                    {show ? <h1 className="mt-2 text-red-500">{error}. Please try again.</h1> : null}
                 </div>
             </div>
         </>

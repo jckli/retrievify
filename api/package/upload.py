@@ -9,14 +9,31 @@ from ..utils._parsepackage import get_info
 @app.route("/api/package/upload", methods=["POST"])
 async def upload(request):
     if "file" not in request.files:
-        return response.json({"error": "No file provided"}, status=400)
+        return response.json(
+            {"error": {"status": 400, "message": "No file provided"}}, status=400
+        )
     if not request.files["file"][0].name.endswith(".zip"):
-        return response.json({"error": "Invalid file type"}, status=400)
+        return response.json(
+            {"error": {"status": 400, "message": "Invalid file type"}}, status=400
+        )
     if not request.files["file"][0].body:
-        return response.json({"error": "Invalid file type"}, status=400)
+        return response.json(
+            {
+                "error": {
+                    "status": 400,
+                    "message": "Invalid file",
+                }
+            },
+            status=400,
+        )
     file = request.files["file"][0]
     zf = zipfile.ZipFile(io.BytesIO(file.body), "r")
-    dp = get_info(zf)
+    try:
+        dp = get_info(zf)
+    except Exception as e:
+        return response.json(
+            {"error": {"status": 400, "message": "Invalid package"}}, status=400
+        )
     zf.close()
     resp = response.json(
         {
