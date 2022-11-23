@@ -3,7 +3,7 @@ import Image from "next/image";
 import { MainButton } from "../components/MainButton";
 import { Footer } from "../components/Footer";
 
-const Home: NextPage = () => {
+const Index: NextPage = () => {
     return (
         <>
             <div className="w-full h-[90vh] flex flex-col items-center justify-center text-white text-3xl font-semibold text-center">
@@ -26,4 +26,4 @@ const Home: NextPage = () => {
     );
 };
 
-export default Home;
+export default Index;

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { Sidebar } from "../../components/Sidebar";
 
-const Home: NextPage = () => {
+const PackageIndex: NextPage = () => {
     const router = useRouter();
     const fileRef = useRef<HTMLInputElement>(null);
     const importButton = async (event: any) => {
@@ -71,4 +71,4 @@ const Home: NextPage = () => {
     );
 };
 
-export default Home;
+export default PackageIndex;
