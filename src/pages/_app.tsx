@@ -9,8 +9,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     return (
         <>
             <Head>
+                <link rel="shortcut icon" href="/favicon.ico" />
                 <title>Statsify</title>
-                <link rel="icon" type="image/png" href="/images/logo.png" />
             </Head>
             <div>
                 <Component {...pageProps} />
