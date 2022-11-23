@@ -78,7 +78,7 @@ def get_info(zipfolder):
                     # Adds the artist to the artistDict
                     artistDict[item["endTime"][0:4]][artist] = int(item["msPlayed"])
 
-        print("Finished Receiving Data")
+        # print("Finished Receiving Data")
 
     newSongDict = {"Total": {"All": {}, "Songs": []}}
     for year in songDict:
