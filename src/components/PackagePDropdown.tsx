@@ -1,8 +1,8 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 
-export const PeriodDropdown = (props: any) => {
-    const [buttonText, setButtonText] = useState("Current");
+export const PackagePDropdown = (props: any) => {
+    const [buttonText, setButtonText] = useState("Package");
     const [active, setActive] = useState(1);
 
     const handleClick = (id: number, period: string, text: string) => {
@@ -12,9 +12,8 @@ export const PeriodDropdown = (props: any) => {
     };
 
     const items = [
-        { id: 1, period: "short_term", text: "Current" },
-        { id: 2, period: "medium_term", text: "6 Months" },
-        { id: 3, period: "long_term", text: "All Time" },
+        { id: 1, period: "package", text: "Package" },
+        { id: 2, period: "year", text: "Year" },
     ];
     return (
         <Menu as="div" className="relative inline-block text-left">

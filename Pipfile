@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 sanic = "==20.12.7"
 aiohttp = "*"
+asyncpg = "*"
 
 [dev-packages]
 

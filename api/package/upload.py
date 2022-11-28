@@ -3,6 +3,8 @@ from ..utils._spotify import Spotify
 from sanic import response
 import zipfile
 import io
+import os
+import asyncpg
 from ..utils._parsepackage import get_info
 
 
@@ -26,6 +28,16 @@ async def upload(request):
             },
             status=400,
         )
+    conn = await asyncpg.connect(
+        user=os.environ.get("POSTGRE_USER"),
+        password=os.environ.get("POSTGRE_PASSWORD"),
+        database=os.environ.get("POSTGRE_DB"),
+        host=os.environ.get("POSTGRE_HOST"),
+    )
+    values = await conn.fetch(
+        "SELECT * FROM packages WHERE name = $1", request.form["name"][0]
+    )
+    await conn.close()
     file = request.files["file"][0]
     zf = zipfile.ZipFile(io.BytesIO(file.body), "r")
     try:
