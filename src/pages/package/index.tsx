@@ -54,7 +54,7 @@ const PackageIndex: NextPage = () => {
                     name="Input your Spotify package"
                     ref={fileRef}
                 />
-                <div className="m-8 flex flex-col justify-center items-center w-[100%]">
+                <div className="m-8 flex flex-col justify-center items-center w-[100%] text-center">
                     <button onClick={importButton}>
                         <div className="border border-dashed border-[#585858] rounded-md">
                             <div className="p-5 flex flex-col justify-center text-center">
