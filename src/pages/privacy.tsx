@@ -57,8 +57,13 @@ const Privacy: NextPage = () => {
                 </p>
                 <h2 className="font-proximaNova font-bold text-2xl mt-4">Contact Us</h2>
                 <p className="mt-3">
-                    If you have any questions or suggestions about our Privacy Policy, please join my discord server and
-                    contact me at:{" "}
+                    If you have any questions or suggestions about our Privacy Policy, feel free to contact us at:{" "}
+                    <a className="inline-block underline underline-offset-2" href="mailto:support@hayasaka.moe">
+                        support@hayasaka.moe
+                    </a>
+                </p>
+                <p className="mt-3">
+                    Or if you prefer to use Discord, you can join our Discord server here:{" "}
                     <a className="inline-block underline underline-offset-2" href="https://jackli.dev/discord">
                         https://jackli.dev/discord
                     </a>
