@@ -90,3 +90,22 @@ class Spotify:
                 return 401
             else:
                 return None
+
+    async def get_recommendations(
+        self,
+        access_token,
+        seed_artists,
+        seed_tracks,
+        seed_genres,
+        limit="20",
+        market="US",
+    ):
+        url = f"https://api.spotify.com/v1/recommendations?limit={limit}&market={market}&seed_artists={seed_artists}&seed_tracks={seed_tracks}&seed_genres={seed_genres}"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        async with self.session.get(url, headers=headers) as resp:
+            if resp.status == 200:
+                return await resp.json()
+            elif resp.status == 401:
+                return 401
+            else:
+                return None
