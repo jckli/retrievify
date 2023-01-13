@@ -1,30 +1,25 @@
 import type { NextPage } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Privacy: NextPage = () => {
+    const router = useRouter();
     return (
         <>
             <div className="mt-14 md:m-14 px-12 text-white font-metropolis max-w-[1000px]">
                 <div className="text-white font-proximaNova font-semibold text-xl">
-                    <Link href="/">
-                        <a className="flex items-center">
-                            <svg
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                height="1em"
-                                className="h-[18px] min-w-[18px] rotate-180"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M9 5l7 7-7 7"
-                                ></path>
-                            </svg>
-                            Home
-                        </a>
-                    </Link>
+                    <a className="flex items-center hover:cursor-pointer" onClick={() => router.back()}>
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            height="1em"
+                            className="h-[18px] min-w-[18px] rotate-180"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        Back
+                    </a>
                 </div>
                 <br />
                 <h1 className="font-proximaNova font-bold text-4xl">Privacy Policy</h1>
