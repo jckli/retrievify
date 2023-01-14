@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import useSWR from "swr";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -126,30 +127,39 @@ const Home: NextPage = () => {
                                         {topArtists[periodArtist]?.items
                                             .slice(0, 10)
                                             .map((artist: any, index: number) => (
-                                                <div key={index} className="flex items-center justify-between mt-4">
-                                                    <div className="flex items-center">
-                                                        <div>
-                                                            <div className="relative h-[64px] w-[64px]">
-                                                                <Image
-                                                                    alt="albumArt"
-                                                                    draggable={false}
-                                                                    src={artist.images[0].url}
-                                                                    layout="fill"
-                                                                />
+                                                <div
+                                                    key={index}
+                                                    className="mt-2 p-2 rounded-lg hover:bg-[#404040] ease-in-out duration-100"
+                                                >
+                                                    <Link href={`/info/artist/${artist.id}`}>
+                                                        <a className="hover:cursor-pointer">
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center">
+                                                                    <div>
+                                                                        <div className="relative h-[64px] w-[64px]">
+                                                                            <Image
+                                                                                alt="albumArt"
+                                                                                draggable={false}
+                                                                                src={artist.images[0].url}
+                                                                                layout="fill"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="ml-4">
+                                                                        <h1 className="text-2xl">{artist.name}</h1>
+                                                                        <h2>
+                                                                            {artist.genres.length > 0
+                                                                                ? artist.genres[0]
+                                                                                : "No Genre"}
+                                                                        </h2>
+                                                                    </div>
+                                                                </div>
+                                                                <a href={artist.external_urls.spotify} className="ml-2">
+                                                                    <FontAwesomeIcon icon={faSpotify} size="lg" />
+                                                                </a>
                                                             </div>
-                                                        </div>
-                                                        <div className="ml-4">
-                                                            <h1 className="text-2xl">{artist.name}</h1>
-                                                            <h2>
-                                                                {artist.genres.length > 0
-                                                                    ? artist.genres[0]
-                                                                    : "No Genre"}
-                                                            </h2>
-                                                        </div>
-                                                    </div>
-                                                    <a href={artist.external_urls.spotify} className="ml-2">
-                                                        <FontAwesomeIcon icon={faSpotify} size="lg" />
-                                                    </a>
+                                                        </a>
+                                                    </Link>
                                                 </div>
                                             ))}
                                     </div>

@@ -85,14 +85,14 @@ const ArtistIndex: NextPage = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="mt-4 whitespace-nowrap">
+                                        <div className="mt-4">
                                             <h1 className="text-4xl">{data.name}</h1>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col w-[100%]">
+                        <div className="flex flex-col w-[100%] justify-between">
                             <div
                                 id="open-on-spotify"
                                 className="bg-mgray 1.5xl:w-auto md:ml-8 1.5xl:ml-0 rounded-md mt-8 md:mt-0 1.5xl:mt-8 h-fi hover:bg-[#404040] ease-in-out duration-100"
