@@ -85,7 +85,7 @@ const ArtistIndex: NextPage = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="mt-4">
+                                        <div className="mt-4 text-center">
                                             <h1 className="text-4xl">{data.name}</h1>
                                         </div>
                                     </div>
