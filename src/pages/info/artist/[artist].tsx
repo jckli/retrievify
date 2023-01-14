@@ -163,7 +163,7 @@ const ArtistIndex: NextPage = () => {
                                                                 </div>
                                                             </div>
                                                             <div className="mt-2">
-                                                                <h1 className="text-xl">{track.name}</h1>
+                                                                <h1 className="text-xl line-clamp-2">{track.name}</h1>
                                                                 <p className="text-lg whitespace-nowrap text-ellipsis w-[128px] overflow-hidden">
                                                                     {track.artists
                                                                         .map((artist: any) => artist.name)
@@ -202,7 +202,7 @@ const ArtistIndex: NextPage = () => {
                                                                 </div>
                                                             </div>
                                                             <div className="mt-2">
-                                                                <h1 className="text-xl">{artist.name}</h1>
+                                                                <h1 className="text-xl line-clamp-2">{artist.name}</h1>
                                                             </div>
                                                         </div>
                                                     </div>
