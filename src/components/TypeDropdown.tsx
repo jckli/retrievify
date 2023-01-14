@@ -1,26 +1,20 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 
-export const PeriodDropdown = (props: any) => {
-    const [buttonText, setButtonText] = useState("Current");
+export const TypeDropdown = (props: any) => {
+    const [buttonText, setButtonText] = useState("Artists");
     const [active, setActive] = useState(1);
 
-    const handleClick = (id: number, period: string, text: string) => {
-        props.setPeriod(period);
+    const handleClick = (id: number, type: string, text: string) => {
+        props.setType(type);
         setActive(id);
         setButtonText(text);
     };
 
     const items = [
-        { id: 1, period: "short_term", text: "Current" },
-        { id: 2, period: "medium_term", text: "6 Months" },
-        { id: 3, period: "long_term", text: "All Time" },
+        { id: 1, type: "artists", text: "Artists" },
+        { id: 2, type: "tracks", text: "Songs" },
     ];
-
-    let direction = "sm:left-0 sm:origin-top-left";
-    if (props.fromDirection === "right") {
-        direction = "sm:right-0 sm:origin-top-right";
-    }
     return (
         <Menu as="div" className="relative inline-block text-left z-50">
             <Menu.Button className="p-2 rounded-md ease-in-out duration-200 transition-all bg-[#303030] hover:bg-[#404040] flex items-center">
@@ -45,17 +39,17 @@ export const PeriodDropdown = (props: any) => {
                 leaveTo="transform opacity-0 scale-95"
             >
                 <Menu.Items
-                    className={`
-                    absolute right-0 origin-top-right ${direction} mt-2 w-56 divide-gray-100 rounded-md bg-[#303030] shadow-lg ring-1 ring-black 
+                    className="
+                    absolute left-0 origin-top-left mt-2 w-56 divide-gray-100 rounded-md bg-[#303030] shadow-lg ring-1 ring-black 
                     ring-opacity-10 focus:outline-none font-lexend
-                    `}
+                    "
                 >
                     <div className="px-1 py-1 ">
                         {items.map((item: any) => (
                             <Menu.Item key={item.id}>
                                 <button
                                     onClick={() => {
-                                        handleClick(item.id, item.period, item.text);
+                                        handleClick(item.id, item.type, item.text);
                                     }}
                                     className={`${
                                         active === item.id
