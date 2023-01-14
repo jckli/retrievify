@@ -120,3 +120,25 @@ class Spotify:
                 return 401
             else:
                 return None
+
+    async def get_artist_top_tracks(self, access_token, artist_id, country="US"):
+        url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?market={country}"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        async with self.session.get(url, headers=headers) as resp:
+            if resp.status == 200:
+                return await resp.json()
+            elif resp.status == 401:
+                return 401
+            else:
+                return None
+
+    async def get_artist_related_artists(self, access_token, artist_id):
+        url = f"https://api.spotify.com/v1/artists/{artist_id}/related-artists"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        async with self.session.get(url, headers=headers) as resp:
+            if resp.status == 200:
+                return await resp.json()
+            elif resp.status == 401:
+                return 401
+            else:
+                return None
