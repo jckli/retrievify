@@ -2,7 +2,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 
 export const TypeDropdown = (props: any) => {
-    const [buttonText, setButtonText] = useState("Artists");
+    const [buttonText, setButtonText] = useState("Songs");
     const [active, setActive] = useState(1);
 
     const handleClick = (id: number, type: string, text: string) => {
@@ -12,8 +12,8 @@ export const TypeDropdown = (props: any) => {
     };
 
     const items = [
-        { id: 1, type: "artists", text: "Artists" },
-        { id: 2, type: "tracks", text: "Songs" },
+        { id: 1, type: "tracks", text: "Songs" },
+        { id: 2, type: "artists", text: "Artists" },
     ];
     return (
         <Menu as="div" className="relative inline-block text-left z-50">
