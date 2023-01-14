@@ -142,3 +142,14 @@ class Spotify:
                 return 401
             else:
                 return None
+
+    async def get_track(self, access_token, track_id):
+        url = f"https://api.spotify.com/v1/tracks/{track_id}"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        async with self.session.get(url, headers=headers) as resp:
+            if resp.status == 200:
+                return await resp.json()
+            elif resp.status == 401:
+                return 401
+            else:
+                return None
