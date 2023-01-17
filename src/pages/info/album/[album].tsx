@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "../../../components/Sidebar";
 import useSWR from "swr";
 import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpotify } from "@fortawesome/free-brands-svg-icons";
+import Link from "next/link";
 
 const ArtistIndex: NextPage = () => {
     const router = useRouter();
@@ -74,6 +77,81 @@ const ArtistIndex: NextPage = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className="flex flex-col w-[100%] justify-between">
+                            <div
+                                id="open-on-spotify"
+                                className="bg-mgray 1.5xl:w-auto md:ml-8 1.5xl:ml-0 rounded-md mt-8 md:mt-0 1.5xl:mt-8 h-fi hover:bg-[#404040] ease-in-out duration-100"
+                            >
+                                <a href={data.external_urls.spotify}>
+                                    <div className="p-5 flex items-center justify-center">
+                                        <FontAwesomeIcon icon={faSpotify} size="2x" />
+                                        <h1 className="ml-2">Open on Spotify</h1>
+                                    </div>
+                                </a>
+                            </div>
+                            <div id="followers" className="bg-mgray md:ml-8 1.5xl:ml-0 rounded-md mt-8 h-fit">
+                                <div className="p-5">
+                                    <h1 className="font-proximaNova text-3xl">Release Date</h1>
+                                    <div className="mt-4">
+                                        <h1 className="text-2xl">{formatDate(data.release_date)}</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="popularity" className="bg-mgray md:ml-8 1.5xl:ml-0 rounded-md mt-8 h-fit">
+                                <div className="p-5">
+                                    <div className="flex items-center justify-between sm:justify-start">
+                                        <h1 className="font-proximaNova text-3xl">Popularity</h1>
+                                    </div>
+                                    <div className="mt-4">
+                                        <h1 className="text-2xl">{data.popularity / 10}</h1>
+                                        <p>From 0-10</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="1.5xl:w-[70%] flex flex-col 1.5xl:ml-8">
+                        <div id="total-tracks" className="mt-8 1.5xl:mt-0 bg-mgray rounded-md">
+                            <div className="p-5">
+                                <h1 className="font-proximaNova text-3xl">Total Tracks</h1>
+                                <div className="mt-4">
+                                    <h1 className="text-2xl">{data.total_tracks}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tracks" className="mt-8 bg-mgray rounded-md">
+                            <div className="p-5">
+                                <h1 className="font-proximaNova text-3xl">Tracks</h1>
+                                <div className="mt-4">
+                                    <div className="flex flex-col">
+                                        {data.tracks.items.map((track: any) => (
+                                            <Link href={`/info/track/${track.id}`} key={track.id}>
+                                                <a className="hover:cursor-pointer">
+                                                    <div
+                                                        key={track.id}
+                                                        className="p-2 flex items-center justify-between rounded-md hover:bg-[#404040] ease-in-out duration-100"
+                                                    >
+                                                        <div className="flex items-center">
+                                                            <div>
+                                                                <h1 className="text-2xl">{track.name}</h1>
+                                                                <p className="text-sm">
+                                                                    {track.artists
+                                                                        .map((artist: any) => artist.name)
+                                                                        .join(", ")}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <p>{formatMilliseconds(track.duration_ms)}</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -82,3 +160,41 @@ const ArtistIndex: NextPage = () => {
 };
 
 export default ArtistIndex;
+
+function formatDate(date: string): string {
+    const d = new Date(date);
+    return d.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    });
+}
+
+function formatMilliseconds(ms: number): string {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let result = "";
+    if (hours > 0) {
+        if (hours < 10) {
+            result += hours.toString() + ":";
+        } else {
+            result += hours.toString().padStart(2, "0") + ":";
+        }
+    }
+    if (hours > 0 || minutes > 0) {
+        if (minutes < 10) {
+            result += minutes.toString() + ":";
+        } else {
+            result += minutes.toString().padStart(2, "0") + ":";
+        }
+    }
+    if (hours > 0 || minutes > 0) {
+        result += seconds.toString().padStart(2, "0");
+    } else {
+        result += "0:" + seconds.toString().padStart(2, "0");
+    }
+    return result;
+}
