@@ -325,7 +325,11 @@ function formatMilliseconds(ms: number): string {
             result += minutes.toString().padStart(2, "0") + ":";
         }
     }
-    result += seconds.toString().padStart(2, "0");
+    if (hours > 0 || minutes > 0) {
+        result += seconds.toString().padStart(2, "0");
+    } else {
+        result += "0:" + seconds.toString().padStart(2, "0");
+    }
     return result;
 }
 
