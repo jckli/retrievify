@@ -37,7 +37,7 @@ const SongIndex: NextPage = () => {
                 <Sidebar />
                 <div className="navbar:ml-[280px] flex font-metropolis text-white">
                     <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
-                        Failed to load artist data.
+                        Failed to load track data.
                     </div>
                 </div>
             </>
@@ -127,7 +127,7 @@ const SongIndex: NextPage = () => {
                                     <h1 className="font-proximaNova text-xl">Acoustic</h1>
                                     <div className="mt-2 w-[175px]">
                                         <ProgressBar progress={afData.acousticness * 100} />
-                                        <p className="mt-1 text-sm">{afData.acousticness * 100}/100</p>
+                                        <p className="mt-1 text-sm">{(afData.acousticness * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
@@ -136,7 +136,7 @@ const SongIndex: NextPage = () => {
                                     <h1 className="font-proximaNova text-xl">Danceable</h1>
                                     <div className="mt-2 w-[175px]">
                                         <ProgressBar progress={afData.danceability * 100} />
-                                        <p className="mt-1 text-sm">{afData.danceability * 100}/100</p>
+                                        <p className="mt-1 text-sm">{(afData.danceability * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
@@ -145,7 +145,7 @@ const SongIndex: NextPage = () => {
                                     <h1 className="font-proximaNova text-xl">Energetic</h1>
                                     <div className="mt-2 w-[175px]">
                                         <ProgressBar progress={afData.energy * 100} />
-                                        <p className="mt-1 text-sm">{afData.energy * 100}/100</p>
+                                        <p className="mt-1 text-sm">{(afData.energy * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
@@ -154,7 +154,7 @@ const SongIndex: NextPage = () => {
                                     <h1 className="font-proximaNova text-xl">Instrumental</h1>
                                     <div className="mt-2 w-[175px]">
                                         <ProgressBar progress={afData.instrumentalness * 100} />
-                                        <p className="mt-1 text-sm">{afData.instrumentalness * 100}/100</p>
+                                        <p className="mt-1 text-sm">{(afData.instrumentalness * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +163,7 @@ const SongIndex: NextPage = () => {
                                     <h1 className="font-proximaNova text-xl">Lively</h1>
                                     <div className="mt-2 w-[175px]">
                                         <ProgressBar progress={afData.liveness * 100} />
-                                        <p className="mt-1 text-sm">{afData.liveness * 100}/100</p>
+                                        <p className="mt-1 text-sm">{(afData.liveness * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
@@ -172,7 +172,7 @@ const SongIndex: NextPage = () => {
                                     <h1 className="font-proximaNova text-xl">Speechful</h1>
                                     <div className="mt-2 w-[175px]">
                                         <ProgressBar progress={afData.speechiness * 100} />
-                                        <p className="mt-1 text-sm">{afData.speechiness * 100}/100</p>
+                                        <p className="mt-1 text-sm">{(afData.speechiness * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
@@ -181,7 +181,7 @@ const SongIndex: NextPage = () => {
                                     <h1 className="font-proximaNova text-xl">Valence</h1>
                                     <div className="mt-2 w-[175px]">
                                         <ProgressBar progress={afData.valence * 100} />
-                                        <p className="mt-1 text-sm">{afData.valence * 100}/100</p>
+                                        <p className="mt-1 text-sm">{(afData.valence * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
@@ -219,6 +219,26 @@ const SongIndex: NextPage = () => {
                                             </div>
                                         </a>
                                     </Link>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="artists" className="mt-8 bg-mgray rounded-md">
+                            <div className="p-5">
+                                <h1 className="font-proximaNova text-3xl">Artists</h1>
+                                <div className="mt-2">
+                                    {data.artists.map((artist: any) => (
+                                        <Link href={`/info/artist/${artist.id}`} key={artist.id}>
+                                            <a className="hover:cursor-pointer">
+                                                <div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 p-2">
+                                                    <div className="flex flex-wrap">
+                                                        <div className="flex flex-col">
+                                                            <h1 className="text-2xl">{artist.name}</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </Link>
+                                    ))}
                                 </div>
                             </div>
                         </div>
