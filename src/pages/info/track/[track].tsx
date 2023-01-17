@@ -122,73 +122,73 @@ const SongIndex: NextPage = () => {
                     </div>
                     <div className="1.5xl:w-[70%] flex flex-col 1.5xl:ml-8">
                         <div id="audio-features" className="mt-8 1.5xl:mt-0 flex gap-4 flex-wrap justify-center">
-                            <div id="acoustic" className="bg-mgray rounded-md">
+                            <div id="acoustic" className="bg-mgray rounded-md w-full sxsm:w-auto">
                                 <div className="p-5">
                                     <h1 className="font-proximaNova text-xl">Acoustic</h1>
-                                    <div className="mt-2 w-[175px]">
+                                    <div className="mt-2 w-full sxsm:w-[175px]">
                                         <ProgressBar progress={afData.acousticness * 100} />
                                         <p className="mt-1 text-sm">{(afData.acousticness * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
-                            <div id="danceable" className="bg-mgray rounded-md">
+                            <div id="danceable" className="bg-mgray rounded-md w-full sxsm:w-auto">
                                 <div className="p-5">
                                     <h1 className="font-proximaNova text-xl">Danceable</h1>
-                                    <div className="mt-2 w-[175px]">
+                                    <div className="mt-2 w-full sxsm:w-[175px]">
                                         <ProgressBar progress={afData.danceability * 100} />
                                         <p className="mt-1 text-sm">{(afData.danceability * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
-                            <div id="energetic" className="bg-mgray rounded-md">
+                            <div id="energetic" className="bg-mgray rounded-md w-full sxsm:w-auto">
                                 <div className="p-5">
                                     <h1 className="font-proximaNova text-xl">Energetic</h1>
-                                    <div className="mt-2 w-[175px]">
+                                    <div className="mt-2 w-full sxsm:w-[175px]">
                                         <ProgressBar progress={afData.energy * 100} />
                                         <p className="mt-1 text-sm">{(afData.energy * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
-                            <div id="instrumental" className="bg-mgray rounded-md">
+                            <div id="instrumental" className="bg-mgray rounded-md w-full sxsm:w-auto">
                                 <div className="p-5">
                                     <h1 className="font-proximaNova text-xl">Instrumental</h1>
-                                    <div className="mt-2 w-[175px]">
+                                    <div className="mt-2 w-full sxsm:w-[175px]">
                                         <ProgressBar progress={afData.instrumentalness * 100} />
                                         <p className="mt-1 text-sm">{(afData.instrumentalness * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
-                            <div id="Lively" className="bg-mgray rounded-md">
+                            <div id="Lively" className="bg-mgray rounded-md w-full sxsm:w-auto">
                                 <div className="p-5">
                                     <h1 className="font-proximaNova text-xl">Lively</h1>
-                                    <div className="mt-2 w-[175px]">
+                                    <div className="mt-2 w-full sxsm:w-[175px]">
                                         <ProgressBar progress={afData.liveness * 100} />
                                         <p className="mt-1 text-sm">{(afData.liveness * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
-                            <div id="speechful" className="bg-mgray rounded-md">
+                            <div id="speechful" className="bg-mgray rounded-md w-full sxsm:w-auto">
                                 <div className="p-5">
                                     <h1 className="font-proximaNova text-xl">Speechful</h1>
-                                    <div className="mt-2 w-[175px]">
+                                    <div className="mt-2 w-full sxsm:w-[175px]">
                                         <ProgressBar progress={afData.speechiness * 100} />
                                         <p className="mt-1 text-sm">{(afData.speechiness * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
-                            <div id="valence" className="bg-mgray rounded-md">
+                            <div id="valence" className="bg-mgray rounded-md w-full sxsm:w-auto">
                                 <div className="p-5">
                                     <h1 className="font-proximaNova text-xl">Valence</h1>
-                                    <div className="mt-2 w-[175px]">
+                                    <div className="mt-2 w-full sxsm:w-[175px]">
                                         <ProgressBar progress={afData.valence * 100} />
                                         <p className="mt-1 text-sm">{(afData.valence * 100).toFixed(1)}/100</p>
                                     </div>
                                 </div>
                             </div>
-                            <div id="popularity" className="bg-mgray rounded-md">
+                            <div id="popularity" className="bg-mgray rounded-md w-full sxsm:w-auto">
                                 <div className="p-5">
                                     <h1 className="font-proximaNova text-xl">Popularity</h1>
-                                    <div className="mt-2 w-[175px]">
+                                    <div className="mt-2 w-full sxsm:w-[175px]">
                                         <ProgressBar progress={data.popularity} />
                                         <p className="mt-1 text-sm">{data.popularity}/100</p>
                                     </div>
