@@ -202,8 +202,8 @@ const SongIndex: NextPage = () => {
                                     <Link href={`/info/album/${data.album.id}`}>
                                         <a className="hover:cursor-pointer">
                                             <div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 p-2">
-                                                <div className="flex flex-wrap">
-                                                    <div className="relative h-[100px] w-[100px]">
+                                                <div className="flex flex-col items-center md:flex-row">
+                                                    <div className="relative h-[128px] w-[128px] md:h-[100px] md:w-[100px]">
                                                         <Image
                                                             alt="albumArt"
                                                             draggable={false}
@@ -211,7 +211,7 @@ const SongIndex: NextPage = () => {
                                                             layout="fill"
                                                         />
                                                     </div>
-                                                    <div className="flex flex-col ml-4">
+                                                    <div className="flex flex-col text-center mt-2 md:mt-0 md:text-left md:ml-4">
                                                         <h1 className="text-2xl">{data.album.name}</h1>
                                                         <p>Released: {formatDate(data.album.release_date)}</p>
                                                     </div>
@@ -242,6 +242,7 @@ const SongIndex: NextPage = () => {
                                 </div>
                             </div>
                         </div>
+                        <div></div>
                     </div>
                 </div>
             </div>
