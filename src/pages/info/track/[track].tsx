@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
 import { Sidebar } from "../../../components/Sidebar";
+import { ProgressBar } from "../../../components/ProgressBar";
 
 const SongIndex: NextPage = () => {
     const router = useRouter();
@@ -22,8 +23,15 @@ const SongIndex: NextPage = () => {
     const { data, error } = useSWR(trackId ? `/api/spotify/tracks/${trackId}` : null, trackId ? fetcher : null, {
         revalidateOnFocus: false,
     });
+    const { data: afData, error: afError } = useSWR(
+        trackId ? `/api/spotify/tracks/${trackId}/audiofeatures` : null,
+        trackId ? fetcher : null,
+        {
+            revalidateOnFocus: false,
+        }
+    );
 
-    if (error) {
+    if (error || afError) {
         return (
             <>
                 <Sidebar />
@@ -35,7 +43,7 @@ const SongIndex: NextPage = () => {
             </>
         );
     }
-    if (!data) {
+    if (!data || !afData) {
         return (
             <>
                 <Sidebar />
@@ -93,7 +101,7 @@ const SongIndex: NextPage = () => {
                             </div>
                             <div id="followers" className="bg-mgray md:ml-8 1.5xl:ml-0 rounded-md mt-8 h-fit">
                                 <div className="p-5">
-                                    <h1 className="font-proximaNova text-3xl">Duration</h1>
+                                    <h1 className="font-proximaNova text-3xl">Song Duration</h1>
                                     <div className="mt-4">
                                         <h1 className="text-2xl">{formatMilliseconds(data.duration_ms)}</h1>
                                     </div>
@@ -113,7 +121,81 @@ const SongIndex: NextPage = () => {
                         </div>
                     </div>
                     <div className="1.5xl:w-[70%] flex flex-col 1.5xl:ml-8">
-                        <div id="album" className="mt-8 1.5xl:mt-0 bg-mgray rounded-md">
+                        <div id="audio-features" className="mt-8 1.5xl:mt-0 flex gap-4 flex-wrap justify-center">
+                            <div id="acoustic" className="bg-mgray rounded-md">
+                                <div className="p-5">
+                                    <h1 className="font-proximaNova text-xl">Acoustic</h1>
+                                    <div className="mt-2 w-[175px]">
+                                        <ProgressBar progress={afData.acousticness * 100} />
+                                        <p className="mt-1 text-sm">{afData.acousticness * 100}/100</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="danceable" className="bg-mgray rounded-md">
+                                <div className="p-5">
+                                    <h1 className="font-proximaNova text-xl">Danceable</h1>
+                                    <div className="mt-2 w-[175px]">
+                                        <ProgressBar progress={afData.danceability * 100} />
+                                        <p className="mt-1 text-sm">{afData.danceability * 100}/100</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="energetic" className="bg-mgray rounded-md">
+                                <div className="p-5">
+                                    <h1 className="font-proximaNova text-xl">Energetic</h1>
+                                    <div className="mt-2 w-[175px]">
+                                        <ProgressBar progress={afData.energy * 100} />
+                                        <p className="mt-1 text-sm">{afData.energy * 100}/100</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="instrumental" className="bg-mgray rounded-md">
+                                <div className="p-5">
+                                    <h1 className="font-proximaNova text-xl">Instrumental</h1>
+                                    <div className="mt-2 w-[175px]">
+                                        <ProgressBar progress={afData.instrumentalness * 100} />
+                                        <p className="mt-1 text-sm">{afData.instrumentalness * 100}/100</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="Lively" className="bg-mgray rounded-md">
+                                <div className="p-5">
+                                    <h1 className="font-proximaNova text-xl">Lively</h1>
+                                    <div className="mt-2 w-[175px]">
+                                        <ProgressBar progress={afData.liveness * 100} />
+                                        <p className="mt-1 text-sm">{afData.liveness * 100}/100</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="speechful" className="bg-mgray rounded-md">
+                                <div className="p-5">
+                                    <h1 className="font-proximaNova text-xl">Speechful</h1>
+                                    <div className="mt-2 w-[175px]">
+                                        <ProgressBar progress={afData.speechiness * 100} />
+                                        <p className="mt-1 text-sm">{afData.speechiness * 100}/100</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="valence" className="bg-mgray rounded-md">
+                                <div className="p-5">
+                                    <h1 className="font-proximaNova text-xl">Valence</h1>
+                                    <div className="mt-2 w-[175px]">
+                                        <ProgressBar progress={afData.valence * 100} />
+                                        <p className="mt-1 text-sm">{afData.valence * 100}/100</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="popularity" className="bg-mgray rounded-md">
+                                <div className="p-5">
+                                    <h1 className="font-proximaNova text-xl">Popularity</h1>
+                                    <div className="mt-2 w-[175px]">
+                                        <ProgressBar progress={data.popularity} />
+                                        <p className="mt-1 text-sm">{data.popularity}/100</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="album" className="mt-8 bg-mgray rounded-md">
                             <div className="p-5">
                                 <h1 className="font-proximaNova text-3xl">Album</h1>
                                 <div className="mt-2">
