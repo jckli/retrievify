@@ -83,32 +83,38 @@ const Home: NextPage = () => {
                                 <h1 className="font-proximaNova text-3xl">Now Playing</h1>
                                 <div className="mt-4">
                                     {currently_playing ? (
-                                        <div className="flex flex-col text-center xsm:text-left xsm:flex-row">
-                                            <div className="m-auto xsm:mx-0">
-                                                <div className="relative h-[128px] w-[128px]">
-                                                    <Image
-                                                        alt="albumArt"
-                                                        draggable={false}
-                                                        src={currently_playing?.item.album.images[0].url}
-                                                        layout="fill"
-                                                    />
+                                        <Link href={`/info/track/${currently_playing.item.id}`}>
+                                            <a className="hover:cursor-pointer">
+                                                <div className="rounded-lg hover:bg-[#404040] ease-in-out duration-100 p-2">
+                                                    <div className="flex flex-col text-center xsm:text-left xsm:flex-row">
+                                                        <div className="m-auto xsm:mx-0">
+                                                            <div className="relative h-[128px] w-[128px]">
+                                                                <Image
+                                                                    alt="albumArt"
+                                                                    draggable={false}
+                                                                    src={currently_playing.item.album.images[0].url}
+                                                                    layout="fill"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="mt-4 xsm:mt-0 xsm:ml-4">
+                                                            <h1 className="text-2xl">{currently_playing.item.name}</h1>
+                                                            <h2>
+                                                                {currently_playing?.item.artists
+                                                                    .map((artist: any) => artist.name)
+                                                                    .join(", ")}
+                                                            </h2>
+                                                            <a
+                                                                href={currently_playing.item.external_urls.spotify}
+                                                                className="block mt-1"
+                                                            >
+                                                                <FontAwesomeIcon icon={faSpotify} size="lg" />
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="mt-4 xsm:mt-0 xsm:ml-4">
-                                                <h1 className="text-2xl">{currently_playing?.item.name}</h1>
-                                                <h2>
-                                                    {currently_playing?.item.artists
-                                                        .map((artist: any) => artist.name)
-                                                        .join(", ")}
-                                                </h2>
-                                                <a
-                                                    href={currently_playing?.item.external_urls.spotify}
-                                                    className="block mt-1"
-                                                >
-                                                    <FontAwesomeIcon icon={faSpotify} size="lg" />
-                                                </a>
-                                            </div>
-                                        </div>
+                                            </a>
+                                        </Link>
                                     ) : (
                                         <div className="flex flex-col">
                                             <h1 className="text-2xl">Nothing Playing</h1>
