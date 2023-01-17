@@ -284,7 +284,7 @@ const SongIndex: NextPage = () => {
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-2xl">Time Signature</h1>
                                             <div className="mt-2 w-[195px]">
-                                                <p className="mt-1 text-xl">{afData.time_signature}</p>
+                                                <p className="mt-1 text-xl">{afData.time_signature}/4</p>
                                             </div>
                                         </div>
                                     </div>
