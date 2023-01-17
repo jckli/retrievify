@@ -150,7 +150,7 @@ const ArtistIndex: NextPage = () => {
                                         <div key={index + 1}>
                                             <Link href={`/info/track/${track.id}`} key={index + 1}>
                                                 <a className="hover:cursor-pointer">
-                                                    <div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 mb-5 p-5">
+                                                    <div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 p-5">
                                                         <div className="flex justify-center flex-col h-fit">
                                                             <div className="mx-auto">
                                                                 <div className="relative h-[128px] w-[128px]">
@@ -189,7 +189,7 @@ const ArtistIndex: NextPage = () => {
                                         <div key={index + 1}>
                                             <Link href={`/info/artist/${artist.id}`} key={index + 1}>
                                                 <a className="hover:cursor-pointer">
-                                                    <div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 mb-5 p-5">
+                                                    <div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 p-5">
                                                         <div className="flex justify-center flex-col h-fit">
                                                             <div className="mx-auto">
                                                                 <div className="relative h-[128px] w-[128px]">
