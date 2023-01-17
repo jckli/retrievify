@@ -4,7 +4,7 @@ from sanic import response
 
 
 @app.route("/api/spotify/tracks/<id>")
-async def currently_playing(request, id):
+async def get_track(request, id):
     no_access = response.json({"error": {"status": 401, "message": "No access"}})
     if (
         not request.cookies.get("acct")
