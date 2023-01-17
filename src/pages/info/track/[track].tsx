@@ -242,7 +242,55 @@ const SongIndex: NextPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div></div>
+                        <div id="audio-analysis" className="mt-8 bg-mgray rounded-md">
+                            <div className="p-5">
+                                <div>
+                                    <h1 className="font-proximaNova text-3xl">Audio Analysis</h1>
+                                </div>
+                                <div className="mt-4 flex gap-4 flex-wrap justify-center">
+                                    <div id="key" className="bg-[#303030] rounded-md">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-2xl">Key</h1>
+                                            <div className="mt-2 w-[195px]">
+                                                <p className="mt-1 text-xl">{pianoKey(afData.key - 1)}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="mode" className="bg-[#303030] rounded-md">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-2xl">Mode</h1>
+                                            <div className="mt-2 w-[195px]">
+                                                <p className="mt-1 text-xl">{afData.mode === 0 ? "Minor" : "Major"}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="bpm" className="bg-[#303030] rounded-md">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-2xl">BPM</h1>
+                                            <div className="mt-2 w-[195px]">
+                                                <p className="mt-1 text-xl">{afData.tempo.toFixed(3)}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="overall-loudness" className="bg-[#303030] rounded-md">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-2xl">Overall Loudness</h1>
+                                            <div className="mt-2 w-[195px]">
+                                                <p className="mt-1 text-xl">{afData.loudness.toFixed(3)}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="time-signature" className="bg-[#303030] rounded-md">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-2xl">Time Signature</h1>
+                                            <div className="mt-2 w-[195px]">
+                                                <p className="mt-1 text-xl">{afData.time_signature}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -288,4 +336,9 @@ function formatDate(date: string): string {
         month: "short",
         day: "numeric",
     });
+}
+
+function pianoKey(num: number): string {
+    const keys = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
+    return keys[num % 12];
 }
