@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
@@ -111,6 +112,35 @@ const SongIndex: NextPage = () => {
                             </div>
                         </div>
                     </div>
+                    <div className="1.5xl:w-[70%] flex flex-col 1.5xl:ml-8">
+                        <div id="album" className="mt-8 1.5xl:mt-0 bg-mgray rounded-md">
+                            <div className="p-5">
+                                <h1 className="font-proximaNova text-3xl">Album</h1>
+                                <div className="mt-2">
+                                    <Link href={`/info/album/${data.album.id}`}>
+                                        <a className="hover:cursor-pointer">
+                                            <div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 p-2">
+                                                <div className="flex flex-wrap">
+                                                    <div className="relative h-[100px] w-[100px]">
+                                                        <Image
+                                                            alt="albumArt"
+                                                            draggable={false}
+                                                            src={data.album.images[0].url}
+                                                            layout="fill"
+                                                        />
+                                                    </div>
+                                                    <div className="flex flex-col ml-4">
+                                                        <h1 className="text-2xl">{data.album.name}</h1>
+                                                        <p>Released: {formatDate(data.album.release_date)}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
@@ -146,4 +176,13 @@ function formatMilliseconds(ms: number): string {
     }
     result += seconds.toString().padStart(2, "0");
     return result;
+}
+
+function formatDate(date: string): string {
+    const d = new Date(date);
+    return d.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    });
 }
