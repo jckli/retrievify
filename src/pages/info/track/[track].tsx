@@ -252,7 +252,7 @@ const SongIndex: NextPage = () => {
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-2xl">Key</h1>
                                             <div className="mt-2 w-[195px]">
-                                                <p className="mt-1 text-xl">{pianoKey(afData.key - 1)}</p>
+                                                <p className="mt-1 text-xl">{pianoKey(afData.key)}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -339,6 +339,6 @@ function formatDate(date: string): string {
 }
 
 function pianoKey(num: number): string {
-    const keys = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
-    return keys[num % 12];
+    const pitchClasses = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    return pitchClasses[num % 12];
 }
