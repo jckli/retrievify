@@ -65,7 +65,7 @@ const Home: NextPage = () => {
     };
     const topGenres = get_top_genres(topArtists);
 
-    if (error1 || error2 || error3 || error4 || error5 || error6 || error7) {
+    if (error2 || error3 || error4 || error5 || error6 || error7) {
         return (
             <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
                 Loading...
