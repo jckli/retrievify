@@ -18,7 +18,7 @@ const Index: NextPage = () => {
                         View all your listening statistics and see how you&apos;ve spent your time listening to music
                         with Statsify.
                     </p>
-                    <MainButton text="Login" href="/api/login" />
+                    <MainButton text="Login" href="/oauth2/login" />
                 </div>
             </div>
             <Footer />
