@@ -9,63 +9,44 @@ import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { PeriodDropdown } from "../components/PeriodDropdown";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { TypeDropdown } from "../components/TypeDropdown";
+import { getCookie, setCookie } from "cookies-next";
 
-const Home: NextPage = () => {
+const Home: NextPage = (props: any) => {
     const [periodGenre, setPeriodGenre] = useState("short_term");
     const [periodArtist, setPeriodArtist] = useState("short_term");
     const [periodTrack, setPeriodTrack] = useState("short_term");
     const [topType, setTopType] = useState("artist");
     const [topPeriod, setTopPeriod] = useState("short_term");
     const navbarBreakpoint = useMediaQuery("1440px");
-    const fetcher = (url: any) => fetch(url).then(r => r.json());
 
     // Fetch currently playing data
-    const { data: currently_playing, error: error1 } = useSWR("/api/spotify/currentlyplaying", fetcher, {
-        refreshInterval: 10000,
-    });
-    const { data: taShort, error: error2 } = useSWR(
-        "/api/spotify/topitems/artists?time_range=short_term&limit=50",
-        fetcher,
-        { revalidateOnFocus: false }
-    );
-    const { data: taMedium, error: error3 } = useSWR(
-        "/api/spotify/topitems/artists?time_range=medium_term&limit=50",
-        fetcher,
-        { revalidateOnFocus: false }
-    );
-    const { data: taLong, error: error4 } = useSWR(
-        "/api/spotify/topitems/artists?time_range=long_term&limit=50",
-        fetcher,
-        { revalidateOnFocus: false }
-    );
-    const { data: tsShort, error: error5 } = useSWR(
-        "/api/spotify/topitems/tracks?time_range=short_term&limit=50",
-        fetcher,
-        { revalidateOnFocus: false }
-    );
-    const { data: tsMedium, error: error6 } = useSWR(
-        "/api/spotify/topitems/tracks?time_range=medium_term&limit=50",
-        fetcher,
-        { revalidateOnFocus: false }
-    );
-    const { data: tsLong, error: error7 } = useSWR(
-        "/api/spotify/topitems/tracks?time_range=long_term&limit=50",
-        fetcher,
-        { revalidateOnFocus: false }
+    const { data: currently_playing, error: error1 } = useSWR(
+        `${process.env.NEXT_PUBLIC_API_URL}/spotify/currentlyplaying`,
+        (url: any) =>
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify({
+                    access_token: getCookie("acct"),
+                    refresh_token: getCookie("reft"),
+                }),
+            }).then(r => r.json()),
+        {
+            refreshInterval: 10000,
+        }
     );
     const topArtists: TopItems = {
-        short_term: taShort,
-        medium_term: taMedium,
-        long_term: taLong,
+        short_term: props.taShort.data,
+        medium_term: props.taMedium.data,
+        long_term: props.taLong.data,
     };
     const topTracks: TopItems = {
-        short_term: tsShort,
-        medium_term: tsMedium,
-        long_term: tsLong,
+        short_term: props.ttShort.data,
+        medium_term: props.ttMedium.data,
+        long_term: props.ttLong.data,
     };
     const topGenres = get_top_genres(topArtists);
 
-    if (error2 || error3 || error4 || error5 || error6 || error7) {
+    if (error1) {
         return (
             <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
                 Loading...
@@ -83,8 +64,8 @@ const Home: NextPage = () => {
                                 <h1 className="font-proximaNova text-3xl">Now Playing</h1>
                                 <div className="mt-4">
                                     {currently_playing ? (
-                                        <Link href={`/info/track/${currently_playing.item.id}`}>
-                                            <a className="hover:cursor-pointer">
+                                        <Link href={`/info/track/${currently_playing.data.item.id}`}>
+                                            <div className="hover:cursor-pointer">
                                                 <div className="rounded-lg hover:bg-[#404040] ease-in-out duration-100 p-2">
                                                     <div className="flex flex-col text-center xsm:text-left xsm:flex-row">
                                                         <div className="m-auto xsm:mx-0">
@@ -92,20 +73,24 @@ const Home: NextPage = () => {
                                                                 <Image
                                                                     alt="albumArt"
                                                                     draggable={false}
-                                                                    src={currently_playing.item.album.images[0].url}
+                                                                    src={
+                                                                        currently_playing.data.item.album.images[0].url
+                                                                    }
                                                                     layout="fill"
                                                                 />
                                                             </div>
                                                         </div>
                                                         <div className="mt-4 xsm:mt-0 xsm:ml-4">
-                                                            <h1 className="text-2xl">{currently_playing.item.name}</h1>
+                                                            <h1 className="text-2xl">
+                                                                {currently_playing.data.item.name}
+                                                            </h1>
                                                             <h2>
-                                                                {currently_playing?.item.artists
+                                                                {currently_playing.data.item.artists
                                                                     .map((artist: any) => artist.name)
                                                                     .join(", ")}
                                                             </h2>
                                                             <a
-                                                                href={currently_playing.item.external_urls.spotify}
+                                                                href={currently_playing.data.item.external_urls.spotify}
                                                                 className="block mt-1"
                                                             >
                                                                 <FontAwesomeIcon icon={faSpotify} size="lg" />
@@ -113,7 +98,7 @@ const Home: NextPage = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </a>
+                                            </div>
                                         </Link>
                                     ) : (
                                         <div className="flex flex-col">
@@ -142,7 +127,7 @@ const Home: NextPage = () => {
                                                         className="mt-2 p-2 rounded-lg hover:bg-[#404040] ease-in-out duration-100"
                                                     >
                                                         <Link href={`/info/artist/${artist.id}`}>
-                                                            <a className="hover:cursor-pointer">
+                                                            <div className="hover:cursor-pointer">
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex items-center">
                                                                         <div>
@@ -171,7 +156,7 @@ const Home: NextPage = () => {
                                                                         <FontAwesomeIcon icon={faSpotify} size="lg" />
                                                                     </a>
                                                                 </div>
-                                                            </a>
+                                                            </div>
                                                         </Link>
                                                     </div>
                                                 ))}
@@ -222,7 +207,7 @@ const Home: NextPage = () => {
                                                         className="mt-2 p-2 rounded-lg hover:bg-[#404040] ease-in-out duration-100"
                                                     >
                                                         <Link href={`/info/track/${track.id}`}>
-                                                            <a className="hover:cursor-pointer">
+                                                            <div className="hover:cursor-pointer">
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex items-center">
                                                                         <div>
@@ -251,7 +236,7 @@ const Home: NextPage = () => {
                                                                         <FontAwesomeIcon icon={faSpotify} size="lg" />
                                                                     </a>
                                                                 </div>
-                                                            </a>
+                                                            </div>
                                                         </Link>
                                                     </div>
                                                 ))}
@@ -287,7 +272,7 @@ const Home: NextPage = () => {
                                                             className="mt-2 p-2 rounded-lg hover:bg-[#404040] ease-in-out duration-100"
                                                         >
                                                             <Link href={`/info/artist/${artist.id}`}>
-                                                                <a className="hover:cursor-pointer">
+                                                                <div className="hover:cursor-pointer">
                                                                     <div className="flex items-center justify-between">
                                                                         <div className="flex items-center">
                                                                             <div>
@@ -321,7 +306,7 @@ const Home: NextPage = () => {
                                                                             />
                                                                         </a>
                                                                     </div>
-                                                                </a>
+                                                                </div>
                                                             </Link>
                                                         </div>
                                                     ))}
@@ -336,7 +321,7 @@ const Home: NextPage = () => {
                                                             className="mt-2 p-2 rounded-lg hover:bg-[#404040] ease-in-out duration-100"
                                                         >
                                                             <Link href={`/info/track/${track.id}`}>
-                                                                <a className="hover:cursor-pointer">
+                                                                <div className="hover:cursor-pointer">
                                                                     <div className="flex items-center justify-between">
                                                                         <div className="flex items-center">
                                                                             <div>
@@ -372,7 +357,7 @@ const Home: NextPage = () => {
                                                                             />
                                                                         </a>
                                                                     </div>
-                                                                </a>
+                                                                </div>
                                                             </Link>
                                                         </div>
                                                     ))}
@@ -388,6 +373,72 @@ const Home: NextPage = () => {
         </>
     );
 };
+
+const get_top = async (ctx: any, time_range: any, type: any) => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/${type}?time_range=${time_range}&limit=50`;
+    const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
+            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
+        }),
+    }).then(res => res.json());
+    if (res.status == 401 || res.status == 400) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+    if (res.status == 201) {
+        setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
+    }
+    return res;
+};
+
+const get_cur_playing = async (ctx: any) => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/currentlyplaying`;
+    const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
+            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
+        }),
+    }).then(res => res.json());
+    if (res.status == 401 || res.status == 400) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+    if (res.status == 201) {
+        setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
+    }
+    return res;
+};
+export async function getServerSideProps(ctx: any) {
+    const curPlaying = await get_cur_playing(ctx);
+    const taShort = await get_top(ctx, "short_term", "artists");
+    const taMedium = await get_top(ctx, "medium_term", "artists");
+    const taLong = await get_top(ctx, "long_term", "artists");
+    const ttShort = await get_top(ctx, "short_term", "tracks");
+    const ttMedium = await get_top(ctx, "medium_term", "tracks");
+    const ttLong = await get_top(ctx, "long_term", "tracks");
+    return {
+        props: {
+            curPlaying,
+            taShort,
+            taMedium,
+            taLong,
+            ttShort,
+            ttMedium,
+            ttLong,
+        },
+    };
+}
 
 export default Home;
 

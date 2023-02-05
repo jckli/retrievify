@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { Squash as Hamburger } from "hamburger-react";
+import { getCookie, setCookie } from "cookies-next";
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
@@ -21,14 +22,26 @@ export const Sidebar = (props: any) => {
     ];
 
     const fetcher = (url: any) => fetch(url).then(r => r.json());
-    const { data, error } = useSWR("/api/spotify/getuser", fetcher, { revalidateOnFocus: false });
-    if (!data || error) {
+    const { data: raw, error } = useSWR(
+        `${process.env.NEXT_PUBLIC_API_URL}/spotify/getuser`,
+        (url: any) =>
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify({
+                    access_token: getCookie("acct"),
+                    refresh_token: getCookie("reft"),
+                }),
+            }).then(r => r.json()),
+        { revalidateOnFocus: false }
+    );
+    if (!raw || error) {
         return (
             <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
                 Loading...
             </div>
         );
     }
+    const data = raw.data;
 
     const MobileNavigation = () => {
         return (

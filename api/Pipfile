@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 sanic = "*"
 aiohttp = "*"
+sanic-ext = "*"
 
 [dev-packages]
 

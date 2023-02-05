@@ -1,33 +1,27 @@
-from ..index import app
 from ..utils._spotify import Spotify
 from sanic import response
 
 
-@app.route("/api/spotify/getuser")
 async def get_user(request):
-    no_access = response.json({"error": {"status": 401, "message": "No access"}})
-    if (
-        not request.cookies.get("acct")
-        or not request.cookies.get("reft")
-        or not request.cookies.get("exp")
-    ):
+    no_access = response.json({"status": 401, "message": "No access"})
+    body = request.json
+    if body is None:
         return no_access
-    access_token = request.cookies.get("acct")
+    if ((body["access_token"] is None) or (body["refresh_token"] is None)):
+        return no_access
+    access_token = body["access_token"]
     spotify = Spotify()
     user_resp = await spotify.get_user(access_token)
-    resp = response.json(user_resp)
+    resp = response.json({"status": 200, "data": user_resp})
     if user_resp is None:
-        return response.redirect("/api/login")
+        return response.json({"status": 404, "message": "No data"})
     elif user_resp == 401:
-        ref = await spotify.refresh_token(request.cookies.get("reft"))
+        ref = await spotify.refresh_token(body["refresh_token"])
         if "error" in ref:
             await spotify.close()
-            return response.redirect("/api/login")
+            return no_access
         access_token = ref["access_token"]
         user_resp = await spotify.get_user(access_token)
-        resp = response.json(user_resp)
-        resp.cookies["acct"] = access_token
-        resp.cookies["exp"] = str(ref["expires_in"])
+        resp = response.json({"status": 201, "data": user_resp, "access_token": access_token, "expires_in": ref["expires_in"]})
     await spotify.close()
-
     return resp
