@@ -1,6 +1,7 @@
 from sanic import response
 from .spotify import currentlyplaying, getuser
 from .spotify import topitems
+from .spotify.tracks import gettrack, audiofeatures
 
 
 async def index(request):
@@ -16,3 +17,5 @@ def add_routes(app):
 
     app.add_route(topitems.top_items, "/spotify/topitems/<type>", methods=["POST"], name="top_items")
     
+    app.add_route(gettrack.get_track, "/spotify/tracks/<id>", methods=["POST"], name="get_track")
+    app.add_route(audiofeatures.get_track_audio_features, "/spotify/tracks/<id>/audiofeatures", methods=["POST"], name="get_track_audio_features")

@@ -8,8 +8,9 @@ import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
 import { Sidebar } from "../../../components/Sidebar";
 import { ProgressBar } from "../../../components/ProgressBar";
+import { getCookie, setCookie } from "cookies-next";
 
-const SongIndex: NextPage = () => {
+const SongIndex: NextPage = (props: any) => {
     const router = useRouter();
     const { artist } = router.query;
     const [trackId, setTrackId] = useState(artist);
@@ -20,36 +21,16 @@ const SongIndex: NextPage = () => {
         setTrackId(track);
     }, [router.isReady, router.query]);
 
-    const { data, error } = useSWR(trackId ? `/api/spotify/tracks/${trackId}` : null, trackId ? fetcher : null, {
-        revalidateOnFocus: false,
-    });
-    const { data: afData, error: afError } = useSWR(
-        trackId ? `/api/spotify/tracks/${trackId}/audiofeatures` : null,
-        trackId ? fetcher : null,
-        {
-            revalidateOnFocus: false,
-        }
-    );
+    const data = props.track.data;
+    const afData = props.audioFeatures.data;
 
-    if (error || afError) {
-        return (
-            <>
-                <Sidebar />
-                <div className="navbar:ml-[280px] flex font-metropolis text-white">
-                    <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
-                        Failed to load track data.
-                    </div>
-                </div>
-            </>
-        );
-    }
     if (!data || !afData) {
         return (
             <>
                 <Sidebar />
                 <div className="navbar:ml-[280px] flex font-metropolis text-white">
                     <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
-                        Loading...
+                        Failed to load track data.
                     </div>
                 </div>
             </>
@@ -297,6 +278,65 @@ const SongIndex: NextPage = () => {
         </>
     );
 };
+
+const get_track = async (ctx: any) => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/tracks/${ctx.params.track}`;
+    const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
+            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
+        }),
+    }).then(res => res.json());
+    if (res.status == 401 || res.status == 400) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+    if (res.status == 201) {
+        setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
+        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
+    }
+    return res;
+};
+
+const get_track_af = async (ctx: any) => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/tracks/${ctx.params.track}/audiofeatures`;
+    const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
+            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
+        }),
+    }).then(res => res.json());
+    if (res.status == 401 || res.status == 400) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+    if (res.status == 201) {
+        setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
+        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
+    }
+    return res;
+};
+
+export async function getServerSideProps(ctx: any) {
+    const track = await get_track(ctx);
+    const af = await get_track_af(ctx);
+    return {
+        props: {
+            track,
+            audioFeatures: af,
+        },
+    };
+}
 
 export default SongIndex;
 

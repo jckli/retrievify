@@ -23,7 +23,8 @@ async def top_items(request, type: str):
             await spotify.close()
             return no_access
         access_token = ref["access_token"]
+        refresh_token = ref["refresh_token"]
         user_resp = await spotify.get_top_items(access_token, type, time_range, limit)
-        resp = response.json({"status": 201, "data": user_resp, "access_token": access_token, "expires_in": ref["expires_in"]})
+        resp = response.json({"status": 201, "data": user_resp, "access_token": access_token, "refresh_token": refresh_token, "expires_in": ref["expires_in"]})
     await spotify.close()
     return resp
