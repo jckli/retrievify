@@ -9,7 +9,7 @@ import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { PeriodDropdown } from "../components/PeriodDropdown";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { TypeDropdown } from "../components/TypeDropdown";
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie, getCookies, setCookie } from "cookies-next";
 
 const Home: NextPage = (props: any) => {
     const [periodGenre, setPeriodGenre] = useState("short_term");
@@ -20,6 +20,7 @@ const Home: NextPage = (props: any) => {
     const navbarBreakpoint = useMediaQuery("1440px");
 
     // Fetch currently playing data
+    console.log(getCookies());
     const { data: currently_playing, error: error1 } = useSWR(
         `${process.env.NEXT_PUBLIC_API_URL}/spotify/currentlyplaying`,
         (url: any) =>
@@ -31,22 +32,79 @@ const Home: NextPage = (props: any) => {
                 }),
             }).then(r => r.json()),
         {
+            fallbackData: props.currently_playing,
             refreshInterval: 10000,
+        }
+    );
+    const { data: taMedium, error: error2 } = useSWR(
+        `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/artists?time_range=medium_term&limit=50`,
+        (url: any) =>
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify({
+                    access_token: getCookie("acct"),
+                    refresh_token: getCookie("reft"),
+                }),
+            }).then(r => r.json()),
+        {
+            revalidateOnFocus: false,
+        }
+    );
+    const { data: taLong, error: error3 } = useSWR(
+        `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/artists?time_range=long_term&limit=50`,
+        (url: any) =>
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify({
+                    access_token: getCookie("acct"),
+                    refresh_token: getCookie("reft"),
+                }),
+            }).then(r => r.json()),
+        {
+            revalidateOnFocus: false,
+        }
+    );
+    const { data: ttMedium, error: error4 } = useSWR(
+        `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/tracks?time_range=medium_term&limit=50`,
+        (url: any) =>
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify({
+                    access_token: getCookie("acct"),
+                    refresh_token: getCookie("reft"),
+                }),
+            }).then(r => r.json()),
+        {
+            revalidateOnFocus: false,
+        }
+    );
+    const { data: ttLong, error: error5 } = useSWR(
+        `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/tracks?time_range=long_term&limit=50`,
+        (url: any) =>
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify({
+                    access_token: getCookie("acct"),
+                    refresh_token: getCookie("reft"),
+                }),
+            }).then(r => r.json()),
+        {
+            revalidateOnFocus: false,
         }
     );
     const topArtists: TopItems = {
         short_term: props.taShort.data,
-        medium_term: props.taMedium.data,
-        long_term: props.taLong.data,
+        medium_term: taMedium,
+        long_term: taLong,
     };
     const topTracks: TopItems = {
         short_term: props.ttShort.data,
-        medium_term: props.ttMedium.data,
-        long_term: props.ttLong.data,
+        medium_term: ttMedium,
+        long_term: ttLong,
     };
     const topGenres = get_top_genres(topArtists);
 
-    if (error1) {
+    if (error1 || error2 || error3 || error4 || error5) {
         return (
             <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
                 Loading...
@@ -422,21 +480,9 @@ const get_cur_playing = async (ctx: any) => {
 };
 export async function getServerSideProps(ctx: any) {
     const curPlaying = await get_cur_playing(ctx);
-    const taShort = await get_top(ctx, "short_term", "artists");
-    const taMedium = await get_top(ctx, "medium_term", "artists");
-    const taLong = await get_top(ctx, "long_term", "artists");
-    const ttShort = await get_top(ctx, "short_term", "tracks");
-    const ttMedium = await get_top(ctx, "medium_term", "tracks");
-    const ttLong = await get_top(ctx, "long_term", "tracks");
     return {
         props: {
             curPlaying,
-            taShort,
-            taMedium,
-            taLong,
-            ttShort,
-            ttMedium,
-            ttLong,
         },
     };
 }

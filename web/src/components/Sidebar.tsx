@@ -21,7 +21,6 @@ export const Sidebar = (props: any) => {
         { name: "Data Package", icon: faBoxOpen, href: "/package", count: 0, current: active == 2 },
     ];
 
-    const fetcher = (url: any) => fetch(url).then(r => r.json());
     const { data: raw, error } = useSWR(
         `${process.env.NEXT_PUBLIC_API_URL}/spotify/getuser`,
         (url: any) =>
