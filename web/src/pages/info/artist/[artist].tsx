@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
+import { getCookie, setCookie } from "cookies-next";
 
-const ArtistIndex: NextPage = () => {
+const ArtistIndex: NextPage = (props: any) => {
     const router = useRouter();
     const { artist } = router.query;
     const [artistId, setArtistId] = useState(artist);
@@ -19,43 +20,17 @@ const ArtistIndex: NextPage = () => {
         setArtistId(artist);
     }, [router.isReady, router.query]);
 
-    const { data, error } = useSWR(artistId ? `/api/spotify/artists/${artistId}` : null, artistId ? fetcher : null, {
-        revalidateOnFocus: false,
-    });
-    const { data: ttData, error: ttError } = useSWR(
-        artistId ? `/api/spotify/artists/${artistId}/toptracks` : null,
-        artistId ? fetcher : null,
-        {
-            revalidateOnFocus: false,
-        }
-    );
-    const { data: raData, error: raError } = useSWR(
-        artistId ? `/api/spotify/artists/${artistId}/relatedartists` : null,
-        artistId ? fetcher : null,
-        {
-            revalidateOnFocus: false,
-        }
-    );
+    const data = props.artist.data;
+    const ttData = props.topTracks.data;
+    const raData = props.relatedArtists.data;
 
-    if (error || ttError || raError) {
-        return (
-            <>
-                <Sidebar />
-                <div className="navbar:ml-[280px] flex font-metropolis text-white">
-                    <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
-                        Failed to load artist data.
-                    </div>
-                </div>
-            </>
-        );
-    }
     if (!data || !ttData || !raData) {
         return (
             <>
                 <Sidebar />
                 <div className="navbar:ml-[280px] flex font-metropolis text-white">
                     <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
-                        Loading...
+                        Failed to load artist data.
                     </div>
                 </div>
             </>
@@ -219,6 +194,98 @@ const ArtistIndex: NextPage = () => {
         </>
     );
 };
+
+const get_artist = async (ctx: any) => {
+    console.log(
+        JSON.stringify({
+            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
+            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
+        })
+    );
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/artists/${ctx.params.artist}`;
+    const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
+            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
+        }),
+    }).then(res => res.json());
+    if (res.status == 401 || res.status == 400) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+    if (res.status == 201) {
+        setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
+        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
+    }
+    return res;
+};
+
+const get_artist_tt = async (ctx: any) => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/artists/${ctx.params.artist}/toptracks`;
+    console.log(url);
+    const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
+            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
+        }),
+    }).then(res => res.json());
+    if (res.status == 401 || res.status == 400) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+    if (res.status == 201) {
+        setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
+        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
+    }
+    return res;
+};
+
+const get_artist_ra = async (ctx: any) => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/artists/${ctx.params.artist}/relatedartists`;
+    const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
+            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
+        }),
+    }).then(res => res.json());
+    if (res.status == 401 || res.status == 400) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+    if (res.status == 201) {
+        setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
+        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
+    }
+    return res;
+};
+
+export async function getServerSideProps(ctx: any) {
+    const artist = await get_artist(ctx);
+    const tt = await get_artist_tt(ctx);
+    const ra = await get_artist_ra(ctx);
+    return {
+        props: {
+            artist,
+            topTracks: tt,
+            relatedArtists: ra,
+        },
+    };
+}
 
 export default ArtistIndex;
 
