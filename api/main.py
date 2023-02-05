@@ -7,4 +7,4 @@ app.config.CORS_ORIGINS = ["http://localhost:3000", "https://statsify.hayasaka.m
 add_routes(app)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0")
