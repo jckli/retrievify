@@ -41,6 +41,10 @@ export const Sidebar = (props: any) => {
             </div>
         );
     }
+    if (raw.status == 201) {
+        setCookie("acct", raw.access_token, { maxAge: raw.expires_in });
+        setCookie("reft", raw.data.refresh_token);
+    }
     const data = raw.data;
 
     const MobileNavigation = () => {
