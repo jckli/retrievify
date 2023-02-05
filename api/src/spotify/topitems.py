@@ -9,9 +9,9 @@ async def top_items(request, type: str):
     limit = request.args.get("limit")
     if body is None:
         return no_access
-    if ((body["access_token"] is None) or (body["refresh_token"] is None)):
+    if ((body.get("access_token") is None) or (body.get("refresh_token") is None)):
         return no_access
-    access_token = body["access_token"]
+    access_token = body.get("access_token")
     spotify = Spotify()
     user_resp = await spotify.get_top_items(access_token, type, time_range, limit)
     resp = response.json({"status": 200, "data": user_resp})
@@ -19,12 +19,12 @@ async def top_items(request, type: str):
         await spotify.close()
         return response.json({"status": 404, "message": "No data"})
     elif user_resp == 401:
-        ref = await spotify.refresh_token(body["refresh_token"])
+        ref = await spotify.refresh_token(body.get("refresh_token"))
         if "error" in ref:
             await spotify.close()
             return no_access
-        access_token = ref["access_token"]
-        new_resp = await spotify.get_top_items(access_token, type, time_range, limit)
-        resp = response.json({"status": 201, "data": new_resp, "access_token": access_token, "expires_in": ref["expires_in"]})
+        access_token = ref.get("access_token")
+        user_resp = await spotify.get_top_items(access_token, type, time_range, limit)
+        resp = response.json({"status": 201, "data": user_resp, "access_token": access_token, "expires_in": ref["expires_in"]})
     await spotify.close()
     return resp
