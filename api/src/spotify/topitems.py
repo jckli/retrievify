@@ -9,7 +9,7 @@ async def top_items(request, type: str):
     limit = request.args.get("limit")
     if body is None:
         return no_access
-    if ((body.get("access_token") is None) or (body.get("refresh_token") is None)):
+    if (body.get("access_token") is None) or (body.get("refresh_token") is None):
         return no_access
     access_token = body.get("access_token")
     spotify = Spotify()
@@ -25,6 +25,13 @@ async def top_items(request, type: str):
             return no_access
         access_token = ref.get("access_token")
         user_resp = await spotify.get_top_items(access_token, type, time_range, limit)
-        resp = response.json({"status": 201, "data": user_resp, "access_token": access_token, "expires_in": ref["expires_in"]})
+        resp = response.json(
+            {
+                "status": 201,
+                "data": user_resp,
+                "access_token": access_token,
+                "expires_in": ref["expires_in"],
+            }
+        )
     await spotify.close()
     return resp
