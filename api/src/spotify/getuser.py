@@ -27,7 +27,7 @@ async def get_user(request):
 async def get_user_refresh(spotify, refresh_token):
     no_access = response.json({"status": 401, "message": "No access"})
     ref = await spotify.refresh_token(refresh_token)
-    if ref != 200:
+    if ref == 401 or ref == None:
         await spotify.close()
         return no_access
     access_token = ref.get("access_token")
