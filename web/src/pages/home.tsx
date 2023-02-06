@@ -8,15 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { PeriodDropdown } from "../components/PeriodDropdown";
 import { useMediaQuery } from "../hooks/useMediaQuery";
-import { TypeDropdown } from "../components/TypeDropdown";
+import { MobileTopLists } from "../components/Home/MobileTopLists";
 import { getCookie, setCookie } from "cookies-next";
 
 const Home: NextPage = (props: any) => {
     const [periodGenre, setPeriodGenre] = useState("short_term");
     const [periodArtist, setPeriodArtist] = useState("short_term");
     const [periodTrack, setPeriodTrack] = useState("short_term");
-    const [topType, setTopType] = useState("artist");
-    const [topPeriod, setTopPeriod] = useState("short_term");
     const navbarBreakpoint = useMediaQuery("1440px");
     const fetcher = (url: any) =>
         fetch(url, {
@@ -299,133 +297,13 @@ const Home: NextPage = (props: any) => {
                                                         </Link>
                                                     </div>
                                                 ))}
+                                            <div></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         )}
-                        {!navbarBreakpoint && (
-                            <div id="top-lists" className="bg-mgray rounded-md mt-8">
-                                <div className="p-5">
-                                    <div className="flex flex-col xsm:items-center xsm:flex-row">
-                                        <div className="flex items-center">
-                                            <h1 className="font-proximaNova text-3xl">Top Lists</h1>
-                                        </div>
-                                        <div className="flex mt-2 xsm:ml-4 xsm:mt-0 xsm:justify-between flex-grow">
-                                            <div className="block">
-                                                <TypeDropdown setType={setTopType} />
-                                            </div>
-                                            <div className="ml-4">
-                                                <PeriodDropdown setPeriod={setTopPeriod} fromDirection="right" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4">
-                                        {topType === "artists" ? (
-                                            <div className="flex flex-col">
-                                                {topArtists[topPeriod]?.items
-                                                    .slice(0, 10)
-                                                    .map((artist: any, index: number) => (
-                                                        <div
-                                                            key={index}
-                                                            className="mt-2 p-2 rounded-lg hover:bg-[#404040] ease-in-out duration-100"
-                                                        >
-                                                            <Link href={`/info/artist/${artist.id}`}>
-                                                                <div className="hover:cursor-pointer">
-                                                                    <div className="flex items-center justify-between">
-                                                                        <div className="flex items-center">
-                                                                            <div>
-                                                                                <div className="relative h-[64px] w-[64px]">
-                                                                                    <Image
-                                                                                        alt="albumArt"
-                                                                                        draggable={false}
-                                                                                        src={artist.images[0].url}
-                                                                                        layout="fill"
-                                                                                    />
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="ml-4">
-                                                                                <h1 className="text-2xl">
-                                                                                    {artist.name}
-                                                                                </h1>
-                                                                                <h2>
-                                                                                    {artist.genres.length > 0
-                                                                                        ? artist.genres[0]
-                                                                                        : "No Genre"}
-                                                                                </h2>
-                                                                            </div>
-                                                                        </div>
-                                                                        <a
-                                                                            href={artist.external_urls.spotify}
-                                                                            className="ml-2"
-                                                                        >
-                                                                            <FontAwesomeIcon
-                                                                                icon={faSpotify}
-                                                                                size="lg"
-                                                                            />
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </Link>
-                                                        </div>
-                                                    ))}
-                                            </div>
-                                        ) : (
-                                            <div className="flex flex-col">
-                                                {topTracks[topPeriod]?.items
-                                                    .slice(0, 10)
-                                                    .map((track: any, index: number) => (
-                                                        <div
-                                                            key={index}
-                                                            className="mt-2 p-2 rounded-lg hover:bg-[#404040] ease-in-out duration-100"
-                                                        >
-                                                            <Link href={`/info/track/${track.id}`}>
-                                                                <div className="hover:cursor-pointer">
-                                                                    <div className="flex items-center justify-between">
-                                                                        <div className="flex items-center">
-                                                                            <div>
-                                                                                <div className="relative h-[64px] w-[64px]">
-                                                                                    <Image
-                                                                                        alt="albumArt"
-                                                                                        draggable={false}
-                                                                                        src={track.album.images[0].url}
-                                                                                        layout="fill"
-                                                                                    />
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="ml-4">
-                                                                                <h1 className="text-2xl">
-                                                                                    {track.name}
-                                                                                </h1>
-                                                                                <h2>
-                                                                                    {track.artists
-                                                                                        .map(
-                                                                                            (artist: any) => artist.name
-                                                                                        )
-                                                                                        .join(", ")}
-                                                                                </h2>
-                                                                            </div>
-                                                                        </div>
-                                                                        <a
-                                                                            href={track.external_urls.spotify}
-                                                                            className="ml-2"
-                                                                        >
-                                                                            <FontAwesomeIcon
-                                                                                icon={faSpotify}
-                                                                                size="lg"
-                                                                            />
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </Link>
-                                                        </div>
-                                                    ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                        {!navbarBreakpoint && <MobileTopLists topArtists={topArtists} topTracks={topTracks} />}
                     </div>
                 </div>
             </div>
