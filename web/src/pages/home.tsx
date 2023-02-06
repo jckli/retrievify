@@ -122,7 +122,7 @@ const Home: NextPage = (props: any) => {
                             <div className="p-5">
                                 <h1 className="font-proximaNova text-3xl">Now Playing</h1>
                                 <div className="mt-4">
-                                    {currently_playing ? (
+                                    {currently_playing.status != 404 ? (
                                         <Link href={`/info/track/${currently_playing.data.item.id}`}>
                                             <div className="hover:cursor-pointer">
                                                 <div className="rounded-lg hover:bg-[#404040] ease-in-out duration-100 p-2">
