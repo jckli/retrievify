@@ -1,5 +1,5 @@
-from .index import app
-from .utils._spotify import Spotify
+from ..index import app
+from ..utils._spotify import Spotify
 from sanic import response
 
 
