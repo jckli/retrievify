@@ -7,41 +7,27 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
+import { getCookie, setCookie } from "cookies-next";
 
-const ArtistIndex: NextPage = () => {
+const ArtistIndex: NextPage = (props: any) => {
     const router = useRouter();
     const { artist } = router.query;
     const [albumId, setAlbumId] = useState(artist);
-    const fetcher = (url: any) => fetch(url).then(r => r.json());
     useEffect(() => {
         if (!router.isReady) return;
         const { album } = router.query;
         setAlbumId(album);
     }, [router.isReady, router.query]);
 
-    const { data, error } = useSWR(albumId ? `/api/spotify/albums/${albumId}` : null, albumId ? fetcher : null, {
-        revalidateOnFocus: false,
-    });
+    const data = props.album.data;
 
-    if (error) {
-        return (
-            <>
-                <Sidebar />
-                <div className="navbar:ml-[280px] flex font-metropolis text-white">
-                    <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
-                        Failed to load track data.
-                    </div>
-                </div>
-            </>
-        );
-    }
     if (!data) {
         return (
             <>
                 <Sidebar />
                 <div className="navbar:ml-[280px] flex font-metropolis text-white">
                     <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
-                        Loading...
+                        Failed to load album data.
                     </div>
                 </div>
             </>
@@ -158,6 +144,40 @@ const ArtistIndex: NextPage = () => {
         </>
     );
 };
+
+const get_album = async (ctx: any) => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/albums/${ctx.params.album}`;
+    const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
+            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
+        }),
+    }).then(res => res.json());
+    if (res.status == 401 || res.status == 400) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+    if (res.status == 201) {
+        setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
+        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
+    }
+    return res;
+};
+
+export async function getServerSideProps(ctx: any) {
+    const album = await get_album(ctx);
+    console.log(album);
+    return {
+        props: {
+            album,
+        },
+    };
+}
 
 export default ArtistIndex;
 

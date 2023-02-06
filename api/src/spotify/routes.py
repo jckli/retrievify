@@ -44,4 +44,4 @@ async def get_related_artists(request, id: str):
 
 @bp.route("/albums/<id>", methods=["POST"])
 async def get_album(request, id: str):
-    return await getalbum.get_album(request, id)
+    return await getalbum.get_albums(request, id)
