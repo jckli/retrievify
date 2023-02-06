@@ -12,7 +12,7 @@ export const MobileTopLists = (props: any) => {
     const [topType, setTopType] = useState("artists");
     const [topPeriod, setTopPeriod] = useState("short_term");
     const expand = () => {
-        height == "0px" ? setHeight("250rem") : setHeight("0px");
+        height == "0px" ? setHeight("300rem") : setHeight("0px");
         rotate == "-rotate-90" ? setRotate("rotate-90") : setRotate("-rotate-90");
     };
     const type = topType == "artists" ? props.topArtists : props.topTracks;
