@@ -31,7 +31,7 @@ async def get_track_audio_features(request, id):
 async def get_track_audio_features_refresh(spotify, refresh_token, id):
     no_access = response.json({"status": 401, "message": "No access"})
     ref = await spotify.refresh_token(refresh_token)
-    if "error" in ref:
+    if ref != 200:
         await spotify.close()
         return no_access
     access_token = ref.get("access_token")
