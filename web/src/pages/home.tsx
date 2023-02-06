@@ -18,99 +18,101 @@ const Home: NextPage = (props: any) => {
     const [topType, setTopType] = useState("artist");
     const [topPeriod, setTopPeriod] = useState("short_term");
     const navbarBreakpoint = useMediaQuery("1440px");
+    const fetcher = (url: any) =>
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+                access_token: getCookie("acct"),
+                refresh_token: getCookie("reft"),
+            }),
+        }).then(r => r.json());
 
-    // Fetch currently playing data
-    console.log(getCookies());
     const { data: currently_playing, error: error1 } = useSWR(
         `${process.env.NEXT_PUBLIC_API_URL}/spotify/currentlyplaying`,
-        (url: any) =>
-            fetch(url, {
-                method: "POST",
-                body: JSON.stringify({
-                    access_token: getCookie("acct"),
-                    refresh_token: getCookie("reft"),
-                }),
-            }).then(r => r.json()),
+        fetcher,
         {
             fallbackData: props.currently_playing,
             refreshInterval: 10000,
         }
     );
-    const { data: taMedium, error: error2 } = useSWR(
+    const { data: taShort, error: error2 } = useSWR(
+        `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/artists?time_range=short_term&limit=50`,
+        fetcher,
+        {
+            revalidateOnFocus: false,
+        }
+    );
+    const { data: taMedium, error: error3 } = useSWR(
         `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/artists?time_range=medium_term&limit=50`,
-        (url: any) =>
-            fetch(url, {
-                method: "POST",
-                body: JSON.stringify({
-                    access_token: getCookie("acct"),
-                    refresh_token: getCookie("reft"),
-                }),
-            }).then(r => r.json()),
+        fetcher,
         {
             revalidateOnFocus: false,
         }
     );
-    const { data: taLong, error: error3 } = useSWR(
+    const { data: taLong, error: error4 } = useSWR(
         `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/artists?time_range=long_term&limit=50`,
-        (url: any) =>
-            fetch(url, {
-                method: "POST",
-                body: JSON.stringify({
-                    access_token: getCookie("acct"),
-                    refresh_token: getCookie("reft"),
-                }),
-            }).then(r => r.json()),
+        fetcher,
         {
             revalidateOnFocus: false,
         }
     );
-    const { data: ttMedium, error: error4 } = useSWR(
+    const { data: ttShort, error: error5 } = useSWR(
+        `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/tracks?time_range=short_term&limit=50`,
+        fetcher,
+        {
+            revalidateOnFocus: false,
+        }
+    );
+    const { data: ttMedium, error: error6 } = useSWR(
         `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/tracks?time_range=medium_term&limit=50`,
-        (url: any) =>
-            fetch(url, {
-                method: "POST",
-                body: JSON.stringify({
-                    access_token: getCookie("acct"),
-                    refresh_token: getCookie("reft"),
-                }),
-            }).then(r => r.json()),
+        fetcher,
         {
             revalidateOnFocus: false,
         }
     );
-    const { data: ttLong, error: error5 } = useSWR(
+    const { data: ttLong, error: error7 } = useSWR(
         `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/tracks?time_range=long_term&limit=50`,
-        (url: any) =>
-            fetch(url, {
-                method: "POST",
-                body: JSON.stringify({
-                    access_token: getCookie("acct"),
-                    refresh_token: getCookie("reft"),
-                }),
-            }).then(r => r.json()),
+        fetcher,
         {
             revalidateOnFocus: false,
         }
     );
-    const topArtists: TopItems = {
-        short_term: props.taShort.data,
-        medium_term: taMedium,
-        long_term: taLong,
-    };
-    const topTracks: TopItems = {
-        short_term: props.ttShort.data,
-        medium_term: ttMedium,
-        long_term: ttLong,
-    };
-    const topGenres = get_top_genres(topArtists);
-
-    if (error1 || error2 || error3 || error4 || error5) {
+    if (!taShort || !taMedium || !taLong || !ttShort || !ttMedium || !ttLong) {
         return (
-            <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
-                Loading...
-            </div>
+            <>
+                <Sidebar />
+                <div className="navbar:ml-[280px] flex font-metropolis text-white">
+                    <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
+                        Loading...
+                    </div>
+                </div>
+            </>
         );
     }
+    if (error1 || error2 || error3 || error4 || error5 || error6 || error7) {
+        return (
+            <>
+                <Sidebar />
+                <div className="navbar:ml-[280px] flex font-metropolis text-white">
+                    <div className="flex w-[100vw] h-[100vh] items-center justify-center text-white font-proximaNova">
+                        Failed to load data.
+                    </div>
+                </div>
+            </>
+        );
+    }
+    const topArtists: TopItems = {
+        short_term: taShort.data,
+        medium_term: taMedium.data,
+        long_term: taLong.data,
+    };
+    const topTracks: TopItems = {
+        short_term: ttShort.data,
+        medium_term: ttMedium.data,
+        long_term: ttLong.data,
+    };
+    console.log(topArtists);
+    const topGenres = get_top_genres(topArtists);
     return (
         <>
             <Sidebar active={1} />
