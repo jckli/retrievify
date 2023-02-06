@@ -60,17 +60,21 @@ export const Sidebar = (props: any) => {
                                 </div>
                                 <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                                     <div className="flex-shrink-0 flex items-center">
-                                        <div className="relative h-8 w-8">
-                                            <Image
-                                                alt="statsifyLogo"
-                                                draggable={false}
-                                                src="/images/logo.png"
-                                                layout="fill"
-                                            />
-                                        </div>
-                                        <h1 className="text-white font-proximaNova hidden sm:block text-2xl font-bold ml-2">
-                                            Statsify
-                                        </h1>
+                                        <Link href="/">
+                                            <a className="flex items-center flex-shrink-0">
+                                                <div className="relative h-8 w-8">
+                                                    <Image
+                                                        alt="statsifyLogo"
+                                                        draggable={false}
+                                                        src="/images/logo.png"
+                                                        layout="fill"
+                                                    />
+                                                </div>
+                                                <h1 className="text-white font-proximaNova hidden sm:block text-2xl font-bold ml-2">
+                                                    Statsify
+                                                </h1>
+                                            </a>
+                                        </Link>
                                     </div>
                                     <div className="hidden sm:block sm:ml-6">
                                         <div className="flex space-x-4">
