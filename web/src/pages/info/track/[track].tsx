@@ -14,7 +14,6 @@ const SongIndex: NextPage = (props: any) => {
     const router = useRouter();
     const { artist } = router.query;
     const [trackId, setTrackId] = useState(artist);
-    const fetcher = (url: any) => fetch(url).then(r => r.json());
     useEffect(() => {
         if (!router.isReady) return;
         const { track } = router.query;

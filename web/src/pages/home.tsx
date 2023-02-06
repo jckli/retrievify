@@ -9,7 +9,7 @@ import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { PeriodDropdown } from "../components/PeriodDropdown";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { TypeDropdown } from "../components/TypeDropdown";
-import { getCookie, getCookies, setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 
 const Home: NextPage = (props: any) => {
     const [periodGenre, setPeriodGenre] = useState("short_term");
@@ -111,7 +111,6 @@ const Home: NextPage = (props: any) => {
         medium_term: ttMedium.data,
         long_term: ttLong.data,
     };
-    console.log(topArtists);
     const topGenres = get_top_genres(topArtists);
     return (
         <>
