@@ -297,7 +297,6 @@ const get_track = async (ctx: any) => {
     }
     if (res.status == 201) {
         setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
-        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
     }
     return res;
 };
@@ -321,7 +320,6 @@ const get_track_af = async (ctx: any) => {
     }
     if (res.status == 201) {
         setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
-        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
     }
     return res;
 };
@@ -338,10 +336,6 @@ export async function getServerSideProps(ctx: any) {
 }
 
 export default SongIndex;
-
-function numberWithCommas(number: number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
 
 function formatMilliseconds(ms: number): string {
     const totalSeconds = Math.floor(ms / 1000);

@@ -196,12 +196,6 @@ const ArtistIndex: NextPage = (props: any) => {
 };
 
 const get_artist = async (ctx: any) => {
-    console.log(
-        JSON.stringify({
-            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
-            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
-        })
-    );
     const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/artists/${ctx.params.artist}`;
     const res = await fetch(url, {
         method: "POST",
@@ -220,14 +214,12 @@ const get_artist = async (ctx: any) => {
     }
     if (res.status == 201) {
         setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
-        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
     }
     return res;
 };
 
 const get_artist_tt = async (ctx: any) => {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/artists/${ctx.params.artist}/toptracks`;
-    console.log(url);
     const res = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
@@ -245,7 +237,6 @@ const get_artist_tt = async (ctx: any) => {
     }
     if (res.status == 201) {
         setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
-        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
     }
     return res;
 };
@@ -269,7 +260,6 @@ const get_artist_ra = async (ctx: any) => {
     }
     if (res.status == 201) {
         setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
-        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
     }
     return res;
 };

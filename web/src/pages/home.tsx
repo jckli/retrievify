@@ -100,6 +100,9 @@ const Home: NextPage = (props: any) => {
             </>
         );
     }
+    if (currently_playing.status == 201) {
+        setCookie("acct", currently_playing.access_token, { maxAge: currently_playing.expires_in });
+    }
     const topArtists: TopItems = {
         short_term: taShort.data,
         medium_term: taMedium.data,
@@ -197,30 +200,6 @@ const Home: NextPage = (props: any) => {
             </div>
         </>
     );
-};
-
-const get_top = async (ctx: any, time_range: any, type: any) => {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/spotify/topitems/${type}?time_range=${time_range}&limit=50`;
-    const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-            access_token: getCookie("acct", { req: ctx.req, res: ctx.res }),
-            refresh_token: getCookie("reft", { req: ctx.req, res: ctx.res }),
-        }),
-    }).then(res => res.json());
-    if (res.status == 401 || res.status == 400) {
-        return {
-            redirect: {
-                destination: "/",
-                permanent: false,
-            },
-        };
-    }
-    if (res.status == 201) {
-        setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
-        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
-    }
-    return res;
 };
 
 const get_cur_playing = async (ctx: any) => {

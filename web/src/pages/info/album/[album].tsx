@@ -164,7 +164,6 @@ const get_album = async (ctx: any) => {
     }
     if (res.status == 201) {
         setCookie("acct", res.access_token, { req: ctx.req, res: ctx.res, maxAge: res.expires_in });
-        setCookie("reft", res.refresh_token, { req: ctx.req, res: ctx.res });
     }
     return res;
 };
