@@ -110,7 +110,7 @@ export const TopTracks = (props: any) => {
                                         viewBox="0 0 24 24"
                                         stroke="currentColor"
                                         height="1em"
-                                        className={`h-[40px] min-w-[40px] rounded-md p-[2px] hover:bg-[#303030] ease-in-out duration-200 dark:hover:bg-gray-100/5 origin-center transition-all ${rotate}`}
+                                        className={`h-[40px] min-w-[40px] rounded-full p-[4px] hover:bg-[#303030] ease-in-out duration-200 dark:hover:bg-gray-100/5 origin-center transition-all ${rotate}`}
                                     >
                                         <path
                                             strokeLinecap="round"
