@@ -133,6 +133,7 @@ const Home: NextPage = (props: any) => {
                                                             <div className="relative h-[128px] w-[128px]">
                                                                 <Image
                                                                     alt="albumArt"
+                                                                    unoptimized
                                                                     draggable={false}
                                                                     src={
                                                                         currently_playing.data.item.album.images[0].url
