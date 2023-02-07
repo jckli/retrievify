@@ -38,6 +38,7 @@ export const TopArtists = (props: any) => {
                                                         <div className="relative h-[64px] w-[64px]">
                                                             <Image
                                                                 alt="albumArt"
+                                                                unoptimized
                                                                 draggable={false}
                                                                 src={artist.images[0].url}
                                                                 layout="fill"
@@ -73,6 +74,7 @@ export const TopArtists = (props: any) => {
                                                             <div className="relative h-[64px] w-[64px]">
                                                                 <Image
                                                                     alt="albumArt"
+                                                                    unoptimized
                                                                     draggable={false}
                                                                     src={item.images[0].url}
                                                                     layout="fill"

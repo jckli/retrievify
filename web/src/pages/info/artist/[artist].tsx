@@ -53,7 +53,7 @@ const ArtistIndex: NextPage = (props: any) => {
                                         <div className="m-auto xsm:mx-0">
                                             <div className="relative h-[256px] w-[256px]">
                                                 <Image
-                                                    alt="albumArt"
+                                                    alt="artistImage"
                                                     draggable={false}
                                                     src={data.images[0].url}
                                                     layout="fill"
@@ -130,7 +130,8 @@ const ArtistIndex: NextPage = (props: any) => {
                                                             <div className="mx-auto">
                                                                 <div className="relative h-[128px] w-[128px]">
                                                                     <Image
-                                                                        alt="albumArt"
+                                                                        alt="trackImage"
+                                                                        unoptimized
                                                                         draggable={false}
                                                                         src={track.album.images[0].url}
                                                                         layout="fill"
@@ -169,7 +170,8 @@ const ArtistIndex: NextPage = (props: any) => {
                                                             <div className="mx-auto">
                                                                 <div className="relative h-[128px] w-[128px]">
                                                                     <Image
-                                                                        alt="albumArt"
+                                                                        alt="relatedArtistImage"
+                                                                        unoptimized
                                                                         draggable={false}
                                                                         src={artist.images[0].url}
                                                                         layout="fill"
