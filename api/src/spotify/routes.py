@@ -1,6 +1,6 @@
 from sanic import Blueprint, response
 from . import currentlyplaying, getuser, topitems
-from .tracks import gettrack, audiofeatures
+from .tracks import gettrack, audiofeatures, multiaudiofeatures
 from .artists import toptracks, relatedartists, getartist
 from .albums import getalbum
 
@@ -41,6 +41,11 @@ async def get_track(request, id: str):
 @bp.route("/tracks/<id>/audiofeatures", methods=["POST"])
 async def get_track_audio_features(request, id: str):
     return await audiofeatures.get_track_audio_features(request, id)
+
+
+@bp.route("/multi-audiofeatures", methods=["POST"])
+async def get_tracks_audio_features(request):
+    return await multiaudiofeatures.get_tracks_audio_features(request)
 
 
 @bp.route("/artists/<id>", methods=["POST"])

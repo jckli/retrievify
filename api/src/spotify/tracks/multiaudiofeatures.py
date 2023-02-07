@@ -2,8 +2,9 @@ from ...utils._spotify import Spotify
 from sanic import response
 
 
-async def get_tracks_audio_features(request, ids):
+async def get_tracks_audio_features(request):
     no_access = response.json({"status": 401, "message": "No access"})
+    ids = request.args.get("ids")
     body = request.json
     if body is None:
         return no_access
