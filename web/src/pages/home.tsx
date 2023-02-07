@@ -118,7 +118,7 @@ const Home: NextPage = (props: any) => {
         <>
             <Sidebar active={1} />
             <div className="navbar:ml-[280px] flex font-metropolis text-white">
-                <div className="m-8 flex flex-col 1.5xl:flex-row">
+                <div className="m-6 sm:m-8 flex flex-col 1.5xl:flex-row">
                     <div className="1.5xl:w-[50%] flex flex-col">
                         <div id="now-playing" className="bg-mgray rounded-md 1.5xl:min-w-[50%] h-fit">
                             <div className="p-5">

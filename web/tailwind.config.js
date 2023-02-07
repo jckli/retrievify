@@ -14,6 +14,7 @@ module.exports = {
         },
         screens: {
             "navbar": "894px",
+            "xxsm": "380px",
             "xsm": "460px",
             "sxsm": "510px",
             "sm": "640px",

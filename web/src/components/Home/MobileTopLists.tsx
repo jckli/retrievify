@@ -56,8 +56,12 @@ export const MobileTopLists = (props: any) => {
                                                         </div>
                                                     </div>
                                                     <div className="ml-4">
-                                                        <h1 className="text-2xl">{item.name}</h1>
-                                                        <h2>{item.genres.length > 0 ? item.genres[0] : "No Genre"}</h2>
+                                                        <h1 className="text-xl xsm:text-2xl text-ellipsis overflow-hidden w-[140px] xxsm:w-[155px] xsm:w-auto">
+                                                            {item.name}
+                                                        </h1>
+                                                        <h2 className="text-sm xsm:text-base">
+                                                            {item.genres.length > 0 ? item.genres[0] : "No Genre"}
+                                                        </h2>
                                                     </div>
                                                 </div>
                                                 <a href={item.external_urls.spotify} className="ml-2">
@@ -83,8 +87,10 @@ export const MobileTopLists = (props: any) => {
                                                         </div>
                                                     </div>
                                                     <div className="ml-4">
-                                                        <h1 className="text-2xl">{item.name}</h1>
-                                                        <h2>
+                                                        <h1 className="text-xl xsm:text-2xl text-ellipsis overflow-hidden w-[140px] xxsm:w-[155px] xsm:w-auto">
+                                                            {item.name}
+                                                        </h1>
+                                                        <h2 className="text-sm xsm:text-base">
                                                             {item.artists.map((artist: any) => artist.name).join(", ")}
                                                         </h2>
                                                     </div>
@@ -121,8 +127,10 @@ export const MobileTopLists = (props: any) => {
                                                             </div>
                                                         </div>
                                                         <div className="ml-4">
-                                                            <h1 className="text-2xl">{item.name}</h1>
-                                                            <h2>
+                                                            <h1 className="text-xl xsm:text-2xl text-ellipsis overflow-hidden w-[140px] xxsm:w-[155px] xsm:w-auto">
+                                                                {item.name}
+                                                            </h1>
+                                                            <h2 className="text-sm xsm:text-base">
                                                                 {item.genres.length > 0 ? item.genres[0] : "No Genre"}
                                                             </h2>
                                                         </div>
@@ -150,8 +158,10 @@ export const MobileTopLists = (props: any) => {
                                                             </div>
                                                         </div>
                                                         <div className="ml-4">
-                                                            <h1 className="text-2xl">{item.name}</h1>
-                                                            <h2>
+                                                            <h1 className="text-xl xsm:text-2xl text-ellipsis overflow-hidden w-[140px] xxsm:w-[155px] xsm:w-auto">
+                                                                {item.name}
+                                                            </h1>
+                                                            <h2 className="text-sm xsm:text-base">
                                                                 {item.artists
                                                                     .map((artist: any) => artist.name)
                                                                     .join(", ")}
