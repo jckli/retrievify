@@ -12,9 +12,11 @@ import { MobileTopLists } from "../components/Home/MobileTopLists";
 import { TopArtists } from "../components/Home/TopArtists";
 import { getCookie, setCookie } from "cookies-next";
 import { TopTracks } from "../components/Home/TopTracks";
+import { ProgressBar } from "../components/ProgressBar";
 
 const Home: NextPage = (props: any) => {
     const [periodGenre, setPeriodGenre] = useState("short_term");
+    const [periodAvg, setPeriodAvg] = useState("short_term");
 
     const navbarBreakpoint = useMediaQuery("1440px");
     const fetcher = (url: any) =>
@@ -76,7 +78,34 @@ const Home: NextPage = (props: any) => {
             revalidateOnFocus: false,
         }
     );
-    if (!taShort || !taMedium || !taLong || !ttShort || !ttMedium || !ttLong) {
+    const { data: afShort, error: error8 } = useSWR(
+        () =>
+            `${process.env.NEXT_PUBLIC_API_URL}/spotify/multi-audiofeatures?ids=` +
+            ttShort.data.items.map((item: any) => item.id).join(","),
+        fetcher,
+        {
+            revalidateOnFocus: false,
+        }
+    );
+    const { data: afMedium, error: error9 } = useSWR(
+        () =>
+            `${process.env.NEXT_PUBLIC_API_URL}/spotify/multi-audiofeatures?ids=` +
+            ttMedium.data.items.map((item: any) => item.id).join(","),
+        fetcher,
+        {
+            revalidateOnFocus: false,
+        }
+    );
+    const { data: afLong, error: error10 } = useSWR(
+        () =>
+            `${process.env.NEXT_PUBLIC_API_URL}/spotify/multi-audiofeatures?ids=` +
+            ttLong.data.items.map((item: any) => item.id).join(","),
+        fetcher,
+        {
+            revalidateOnFocus: false,
+        }
+    );
+    if (!taShort || !taMedium || !taLong || !ttShort || !ttMedium || !ttLong || !afShort || !afMedium || !afLong) {
         return (
             <>
                 <Sidebar />
@@ -88,7 +117,7 @@ const Home: NextPage = (props: any) => {
             </>
         );
     }
-    if (error1 || error2 || error3 || error4 || error5 || error6 || error7) {
+    if (error1 || error2 || error3 || error4 || error5 || error6 || error7 || error8 || error9 || error10) {
         return (
             <>
                 <Sidebar />
@@ -113,6 +142,13 @@ const Home: NextPage = (props: any) => {
         medium_term: ttMedium.data,
         long_term: ttLong.data,
     };
+    const audioFeatures: TopItems = {
+        short_term: afShort.data,
+        medium_term: afMedium.data,
+        long_term: afLong.data,
+    };
+    const averageStats = get_averages(topArtists, topTracks, audioFeatures);
+    console.log(averageStats);
     const topGenres = get_top_genres(topArtists);
     return (
         <>
@@ -167,6 +203,47 @@ const Home: NextPage = (props: any) => {
                                             <h1 className="text-2xl">Nothing Playing</h1>
                                         </div>
                                     )}
+                                </div>
+                            </div>
+                        </div>
+                        <div id="average-stats" className="mt-8 bg-mgray rounded-md">
+                            <div className="p-5">
+                                <div className="flex items-center justify-between sm:justify-start">
+                                    <h1 className="font-proximaNova text-3xl hidden sxsm:block">Average Stats</h1>
+                                    <h1 className="font-proximaNova text-3xl block sxsm:hidden">Stats</h1>
+                                    <div className="ml-4">
+                                        <PeriodDropdown setPeriod={setPeriodAvg} />
+                                    </div>
+                                </div>
+                                <div className="mt-4 flex gap-4 flex-wrap justify-center">
+                                    <div id="avg-artist-pop" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-xl w-full sxsm:w-[170px]">
+                                                Artist Popularity
+                                            </h1>
+                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                                <ProgressBar
+                                                    progress={Math.round(averageStats[periodAvg].artist_popularity)}
+                                                />
+                                                <p className="mt-1 text-sm">
+                                                    {(averageStats[periodAvg].artist_popularity / 10).toFixed(1)}/10
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="danceable" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-xl">Track Popularity</h1>
+                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                                <ProgressBar
+                                                    progress={Math.round(averageStats[periodAvg].track_popularity)}
+                                                />
+                                                <p className="mt-1 text-sm">
+                                                    {(averageStats[periodAvg].track_popularity / 10).toFixed(1)}/10
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -241,6 +318,31 @@ interface TopItems {
     short_term: any;
     medium_term: any;
     long_term: any;
+}
+
+function get_averages(topArtists: TopItems, topTracks: TopItems, audioFeatures: TopItems) {
+    const artPopShort = topArtists.short_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
+    const artPopMed = topArtists.medium_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
+    const artPopLong = topArtists.long_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
+    const trackPopShort = topTracks.short_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
+    const trackPopMed = topTracks.medium_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
+    const trackPopLong = topTracks.long_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
+
+    const averageStats: any = {
+        short_term: {
+            artist_popularity: artPopShort / topArtists.short_term.items.length,
+            track_popularity: trackPopShort / topTracks.short_term.items.length,
+        },
+        medium_term: {
+            artist_popularity: artPopMed / topArtists.medium_term.items.length,
+            track_popularity: trackPopMed / topTracks.medium_term.items.length,
+        },
+        long_term: {
+            artist_popularity: artPopLong / topArtists.long_term.items.length,
+            track_popularity: trackPopLong / topTracks.long_term.items.length,
+        },
+    };
+    return averageStats;
 }
 
 function get_top_genres(topArtists: TopItems) {
