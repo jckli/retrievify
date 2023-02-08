@@ -216,11 +216,9 @@ const Home: NextPage = (props: any) => {
                                     </div>
                                 </div>
                                 <div className="mt-4 flex gap-4 flex-wrap justify-center">
-                                    <div id="avg-artist-pop" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                    <div id="artist-pop" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
-                                            <h1 className="font-proximaNova text-xl w-full sxsm:w-[170px]">
-                                                Artist Popularity
-                                            </h1>
+                                            <h1 className="font-proximaNova text-xl">Artist Popularity</h1>
                                             <div className="mt-2 w-full sxsm:w-[265px]">
                                                 <ProgressBar
                                                     progress={Math.round(averageStats[periodAvg].artist_popularity)}
@@ -231,7 +229,7 @@ const Home: NextPage = (props: any) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="danceable" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                    <div id="track-pop" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-xl">Track Popularity</h1>
                                             <div className="mt-2 w-full sxsm:w-[265px]">
@@ -240,6 +238,71 @@ const Home: NextPage = (props: any) => {
                                                 />
                                                 <p className="mt-1 text-sm">
                                                     {(averageStats[periodAvg].track_popularity / 10).toFixed(1)}/10
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="danceability" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-xl">Danceability</h1>
+                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                                <ProgressBar progress={averageStats[periodAvg].danceability * 100} />
+                                                <p className="mt-1 text-sm">
+                                                    {(averageStats[periodAvg].danceability * 100).toFixed(1)}/100
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="energy" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-xl">Energy</h1>
+                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                                <ProgressBar progress={averageStats[periodAvg].energy * 100} />
+                                                <p className="mt-1 text-sm">
+                                                    {(averageStats[periodAvg].energy * 100).toFixed(1)}/100
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="acousticness" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-xl">Acousticness</h1>
+                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                                <ProgressBar progress={averageStats[periodAvg].acousticness * 100} />
+                                                <p className="mt-1 text-sm">
+                                                    {(averageStats[periodAvg].acousticness * 100).toFixed(1)}/100
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="speechiness" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-xl">Speechiness</h1>
+                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                                <ProgressBar progress={averageStats[periodAvg].speechiness * 100} />
+                                                <p className="mt-1 text-sm">
+                                                    {(averageStats[periodAvg].speechiness * 100).toFixed(1)}/100
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="valence" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-xl">Happiness</h1>
+                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                                <ProgressBar progress={averageStats[periodAvg].valence * 100} />
+                                                <p className="mt-1 text-sm">
+                                                    {(averageStats[periodAvg].valence * 100).toFixed(1)}/100
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="valence" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
+                                        <div className="p-5">
+                                            <h1 className="font-proximaNova text-xl">Tempo</h1>
+                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                                <p className="mt-1 text-md">
+                                                    {averageStats[periodAvg].tempo.toFixed(1)} BPM
                                                 </p>
                                             </div>
                                         </div>
@@ -324,22 +387,92 @@ function get_averages(topArtists: TopItems, topTracks: TopItems, audioFeatures: 
     const artPopShort = topArtists.short_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
     const artPopMed = topArtists.medium_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
     const artPopLong = topArtists.long_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
+
     const trackPopShort = topTracks.short_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
     const trackPopMed = topTracks.medium_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
     const trackPopLong = topTracks.long_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
+
+    const danceShort = audioFeatures.short_term.audio_features.reduce(
+        (acc: any, curr: any) => acc + curr.danceability,
+        0
+    );
+    const danceMed = audioFeatures.medium_term.audio_features.reduce(
+        (acc: any, curr: any) => acc + curr.danceability,
+        0
+    );
+    const danceLong = audioFeatures.long_term.audio_features.reduce(
+        (acc: any, curr: any) => acc + curr.danceability,
+        0
+    );
+
+    const energyShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => acc + curr.energy, 0);
+    const energyMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => acc + curr.energy, 0);
+    const energyLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => acc + curr.energy, 0);
+
+    const acustShort = audioFeatures.short_term.audio_features.reduce(
+        (acc: any, curr: any) => acc + curr.acousticness,
+        0
+    );
+    const acustMed = audioFeatures.medium_term.audio_features.reduce(
+        (acc: any, curr: any) => acc + curr.acousticness,
+        0
+    );
+    const acustLong = audioFeatures.long_term.audio_features.reduce(
+        (acc: any, curr: any) => acc + curr.acousticness,
+        0
+    );
+
+    const speechShort = audioFeatures.short_term.audio_features.reduce(
+        (acc: any, curr: any) => acc + curr.speechiness,
+        0
+    );
+    const speechMed = audioFeatures.medium_term.audio_features.reduce(
+        (acc: any, curr: any) => acc + curr.speechiness,
+        0
+    );
+    const speechLong = audioFeatures.long_term.audio_features.reduce(
+        (acc: any, curr: any) => acc + curr.speechiness,
+        0
+    );
+
+    const tempoShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => acc + curr.tempo, 0);
+    const tempoMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => acc + curr.tempo, 0);
+    const tempoLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => acc + curr.tempo, 0);
+
+    const valenceShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => acc + curr.valence, 0);
+    const valenceMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => acc + curr.valence, 0);
+    const valenceLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => acc + curr.valence, 0);
 
     const averageStats: any = {
         short_term: {
             artist_popularity: artPopShort / topArtists.short_term.items.length,
             track_popularity: trackPopShort / topTracks.short_term.items.length,
+            danceability: danceShort / audioFeatures.short_term.audio_features.length,
+            energy: energyShort / audioFeatures.short_term.audio_features.length,
+            acousticness: acustShort / audioFeatures.short_term.audio_features.length,
+            speechiness: speechShort / audioFeatures.short_term.audio_features.length,
+            tempo: tempoShort / audioFeatures.short_term.audio_features.length,
+            valence: valenceShort / audioFeatures.short_term.audio_features.length,
         },
         medium_term: {
             artist_popularity: artPopMed / topArtists.medium_term.items.length,
             track_popularity: trackPopMed / topTracks.medium_term.items.length,
+            danceability: danceMed / audioFeatures.medium_term.audio_features.length,
+            energy: energyMed / audioFeatures.medium_term.audio_features.length,
+            acousticness: acustMed / audioFeatures.medium_term.audio_features.length,
+            speechiness: speechMed / audioFeatures.medium_term.audio_features.length,
+            tempo: tempoMed / audioFeatures.medium_term.audio_features.length,
+            valence: valenceMed / audioFeatures.medium_term.audio_features.length,
         },
         long_term: {
             artist_popularity: artPopLong / topArtists.long_term.items.length,
             track_popularity: trackPopLong / topTracks.long_term.items.length,
+            danceability: danceLong / audioFeatures.long_term.audio_features.length,
+            energy: energyLong / audioFeatures.long_term.audio_features.length,
+            acousticness: acustLong / audioFeatures.long_term.audio_features.length,
+            speechiness: speechLong / audioFeatures.long_term.audio_features.length,
+            tempo: tempoLong / audioFeatures.long_term.audio_features.length,
+            valence: valenceLong / audioFeatures.long_term.audio_features.length,
         },
     };
     return averageStats;
