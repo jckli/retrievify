@@ -339,7 +339,10 @@ const Home: NextPage = (props: any) => {
                                                 <h1 className="font-proximaNova text-2xl">Current</h1>
                                                 <div className="mt-2">
                                                     <p className="mt-1 text-xl">
-                                                        {obsc && Math.floor(obsc.percentileByCountryRecent)}%
+                                                        {obsc &&
+                                                            `${Math.floor(
+                                                                obsc.percentileByCountryRecent
+                                                            )}% of ${numberWithCommas(obsc.userCountByCountry)}`}
                                                     </p>
                                                     <p className="mt-1 text-sm">More Obscure</p>
                                                 </div>
@@ -350,7 +353,10 @@ const Home: NextPage = (props: any) => {
                                                 <h1 className="font-proximaNova text-2xl">All Time</h1>
                                                 <div className="mt-2">
                                                     <p className="mt-1 text-xl">
-                                                        {obsc && Math.floor(obsc.percentileByCountryAllTime)}%
+                                                        {obsc &&
+                                                            `${Math.floor(
+                                                                obsc.percentileByCountryAllTime
+                                                            )}% of ${numberWithCommas(obsc.userCountByCountry)}`}
                                                     </p>
                                                     <p className="mt-1 text-sm">More Obscure</p>
                                                 </div>
@@ -599,4 +605,8 @@ function get_obscurify_score(short_term: any, long_term: any) {
     }
     obscurifyScore.all_time = Math.floor(allTimeTemp / 10);
     return obscurifyScore;
+}
+
+function numberWithCommas(number: number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
