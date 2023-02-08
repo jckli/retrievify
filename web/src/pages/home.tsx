@@ -445,57 +445,121 @@ function get_averages(topArtists: TopItems, topTracks: TopItems, audioFeatures: 
     const trackPopShort = topTracks.short_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
     const trackPopMed = topTracks.medium_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
     const trackPopLong = topTracks.long_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
+    console.log(audioFeatures);
 
-    const danceShort = audioFeatures.short_term.audio_features.reduce(
-        (acc: any, curr: any) => acc + curr.danceability,
-        0
-    );
-    const danceMed = audioFeatures.medium_term.audio_features.reduce(
-        (acc: any, curr: any) => acc + curr.danceability,
-        0
-    );
-    const danceLong = audioFeatures.long_term.audio_features.reduce(
-        (acc: any, curr: any) => acc + curr.danceability,
-        0
-    );
+    const danceShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.danceability;
+        }
+        return acc;
+    }, 0);
+    const danceMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.danceability;
+        }
+        return acc;
+    }, 0);
+    const danceLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.danceability;
+        }
+        return acc;
+    }, 0);
 
-    const energyShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => acc + curr.energy, 0);
-    const energyMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => acc + curr.energy, 0);
-    const energyLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => acc + curr.energy, 0);
+    const energyShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.energy;
+        }
+        return acc;
+    }, 0);
+    const energyMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.energy;
+        }
+        return acc;
+    }, 0);
+    const energyLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.energy;
+        }
+        return acc;
+    }, 0);
 
-    const acustShort = audioFeatures.short_term.audio_features.reduce(
-        (acc: any, curr: any) => acc + curr.acousticness,
-        0
-    );
-    const acustMed = audioFeatures.medium_term.audio_features.reduce(
-        (acc: any, curr: any) => acc + curr.acousticness,
-        0
-    );
-    const acustLong = audioFeatures.long_term.audio_features.reduce(
-        (acc: any, curr: any) => acc + curr.acousticness,
-        0
-    );
+    const acustShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.acousticness;
+        }
+        return acc;
+    }, 0);
+    const acustMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.acousticness;
+        }
+        return acc;
+    }, 0);
+    const acustLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.acousticness;
+        }
+        return acc;
+    }, 0);
 
-    const speechShort = audioFeatures.short_term.audio_features.reduce(
-        (acc: any, curr: any) => acc + curr.speechiness,
-        0
-    );
-    const speechMed = audioFeatures.medium_term.audio_features.reduce(
-        (acc: any, curr: any) => acc + curr.speechiness,
-        0
-    );
-    const speechLong = audioFeatures.long_term.audio_features.reduce(
-        (acc: any, curr: any) => acc + curr.speechiness,
-        0
-    );
+    const speechShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.speechiness;
+        }
+        return acc;
+    }, 0);
+    const speechMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.speechiness;
+        }
+        return acc;
+    }, 0);
+    const speechLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.speechiness;
+        }
+        return acc;
+    }, 0);
 
-    const tempoShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => acc + curr.tempo, 0);
-    const tempoMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => acc + curr.tempo, 0);
-    const tempoLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => acc + curr.tempo, 0);
+    const tempoShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.tempo;
+        }
+        return acc;
+    }, 0);
+    const tempoMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.tempo;
+        }
+        return acc;
+    }, 0);
+    const tempoLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.tempo;
+        }
+        return acc;
+    }, 0);
 
-    const valenceShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => acc + curr.valence, 0);
-    const valenceMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => acc + curr.valence, 0);
-    const valenceLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => acc + curr.valence, 0);
+    const valenceShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.valence;
+        }
+        return acc;
+    }, 0);
+    const valenceMed = audioFeatures.medium_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.valence;
+        }
+        return acc;
+    }, 0);
+    const valenceLong = audioFeatures.long_term.audio_features.reduce((acc: any, curr: any) => {
+        if (curr !== null) {
+            acc += curr.valence;
+        }
+        return acc;
+    }, 0);
 
     const averageStats: any = {
         short_term: {
