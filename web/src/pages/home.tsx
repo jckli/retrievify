@@ -9,14 +9,14 @@ import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { PeriodDropdown } from "../components/PeriodDropdown";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { MobileTopLists } from "../components/Home/MobileTopLists";
-import { TopArtists } from "../components/Home/TopArtists";
 import { getCookie, setCookie } from "cookies-next";
-import { TopTracks } from "../components/Home/TopTracks";
 import { ProgressBar } from "../components/ProgressBar";
+import { CountriesDropdown } from "../components/CountriesDropdown";
 
 const Home: NextPage = (props: any) => {
     const [periodGenre, setPeriodGenre] = useState("short_term");
     const [periodAvg, setPeriodAvg] = useState("short_term");
+    const [country, setCountry] = useState("US");
 
     const navbarBreakpoint = useMediaQuery("1440px");
     const fetcher = (url: any) =>
@@ -26,6 +26,10 @@ const Home: NextPage = (props: any) => {
                 access_token: getCookie("acct"),
                 refresh_token: getCookie("reft"),
             }),
+        }).then(r => r.json());
+    const getFetcher = (url: any) =>
+        fetch(url, {
+            method: "GET",
         }).then(r => r.json());
 
     const { data: currently_playing, error: error1 } = useSWR(
@@ -105,6 +109,16 @@ const Home: NextPage = (props: any) => {
             revalidateOnFocus: false,
         }
     );
+    const { data: obsc, error: error11 } = useSWR(
+        () => {
+            const sc = get_obscurify_score(taShort.data, taLong.data);
+            return `https://ktp0b5os1g.execute-api.us-east-2.amazonaws.com/dev/getObscurifyData?code=${country}&obscurifyScore=${sc.all_time}&recentObscurifyScore=${sc.recent}`;
+        },
+        getFetcher,
+        {
+            revalidateOnFocus: false,
+        }
+    );
     if (!taShort || !taMedium || !taLong || !ttShort || !ttMedium || !ttLong || !afShort || !afMedium || !afLong) {
         return (
             <>
@@ -117,7 +131,7 @@ const Home: NextPage = (props: any) => {
             </>
         );
     }
-    if (error1 || error2 || error3 || error4 || error5 || error6 || error7 || error8 || error9 || error10) {
+    if (error1 || error2 || error3 || error4 || error5 || error6 || error7 || error8 || error9 || error10 || error11) {
         return (
             <>
                 <Sidebar />
@@ -149,8 +163,6 @@ const Home: NextPage = (props: any) => {
     };
     const averageStats = get_averages(topArtists, topTracks, audioFeatures);
     const topGenres = get_top_genres(topArtists);
-    const obscurifyScore = get_obscurify_score(topArtists);
-    console.log(obscurifyScore);
     return (
         <>
             <Sidebar active={1} />
@@ -305,6 +317,43 @@ const Home: NextPage = (props: any) => {
                                                 <p className="mt-1 text-md">
                                                     {averageStats[periodAvg].tempo.toFixed(1)} BPM
                                                 </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="obscurify-stats" className="mt-8 bg-mgray rounded-md">
+                            <div className="p-5">
+                                <div className="flex items-center justify-between sm:justify-start">
+                                    <h1 className="font-proximaNova text-3xl hidden sxsm:block">Obscurify Data</h1>
+                                    <h1 className="font-proximaNova text-3xl block sxsm:hidden">Obscurify</h1>
+                                    <div className="ml-4">
+                                        <CountriesDropdown setCountry={setCountry} />
+                                    </div>
+                                </div>
+                                <div className="mt-4">
+                                    <div className="flex justify-between gap-10 mx-10">
+                                        <div className="bg-[#303030] rounded-md w-full">
+                                            <div className="p-5">
+                                                <h1 className="font-proximaNova text-2xl">Current</h1>
+                                                <div className="mt-2">
+                                                    <p className="mt-1 text-xl">
+                                                        {obsc && Math.floor(obsc.percentileByCountryRecent)}%
+                                                    </p>
+                                                    <p className="mt-1 text-sm">More Obscure</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="bg-[#303030] rounded-md w-full">
+                                            <div className="p-5">
+                                                <h1 className="font-proximaNova text-2xl">All Time</h1>
+                                                <div className="mt-2">
+                                                    <p className="mt-1 text-xl">
+                                                        {obsc && Math.floor(obsc.percentileByCountryAllTime)}%
+                                                    </p>
+                                                    <p className="mt-1 text-sm">More Obscure</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -528,25 +577,25 @@ function get_top_genres(topArtists: TopItems) {
     return topGenres;
 }
 
-function get_obscurify_score(topArtists: TopItems) {
+function get_obscurify_score(short_term: any, long_term: any) {
     const obscurifyScore: any = {
         recent: 0,
         all_time: 0,
     };
 
     var recentTemp = 0;
-    for (let i = 0; i < topArtists.short_term.items.length; i++) {
+    for (let i = 0; i < short_term.items.length; i++) {
         recentTemp +=
-            (50 / topArtists.short_term.items.length) *
-            Math.floor(topArtists.short_term.items[i].popularity * (1 - i / topArtists.short_term.items.length));
+            (50 / short_term.items.length) *
+            Math.floor(short_term.items[i].popularity * (1 - i / short_term.items.length));
     }
     obscurifyScore.recent = Math.floor(recentTemp / 10);
 
     var allTimeTemp = 0;
-    for (let i = 0; i < topArtists.long_term.items.length; i++) {
+    for (let i = 0; i < long_term.items.length; i++) {
         allTimeTemp +=
-            (50 / topArtists.long_term.items.length) *
-            Math.floor(topArtists.long_term.items[i].popularity * (1 - i / topArtists.long_term.items.length));
+            (50 / long_term.items.length) *
+            Math.floor(long_term.items[i].popularity * (1 - i / long_term.items.length));
     }
     obscurifyScore.all_time = Math.floor(allTimeTemp / 10);
     return obscurifyScore;
