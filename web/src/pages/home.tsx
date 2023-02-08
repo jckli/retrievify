@@ -333,7 +333,7 @@ const Home: NextPage = (props: any) => {
                                     </div>
                                 </div>
                                 <div className="mt-4">
-                                    <div className="flex justify-between gap-10 mx-10">
+                                    <div className="flex flex-col sm:flex-row justify-between gap-4 mlg:gap-10 mlg:mx-10">
                                         <div className="bg-[#303030] rounded-md w-full">
                                             <div className="p-5">
                                                 <h1 className="font-proximaNova text-2xl">Current</h1>
