@@ -148,8 +148,9 @@ const Home: NextPage = (props: any) => {
         long_term: afLong.data,
     };
     const averageStats = get_averages(topArtists, topTracks, audioFeatures);
-    console.log(averageStats);
     const topGenres = get_top_genres(topArtists);
+    const obscurifyScore = get_obscurify_score(topArtists);
+    console.log(obscurifyScore);
     return (
         <>
             <Sidebar active={1} />
@@ -219,7 +220,7 @@ const Home: NextPage = (props: any) => {
                                     <div id="artist-pop" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-xl">Artist Popularity</h1>
-                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                            <div className="mt-2 w-full sxsm:w-[160px] sm:w-[265px]">
                                                 <ProgressBar
                                                     progress={Math.round(averageStats[periodAvg].artist_popularity)}
                                                 />
@@ -232,7 +233,7 @@ const Home: NextPage = (props: any) => {
                                     <div id="track-pop" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-xl">Track Popularity</h1>
-                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                            <div className="mt-2 w-full sxsm:w-[160px] sm:w-[265px]">
                                                 <ProgressBar
                                                     progress={Math.round(averageStats[periodAvg].track_popularity)}
                                                 />
@@ -245,7 +246,7 @@ const Home: NextPage = (props: any) => {
                                     <div id="danceability" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-xl">Danceability</h1>
-                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                            <div className="mt-2 w-full sxsm:w-[160px] sm:w-[265px]">
                                                 <ProgressBar progress={averageStats[periodAvg].danceability * 100} />
                                                 <p className="mt-1 text-sm">
                                                     {(averageStats[periodAvg].danceability * 100).toFixed(1)}/100
@@ -256,7 +257,7 @@ const Home: NextPage = (props: any) => {
                                     <div id="energy" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-xl">Energy</h1>
-                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                            <div className="mt-2 w-full sxsm:w-[160px] sm:w-[265px]">
                                                 <ProgressBar progress={averageStats[periodAvg].energy * 100} />
                                                 <p className="mt-1 text-sm">
                                                     {(averageStats[periodAvg].energy * 100).toFixed(1)}/100
@@ -267,7 +268,7 @@ const Home: NextPage = (props: any) => {
                                     <div id="acousticness" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-xl">Acousticness</h1>
-                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                            <div className="mt-2 w-full sxsm:w-[160px] sm:w-[265px]">
                                                 <ProgressBar progress={averageStats[periodAvg].acousticness * 100} />
                                                 <p className="mt-1 text-sm">
                                                     {(averageStats[periodAvg].acousticness * 100).toFixed(1)}/100
@@ -278,7 +279,7 @@ const Home: NextPage = (props: any) => {
                                     <div id="speechiness" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-xl">Speechiness</h1>
-                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                            <div className="mt-2 w-full sxsm:w-[160px] sm:w-[265px]">
                                                 <ProgressBar progress={averageStats[periodAvg].speechiness * 100} />
                                                 <p className="mt-1 text-sm">
                                                     {(averageStats[periodAvg].speechiness * 100).toFixed(1)}/100
@@ -289,7 +290,7 @@ const Home: NextPage = (props: any) => {
                                     <div id="valence" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-xl">Happiness</h1>
-                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                            <div className="mt-2 w-full sxsm:w-[160px] sm:w-[265px]">
                                                 <ProgressBar progress={averageStats[periodAvg].valence * 100} />
                                                 <p className="mt-1 text-sm">
                                                     {(averageStats[periodAvg].valence * 100).toFixed(1)}/100
@@ -300,7 +301,7 @@ const Home: NextPage = (props: any) => {
                                     <div id="valence" className="bg-[#303030] rounded-md w-full sxsm:w-auto">
                                         <div className="p-5">
                                             <h1 className="font-proximaNova text-xl">Tempo</h1>
-                                            <div className="mt-2 w-full sxsm:w-[265px]">
+                                            <div className="mt-2 w-full sxsm:w-[160px] sm:w-[265px]">
                                                 <p className="mt-1 text-md">
                                                     {averageStats[periodAvg].tempo.toFixed(1)} BPM
                                                 </p>
@@ -310,7 +311,6 @@ const Home: NextPage = (props: any) => {
                                 </div>
                             </div>
                         </div>
-                        {navbarBreakpoint && <TopArtists topArtists={topArtists} />}
                     </div>
                     <div className="1.5xl:w-[50%] flex flex-col 1.5xl:ml-8">
                         <div id="top-genres" className="bg-mgray rounded-md mt-8 1.5xl:mt-0">
@@ -334,8 +334,7 @@ const Home: NextPage = (props: any) => {
                                 </div>
                             </div>
                         </div>
-                        {navbarBreakpoint && <TopTracks topTracks={topTracks} />}
-                        {!navbarBreakpoint && <MobileTopLists topArtists={topArtists} topTracks={topTracks} />}
+                        <MobileTopLists topArtists={topArtists} topTracks={topTracks} />
                     </div>
                 </div>
             </div>
@@ -527,4 +526,28 @@ function get_top_genres(topArtists: TopItems) {
     });
 
     return topGenres;
+}
+
+function get_obscurify_score(topArtists: TopItems) {
+    const obscurifyScore: any = {
+        recent: 0,
+        all_time: 0,
+    };
+
+    var recentTemp = 0;
+    for (let i = 0; i < topArtists.short_term.items.length; i++) {
+        recentTemp +=
+            (50 / topArtists.short_term.items.length) *
+            Math.floor(topArtists.short_term.items[i].popularity * (1 - i / topArtists.short_term.items.length));
+    }
+    obscurifyScore.recent = Math.floor(recentTemp / 10);
+
+    var allTimeTemp = 0;
+    for (let i = 0; i < topArtists.long_term.items.length; i++) {
+        allTimeTemp +=
+            (50 / topArtists.long_term.items.length) *
+            Math.floor(topArtists.long_term.items[i].popularity * (1 - i / topArtists.long_term.items.length));
+    }
+    obscurifyScore.all_time = Math.floor(allTimeTemp / 10);
+    return obscurifyScore;
 }
