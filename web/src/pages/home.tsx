@@ -12,6 +12,7 @@ import { MobileTopLists } from "../components/Home/MobileTopLists";
 import { getCookie, setCookie } from "cookies-next";
 import { ProgressBar } from "../components/ProgressBar";
 import { CountriesDropdown } from "../components/CountriesDropdown";
+import { ObscureChart } from "../components/Home/ObsChart";
 
 const Home: NextPage = (props: any) => {
     const [periodGenre, setPeriodGenre] = useState("short_term");
@@ -364,6 +365,14 @@ const Home: NextPage = (props: any) => {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="mt-4">
+                                    {obsc && (
+                                        <ObscureChart
+                                            data={obsc.breakdown}
+                                            recentPercentile={obsc.percentileByCountryRecent}
+                                        />
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -445,7 +454,6 @@ function get_averages(topArtists: TopItems, topTracks: TopItems, audioFeatures: 
     const trackPopShort = topTracks.short_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
     const trackPopMed = topTracks.medium_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
     const trackPopLong = topTracks.long_term.items.reduce((acc: any, curr: any) => acc + curr.popularity, 0);
-    console.log(audioFeatures);
 
     const danceShort = audioFeatures.short_term.audio_features.reduce((acc: any, curr: any) => {
         if (curr !== null) {
