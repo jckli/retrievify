@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Label } from "recharts";
 
 export const ObscureChart = (props: any) => {
     let dataArray: any[] = [];
@@ -14,9 +14,13 @@ export const ObscureChart = (props: any) => {
     return (
         <>
             <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={filtered}>
-                    <XAxis label="More Obscure Taste ->" tick={false} />
-                    <YAxis tickCount={6} />
+                <BarChart data={filtered} margin={{ left: 20, top: 20 }}>
+                    <XAxis tick={false}>
+                        <Label value="More Obscure Taste ->" />
+                    </XAxis>
+                    <YAxis tickCount={6}>
+                        <Label angle={-90} value="Users" position="left" offset={15} style={{ textAnchor: "middle" }} />
+                    </YAxis>
                     <Bar dataKey="N" fill="#4ad3ff" />
                 </BarChart>
             </ResponsiveContainer>
