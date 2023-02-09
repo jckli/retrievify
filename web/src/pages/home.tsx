@@ -365,7 +365,8 @@ const Home: NextPage = (props: any) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="mt-4">
+                                <div className="mt-4 flex flex-col items-center">
+                                    <h1 className="font-proximaNova text-2xl">Country Distribution Graph</h1>
                                     {obsc && (
                                         <ObscureChart
                                             data={obsc.breakdown}
