@@ -63,14 +63,14 @@ export const Sidebar = (props: any) => {
                                             <a className="flex items-center flex-shrink-0">
                                                 <div className="relative h-8 w-8">
                                                     <Image
-                                                        alt="statsifyLogo"
+                                                        alt="retrievifyLogo"
                                                         draggable={false}
                                                         src="/images/logo.png"
                                                         layout="fill"
                                                     />
                                                 </div>
                                                 <h1 className="text-white font-proximaNova hidden sm:block text-2xl font-bold ml-2">
-                                                    Statsify
+                                                    Retrievify
                                                 </h1>
                                             </a>
                                         </Link>
@@ -209,9 +209,14 @@ export const Sidebar = (props: any) => {
                         <Link href="/">
                             <a className="flex items-center flex-shrink-0">
                                 <div className="relative h-[38px] w-[38px]">
-                                    <Image alt="statsifyLogo" draggable={false} src="/images/logo.png" layout="fill" />
+                                    <Image
+                                        alt="retrievifyLogo"
+                                        draggable={false}
+                                        src="/images/logo.png"
+                                        layout="fill"
+                                    />
                                 </div>
-                                <h1 className="text-white font-proximaNova text-2xl font-bold ml-2">Statsify</h1>
+                                <h1 className="text-white font-proximaNova text-2xl font-bold ml-2">Retrievify</h1>
                             </a>
                         </Link>
                     </div>

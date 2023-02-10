@@ -7,8 +7,13 @@ from .spotify.artists import toptracks, relatedartists, getartist
 
 async def index(request):
     return response.json(
-        {"status": 200, "message": "Statsify API v1", "link": "https://statsify.hayasaka.moe"}
+        {
+            "status": 200,
+            "message": "Retrievify API v1",
+            "link": "https://retrievify.hayasaka.moe",
+        }
     )
+
 
 def add_routes(app):
     app.add_route(index, "/", methods=["GET"], name="index")

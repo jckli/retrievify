@@ -23,7 +23,7 @@ export const Footer = () => {
                                 Privacy Policy
                             </a>
                         </Link>
-                        © 2021 - {currentYear} Statsify
+                        © 2021 - {currentYear} Retrievify
                     </div>
                 </div>
             </div>

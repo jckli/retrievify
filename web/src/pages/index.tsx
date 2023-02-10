@@ -12,11 +12,11 @@ const Index: NextPage = () => {
                         <div className="relative h-[128px] w-[128px]">
                             <Image alt="statsifyLogo" draggable={false} src="/images/logo.png" layout="fill" />
                         </div>
-                        <h1 className="text-primary font-proximaNova text-7xl md:text-9xl font-bold">Statsify</h1>
+                        <h1 className="text-primary font-proximaNova text-7xl md:text-8xl font-bold">Retrievify</h1>
                     </div>
                     <p className="mt-6 font-metropolis text-base sm:text-lg font-normal block">
                         View all your listening statistics and see how you&apos;ve spent your time listening to music
-                        with Statsify.
+                        with Retrievify.
                     </p>
                     <MainButton text="Login" href="/oauth2/login" />
                 </div>

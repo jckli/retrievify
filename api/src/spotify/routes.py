@@ -12,8 +12,8 @@ async def spotify_index(request):
     return response.json(
         {
             "status": 200,
-            "message": "Statsify API v1 - Spotify Module",
-            "link": "https://statsify.hayasaka.moe",
+            "message": "Retrievify API v1 - Spotify Module",
+            "link": "https://retrievify.hayasaka.moe",
         }
     )
 

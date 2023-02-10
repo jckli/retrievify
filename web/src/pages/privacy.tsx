@@ -24,23 +24,24 @@ const Privacy: NextPage = () => {
                 <br />
                 <h1 className="font-proximaNova font-bold text-4xl">Privacy Policy</h1>
                 <p className="mt-3">
-                    Statsify was developed as an open source app. This service is provided by the Statsify team at no
-                    cost and is intended for use as is. This page is used to inform visitors regarding our policies with
-                    the collection, use, and disclosure of Personal Information if anyone decided to use our Service.
+                    Retrievify was developed as an open source app. This service is provided by the Retrievify team at
+                    no cost and is intended for use as is. This page is used to inform visitors regarding our policies
+                    with the collection, use, and disclosure of Personal Information if anyone decided to use our
+                    Service.
                 </p>
                 <h2 className="font-proximaNova font-bold text-2xl mt-4">Information Collection and Use</h2>
                 <p className="mt-3">
-                    We do not store any information or data used by Statsify nor shared with third parties. However, for
-                    a better experience, the data package feature is stored on your device&apos;s browser storage, in a
-                    section called &quot;Local Storage&quot;. This data is not stored on our servers, and can be deleted
-                    at any time by clearing your browser cookies and data for the site. All information is used solely
-                    for displaying statistics and information on the website. By choosing to use this app, you agree to
-                    the use of your Spotify account data for the purposes of this app.
+                    We do not store any information or data used by Retrievify nor shared with third parties. However,
+                    for a better experience, the data package feature is stored on your device&apos;s browser storage,
+                    in a section called &quot;Local Storage&quot;. This data is not stored on our servers, and can be
+                    deleted at any time by clearing your browser cookies and data for the site. All information is used
+                    solely for displaying statistics and information on the website. By choosing to use this app, you
+                    agree to the use of your Spotify account data for the purposes of this app.
                 </p>
                 <h2 className="font-proximaNova font-bold text-2xl mt-4">Deletion of Data</h2>
                 <p className="mt-3">
                     Although your data is not being stored server-sided or used maliciously, if you would like to revoke
-                    Statsify&apos;s permissions,{" "}
+                    Retrievify&apos;s permissions,{" "}
                     <a
                         className="inline-block underline underline-offset-2"
                         href="https://support.spotify.com/us/article/spotify-on-other-apps/"
