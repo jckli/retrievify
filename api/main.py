@@ -6,7 +6,7 @@ app = Sanic("Statsify")
 app.config.CORS_ORIGINS = [
     "http://localhost:3000",
     "https://statsify.hayasaka.moe",
-    "https://sbeta.hayasaka.moe",
+    "https://retrievify.hayasaka.moe",
     "https://statsify-beta.vercel.app",
 ]
 add_routes(app)
