@@ -10,7 +10,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <>
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
-                <title>Statsify</title>
+                <title>Retrievify</title>
+                <meta
+                    name="description"
+                    content="View all your listening statistics for Spotify and see how you've spent your time listening to music with Retrievify."
+                />
             </Head>
             <div>
                 <Component {...pageProps} />
