@@ -13,7 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <title>Retrievify</title>
                 <meta
                     name="description"
-                    content="View all your listening statistics for Spotify and see how you've spent your time listening to music with Retrievify."
+                    content="Unlock the full potential of your music experience with Retrievify. Get insights into all your listening habits and see exactly how you've been spending your time listening to music on Spotify."
                 />
             </Head>
             <div>
