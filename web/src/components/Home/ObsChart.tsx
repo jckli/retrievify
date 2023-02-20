@@ -50,6 +50,34 @@ export const ObscureChart = (props: any) => {
         allTimeLineIndex = filtered.length - 1;
     }
 
+    const allTimeLabel = (a: any) => (
+        <g>
+            <foreignObject x={a.viewBox.x - 60} y={a.viewBox.y + 70} width={120} height={100}>
+                <div className="bg-black opacity-70 rounded-lg z-50">
+                    <div className="p-1 flex items-center justify-center">
+                        <p className="text-[11px]">
+                            Your All Time {Math.floor(props.data.percentileByCountryAllTime)}%
+                        </p>
+                    </div>
+                </div>
+            </foreignObject>
+        </g>
+    );
+
+    const currentLabel = (a: any) => (
+        <g>
+            <foreignObject x={a.viewBox.x - 60} y={a.viewBox.y + 30} width={120} height={100}>
+                <div className="bg-black opacity-80 rounded-lg z-50">
+                    <div className="p-1 flex items-center justify-center">
+                        <p className="text-[11px] opacity-90">
+                            Your Current {Math.floor(props.data.percentileByCountryRecent)}%
+                        </p>
+                    </div>
+                </div>
+            </foreignObject>
+        </g>
+    );
+
     return (
         <>
             <ResponsiveContainer width="100%" height={300}>
@@ -61,8 +89,14 @@ export const ObscureChart = (props: any) => {
                         <Label angle={-90} value="Users" position="left" offset={15} style={{ textAnchor: "middle" }} />
                     </YAxis>
                     <Bar dataKey="N" fill="#4ad3ff" />
-                    <ReferenceLine x={currentLineIndex} label="Max" stroke="red" strokeDasharray="3 3" />
-                    <ReferenceLine x={allTimeLineIndex} label="Max" stroke="red" strokeDasharray="3 3" />
+                    <ReferenceLine
+                        x={allTimeLineIndex}
+                        label={allTimeLabel}
+                        stroke="#ff8c00"
+                        strokeWidth={2}
+                        isFront={false}
+                    />
+                    <ReferenceLine x={currentLineIndex} label={currentLabel} stroke="#005b9f" strokeWidth={2} />
                 </BarChart>
             </ResponsiveContainer>
         </>
