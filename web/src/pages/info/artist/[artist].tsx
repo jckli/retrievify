@@ -57,6 +57,7 @@ const ArtistIndex: NextPage = (props: any) => {
 													draggable={false}
 													src={data.images[0].url}
 													layout="fill"
+													objectFit="cover"
 												/>
 											</div>
 										</div>
@@ -135,6 +136,7 @@ const ArtistIndex: NextPage = (props: any) => {
 																		draggable={false}
 																		src={track.album.images[0].url}
 																		layout="fill"
+																		objectFit="cover"
 																	/>
 																</div>
 															</div>
@@ -176,6 +178,7 @@ const ArtistIndex: NextPage = (props: any) => {
 																			draggable={false}
 																			src={artist.images[0]?.url}
 																			layout="fill"
+																			objectFit="cover"
 																		/>
 																	) : (
 																		<div className="bg-[#282828] h-full flex justify-center items-center">
