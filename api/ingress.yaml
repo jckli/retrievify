@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: retrievify-api-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" 
+spec:
+  tls: 
+  - hosts:
+    - retrievifyapi.hayasaka.moe 
+    secretName: retrievify-api-tls-secret
+  rules:
+  - host: "retrievifyapi.hayasaka.moe"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: retrievify-api-service
+            port:
+              number: 80
+

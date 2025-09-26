@@ -1,8 +1,7 @@
 from sanic import Sanic
-from sanic_ext import Extend
 from src.routes import add_routes
 
-app = Sanic("Statsify")
+app = Sanic("Retrievify")
 app.config.CORS_ORIGINS = [
     "http://localhost:3000",
     "https://statsify.hayasaka.moe",

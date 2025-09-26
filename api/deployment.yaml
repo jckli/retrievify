@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retrievify-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retrievify-api
+      region: phx
+  template:
+    metadata:
+      labels:
+        app: retrievify-api
+        region: phx
+    spec:
+      nodeSelector:
+        region: phx
+      containers:
+      - name: retrievify-api
+        image: jckli/retrievify-api:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        envFrom:
+        - secretRef:
+            name: retrievify-api-secrets
+
+
