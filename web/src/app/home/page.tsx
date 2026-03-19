@@ -17,61 +17,45 @@ import { CountriesDropdown } from "@/components/CountriesDropdown";
 import { ObscureChart } from "@/components/Home/ObsChart";
 
 const terms = ["short_term", "medium_term", "long_term"] as const;
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const Home: NextPage = () => {
 	const [periodGenre, setPeriodGenre] = useState<(typeof terms)[number]>("short_term");
 	const [periodAvg, setPeriodAvg] = useState<(typeof terms)[number]>("short_term");
 	const [country, setCountry] = useState("US");
 
-	const { data: playing, error: errPlay } = useSWR(`${API_URL}/spotify/currentlyplaying`, fetcher, {
+	const { data: playing, error: errPlay } = useSWR(`/spotify/currentlyplaying`, fetcher, {
 		refreshInterval: 10000,
 	});
 
 	const { data: taShort, error: e1 } = useSWR(
-		`${API_URL}/spotify/topitems/artists?time_range=short_term&limit=50`,
+		`/spotify/topitems/artists?time_range=short_term&limit=50`,
 		fetcher,
 	);
-	const { data: taMed, error: e2 } = useSWR(
-		`${API_URL}/spotify/topitems/artists?time_range=medium_term&limit=50`,
-		fetcher,
-	);
-	const { data: taLong, error: e3 } = useSWR(
-		`${API_URL}/spotify/topitems/artists?time_range=long_term&limit=50`,
-		fetcher,
-	);
+	const { data: taMed, error: e2 } = useSWR(`/spotify/topitems/artists?time_range=medium_term&limit=50`, fetcher);
+	const { data: taLong, error: e3 } = useSWR(`/spotify/topitems/artists?time_range=long_term&limit=50`, fetcher);
 
-	const { data: ttShort, error: e4 } = useSWR(
-		`${API_URL}/spotify/topitems/tracks?time_range=short_term&limit=50`,
-		fetcher,
-	);
-	const { data: ttMed, error: e5 } = useSWR(
-		`${API_URL}/spotify/topitems/tracks?time_range=medium_term&limit=50`,
-		fetcher,
-	);
-	const { data: ttLong, error: e6 } = useSWR(
-		`${API_URL}/spotify/topitems/tracks?time_range=long_term&limit=50`,
-		fetcher,
-	);
+	const { data: ttShort, error: e4 } = useSWR(`/spotify/topitems/tracks?time_range=short_term&limit=50`, fetcher);
+	const { data: ttMed, error: e5 } = useSWR(`/spotify/topitems/tracks?time_range=medium_term&limit=50`, fetcher);
+	const { data: ttLong, error: e6 } = useSWR(`/spotify/topitems/tracks?time_range=long_term&limit=50`, fetcher);
 
 	const { data: afShort, error: e7 } = useSWR(
 		() =>
 			ttShort
-				? `${API_URL}/spotify/multi-audiofeatures?ids=${ttShort.items.map((i: any) => i.id).join(",")}`
+				? `/spotify/multi-audiofeatures?ids=${ttShort.items.map((i: any) => i.id).join(",")}`
 				: null,
 		fetcher,
 	);
 	const { data: afMed, error: e8 } = useSWR(
 		() =>
 			ttMed
-				? `${API_URL}/spotify/multi-audiofeatures?ids=${ttMed.items.map((i: any) => i.id).join(",")}`
+				? `/spotify/multi-audiofeatures?ids=${ttMed.items.map((i: any) => i.id).join(",")}`
 				: null,
 		fetcher,
 	);
 	const { data: afLong, error: e9 } = useSWR(
 		() =>
 			ttLong
-				? `${API_URL}/spotify/multi-audiofeatures?ids=${ttLong.items.map((i: any) => i.id).join(",")}`
+				? `/spotify/multi-audiofeatures?ids=${ttLong.items.map((i: any) => i.id).join(",")}`
 				: null,
 		fetcher,
 	);
@@ -84,7 +68,7 @@ const Home: NextPage = () => {
 		if (isLoading) return null;
 		const sc = get_obscurify_score(taShort, taLong);
 		return `https://ktp0b5os1g.execute-api.us-east-2.amazonaws.com/dev/getObscurifyData?code=${country}&obscurifyScore=${sc.all_time}&recentObscurifyScore=${sc.recent}`;
-	}, fetcher);
+	});
 
 	if (isLoading || isError) {
 		return (
