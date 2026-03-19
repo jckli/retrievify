@@ -18,10 +18,12 @@ export const Footer = () => {
                         .
                     </div>
                     <div>
-                        <Link href="/privacy">
-                            <a className="text-[#808080] mr-2 underline underline-offset-2 decoration-2 decoration-[#808080] inline-block">
+                        <Link
+                            href="/privacy"
+                            className="text-[#808080] mr-2 underline underline-offset-2 decoration-2 decoration-[#808080] inline-block">
+                            
                                 Privacy Policy
-                            </a>
+                            
                         </Link>
                         © 2021 - {currentYear} Retrievify
                     </div>

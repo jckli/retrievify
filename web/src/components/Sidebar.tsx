@@ -47,8 +47,8 @@ export const Sidebar = (props: any) => {
 
 	const MobileNavigation = () => {
 		return (
-			<Disclosure as="nav" className="bg-mgray">
-				{({ open }) => (
+            <Disclosure as="nav" className="bg-mgray">
+                {({ open }) => (
 					<>
 						<div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 font-metropolis">
 							<div className="relative flex items-center justify-between h-16">
@@ -64,23 +64,23 @@ export const Sidebar = (props: any) => {
 								</div>
 								<div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
 									<div className="flex-shrink-0 flex items-center">
-										<Link href="/">
-											<a className="flex items-center flex-shrink-0">
-												<div className="relative h-8 w-8">
-													<Image
-														alt="retrievifyLogo"
-														draggable={
-															false
-														}
-														src="/images/logo.png"
-														layout="fill"
-													/>
-												</div>
-												<h1 className="text-white font-proximaNova hidden sm:block text-2xl font-bold ml-2">
-													Retrievify
-												</h1>
-											</a>
-										</Link>
+										<Link href="/" className="flex items-center flex-shrink-0">
+
+                                            <div className="relative h-8 w-8">
+                                                <Image
+                                                    alt="retrievifyLogo"
+                                                    draggable={
+                                                        false
+                                                    }
+                                                    src="/images/logo.png"
+                                                    layout="fill"
+                                                />
+                                            </div>
+                                            <h1 className="text-white font-proximaNova hidden sm:block text-2xl font-bold ml-2">
+                                                Retrievify
+                                            </h1>
+
+                                        </Link>
 									</div>
 									<div className="hidden sm:block sm:ml-6">
 										<div className="flex space-x-4">
@@ -160,14 +160,14 @@ export const Sidebar = (props: any) => {
 														{({
 															active,
 														}) => (
-															<Link href="/privacy">
-																<a
-																	className="hover:bg-[#505050] transition-all ease-in-out duration-100
-                                                                    group flex w-full items-center rounded-md px-2 py-2 text-sm text-white"
-																>
+															<Link
+                                                                href="/privacy"
+                                                                className="hover:bg-[#505050] transition-all ease-in-out duration-100
+                                                                group flex w-full items-center rounded-md px-2 py-2 text-sm text-white">
+																
 																	Privacy
 																	Policy
-																</a>
+																
 															</Link>
 														)}
 													</Menu.Item>
@@ -233,73 +233,72 @@ export const Sidebar = (props: any) => {
 						</Disclosure.Panel>
 					</>
 				)}
-			</Disclosure>
-		);
+            </Disclosure>
+        );
 	};
 
 	const MainNavigation = () => {
 		return (
-			<div className="flex-1 flex flex-col w-[280px] h-[100vh] fixed bg-mgray font-metropolis">
-				<div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+            <div className="flex-1 flex flex-col w-[280px] h-[100vh] fixed bg-mgray font-metropolis">
+                <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
 					<div className="px-5">
-						<Link href="/">
-							<a className="flex items-center flex-shrink-0">
-								<div className="relative h-[38px] w-[38px]">
-									<Image
-										alt="retrievifyLogo"
-										draggable={false}
-										src="/images/logo.png"
-										layout="fill"
-									/>
-								</div>
-								<h1 className="text-white font-proximaNova text-2xl font-bold ml-2">
-									Retrievify
-								</h1>
-							</a>
-						</Link>
+						<Link href="/" className="flex items-center flex-shrink-0">
+
+                            <div className="relative h-[38px] w-[38px]">
+                                <Image
+                                    alt="retrievifyLogo"
+                                    draggable={false}
+                                    src="/images/logo.png"
+                                    layout="fill"
+                                />
+                            </div>
+                            <h1 className="text-white font-proximaNova text-2xl font-bold ml-2">
+                                Retrievify
+                            </h1>
+
+                        </Link>
 					</div>
 					<nav className="mt-5 flex-1 px-4 bg-mgray space-y-1" aria-label="Sidebar">
 						{navigation.map(item => (
-							<Link href={item.href} key={item.name}>
-								<a
-									key={item.name}
-									href={item.href}
-									className={classNames(
-										item.current
-											? "bg-[#303030] text-white"
-											: "text-gray-300 hover:bg-[#404040] hover:text-white",
-										"group flex items-center px-2 py-2 text-sm font-medium rounded-md ease-in-out duration-100",
-									)}
-								>
-									<FontAwesomeIcon
-										icon={item.icon}
-										className={classNames(
-											item.current
-												? "text-gray-300"
-												: "text-gray-400 group-hover:text-gray-300",
-											"mr-3 flex-shrink-0 h-6 w-6",
-										)}
-										aria-hidden="true"
-									/>
-									<span className="flex-1">{item.name}</span>
-									{item.count ? (
-										<span
-											className={classNames(
-												item.current
-													? "bg-gray-800"
-													: "bg-gray-900 group-hover:bg-gray-800",
-												"ml-3 inline-block py-0.5 px-3 text-xs font-medium rounded-full",
-											)}
-										>
-											{item.count}
-										</span>
-									) : null}
-								</a>
-							</Link>
+							<Link
+                                href={item.href}
+                                key={item.name}
+                                className={classNames(
+                                    item.current
+                                        ? "bg-[#303030] text-white"
+                                        : "text-gray-300 hover:bg-[#404040] hover:text-white",
+                                    "group flex items-center px-2 py-2 text-sm font-medium rounded-md ease-in-out duration-100",
+                                )}>
+
+                                <FontAwesomeIcon
+                                    icon={item.icon}
+                                    className={classNames(
+                                        item.current
+                                            ? "text-gray-300"
+                                            : "text-gray-400 group-hover:text-gray-300",
+                                        "mr-3 flex-shrink-0 h-6 w-6",
+                                    )}
+                                    aria-hidden="true"
+                                />
+                                <span className="flex-1">{item.name}</span>
+                                {item.count ? (
+                                    <span
+                                        className={classNames(
+                                            item.current
+                                                ? "bg-gray-800"
+                                                : "bg-gray-900 group-hover:bg-gray-800",
+                                            "ml-3 inline-block py-0.5 px-3 text-xs font-medium rounded-full",
+                                        )}
+                                    >
+                                        {item.count}
+                                    </span>
+                                ) : null}
+
+                            </Link>
 						))}
 					</nav>
 				</div>
-				<div className="flex-shrink-0 flex bg-[#303030] p-4">
+                <div className="flex-shrink-0 flex bg-[#303030] p-4">
 					<Menu>
 						<Menu.Button className="flex-shrink-0 w-full group block">
 							<div className="flex items-center">
@@ -361,13 +360,13 @@ export const Sidebar = (props: any) => {
 								<div className="px-1 py-1 ">
 									<Menu.Item>
 										{({ active }) => (
-											<Link href="/privacy">
-												<a
-													className="hover:bg-[#505050] transition-all ease-in-out duration-100
-                                                group flex w-full items-center rounded-md px-2 py-2 text-sm text-white"
-												>
+											<Link
+                                                href="/privacy"
+                                                className="hover:bg-[#505050] transition-all ease-in-out duration-100
+                                            group flex w-full items-center rounded-md px-2 py-2 text-sm text-white">
+												
 													Privacy Policy
-												</a>
+												
 											</Link>
 										)}
 									</Menu.Item>
@@ -398,8 +397,8 @@ export const Sidebar = (props: any) => {
 						</Transition>
 					</Menu>
 				</div>
-			</div>
-		);
+            </div>
+        );
 	};
 
 	return <>{isBreakpoint ? <MainNavigation /> : <MobileNavigation />}</>;

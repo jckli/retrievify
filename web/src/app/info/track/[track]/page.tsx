@@ -38,9 +38,9 @@ const SongIndex: NextPage = (props: any) => {
 	}
 
 	return (
-		<>
-			<Sidebar />
-			<div className="navbar:ml-[280px] flex font-metropolis text-white">
+        <>
+            <Sidebar />
+            <div className="navbar:ml-[280px] flex font-metropolis text-white">
 				<div className="m-8 flex flex-col 1.5xl:flex-row w-[100%] overflow-auto">
 					<div className="1.5xl:w-[30%] flex flex-col md:flex-row 1.5xl:flex-col">
 						<div className="flex justify-center items-center md:w-[50%] 1.5xl:w-auto">
@@ -329,46 +329,46 @@ const SongIndex: NextPage = (props: any) => {
 							<div className="p-5">
 								<h1 className="font-proximaNova text-3xl">Album</h1>
 								<div className="mt-2">
-									<Link href={`/info/album/${data.album.id}`}>
-										<a className="hover:cursor-pointer">
-											<div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 p-2">
-												<div className="flex flex-col items-center md:flex-row">
-													<div className="relative h-[128px] w-[128px] md:h-[100px] md:w-[100px]">
-														<Image
-															alt="albumArt"
-															draggable={
-																false
-															}
-															src={
-																data
-																	.album
-																	.images[0]
-																	.url
-															}
-															layout="fill"
-														/>
-													</div>
-													<div className="flex flex-col text-center mt-2 md:mt-0 md:text-left md:ml-4">
-														<h1 className="text-2xl">
-															{
-																data
-																	.album
-																	.name
-															}
-														</h1>
-														<p>
-															Released:{" "}
-															{formatDate(
-																data
-																	.album
-																	.release_date,
-															)}
-														</p>
-													</div>
-												</div>
-											</div>
-										</a>
-									</Link>
+									<Link href={`/info/album/${data.album.id}`} className="hover:cursor-pointer">
+
+                                        <div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 p-2">
+                                            <div className="flex flex-col items-center md:flex-row">
+                                                <div className="relative h-[128px] w-[128px] md:h-[100px] md:w-[100px]">
+                                                    <Image
+                                                        alt="albumArt"
+                                                        draggable={
+                                                            false
+                                                        }
+                                                        src={
+                                                            data
+                                                                .album
+                                                                .images[0]
+                                                                .url
+                                                        }
+                                                        layout="fill"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col text-center mt-2 md:mt-0 md:text-left md:ml-4">
+                                                    <h1 className="text-2xl">
+                                                        {
+                                                            data
+                                                                .album
+                                                                .name
+                                                        }
+                                                    </h1>
+                                                    <p>
+                                                        Released:{" "}
+                                                        {formatDate(
+                                                            data
+                                                                .album
+                                                                .release_date,
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </Link>
 								</div>
 							</div>
 						</div>
@@ -378,23 +378,23 @@ const SongIndex: NextPage = (props: any) => {
 								<div className="mt-2">
 									{data.artists.map((artist: any) => (
 										<Link
-											href={`/info/artist/${artist.id}`}
-											key={artist.id}
-										>
-											<a className="hover:cursor-pointer">
-												<div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 p-2">
-													<div className="flex flex-wrap">
-														<div className="flex flex-col">
-															<h1 className="text-2xl">
-																{
-																	artist.name
-																}
-															</h1>
-														</div>
-													</div>
-												</div>
-											</a>
-										</Link>
+                                            href={`/info/artist/${artist.id}`}
+                                            key={artist.id}
+                                            className="hover:cursor-pointer">
+
+                                            <div className="hover:bg-[#404040] rounded-lg ease-in-out duration-100 p-2">
+                                                <div className="flex flex-wrap">
+                                                    <div className="flex flex-col">
+                                                        <h1 className="text-2xl">
+                                                            {
+                                                                artist.name
+                                                            }
+                                                        </h1>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </Link>
 									))}
 								</div>
 							</div>
@@ -500,8 +500,8 @@ const SongIndex: NextPage = (props: any) => {
 					</div>
 				</div>
 			</div>
-		</>
-	);
+        </>
+    );
 };
 
 const get_track = async (ctx: any) => {
