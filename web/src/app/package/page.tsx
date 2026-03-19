@@ -1,95 +1,93 @@
 "use client";
 
-import type { NextPage } from "next";
-import { useRouter } from "next/router";
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { Sidebar } from "../../components/Sidebar";
+import { Sidebar } from "@/components/Sidebar";
 
-const PackageIndex: NextPage = () => {
-	const [show, setShow] = useState(false);
-	const [error, setError] = useState("There has been an error");
+export default function PackageUpload() {
 	const router = useRouter();
 	const fileRef = useRef<HTMLInputElement>(null);
-	const importButton = async (event: any) => {
-		event.preventDefault();
-		fileRef.current?.click();
-	};
-	const handleFile = async (event: any) => {
-		event.preventDefault();
-		const file = event.target.files[0];
-		const url = "/api/package/upload";
+
+	const [error, setError] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+
+	const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		if (!file) return;
+
+		setIsLoading(true);
+		setError(null);
 
 		const formData = new FormData();
 		formData.append("file", file);
-		const resp: any = await fetch(url, {
-			method: "POST",
-			body: formData,
-			cache: "no-cache",
-		})
-			.then(res => res.json())
-			.then(data => {
-				return data;
+
+		try {
+			const res = await fetch("https://gomapi.hayasaka.moe/retrievify/package/upload", {
+				method: "POST",
+				body: formData,
 			});
-		if (resp.error) {
-			setShow(true);
-			setError(resp.error.message);
-		} else {
-			localStorage.setItem("songDict", JSON.stringify(resp.songDict));
-			localStorage.setItem("artistDict", JSON.stringify(resp.artistDict));
-			localStorage.setItem("firstTime", resp.firstTime);
-			localStorage.setItem("currentYear", resp.currentYear);
+
+			const data = await res.json();
+
+			if (!res.ok || data.error) {
+				throw new Error(data?.error?.message || "Failed to process package");
+			}
+
+			localStorage.setItem("songDict", JSON.stringify(data.songDict));
+			localStorage.setItem("artistDict", JSON.stringify(data.artistDict));
+			localStorage.setItem("firstTime", data.firstTime);
+			localStorage.setItem("currentYear", data.currentYear);
+
 			router.push("/package/overview");
+		} catch (err: any) {
+			setError(err.message);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	return (
-		<>
+		<div className="flex font-metropolis text-white h-screen bg-[#101010]">
 			<Sidebar active={2} />
-			<div className="navbar:ml-[280px] flex font-metropolis text-white h-[100vh]">
-				<input
-					type="file"
-					className="hidden"
-					id="file"
-					onChange={handleFile}
-					name="Input your Spotify package"
-					ref={fileRef}
-				/>
-				<div className="m-8 flex flex-col justify-center items-center w-[100%] text-center">
-					<button onClick={importButton}>
-						<div className="border border-dashed border-[#585858] rounded-md">
-							<div className="p-5 flex flex-col justify-center text-center">
-								<FontAwesomeIcon
-									icon={faCloudArrowUp}
-									size="4x"
-									className="text-primary"
-								/>
-								<h1 className="mt-2 text-3xl">
-									Import your Spotify data here
-								</h1>
-							</div>
-						</div>
-					</button>
-					<h1 className="mt-2">
-						<i>
-							You can request your data{" "}
-							<a
-								href="https://spotify.com/us/account/privacy"
-								className="underline underline-offset-2"
-							>
-								here
-							</a>
-							.
-						</i>
-					</h1>
-					{show ? (
-						<h1 className="mt-2 text-red-500">{error}. Please try again.</h1>
-					) : null}
-				</div>
-			</div>
-		</>
-	);
-};
+			<input type="file" className="hidden" accept=".zip" onChange={handleFile} ref={fileRef} />
 
-export default PackageIndex;
+			<div className="navbar:ml-[280px] m-8 flex flex-col justify-center items-center w-full text-center">
+				<button
+					onClick={() => fileRef.current?.click()}
+					disabled={isLoading}
+					className={`border border-dashed border-[#585858] rounded-md transition hover:bg-[#202020] ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+				>
+					<div className="p-10 flex flex-col items-center">
+						<FontAwesomeIcon
+							icon={faCloudArrowUp}
+							size="4x"
+							className="text-primary"
+						/>
+						<h1 className="mt-4 text-3xl">
+							{isLoading
+								? "Processing Package..."
+								: "Import your Spotify data here"}
+						</h1>
+					</div>
+				</button>
+
+				<p className="mt-4 italic text-gray-400">
+					You can request your data{" "}
+					<a
+						href="https://spotify.com/us/account/privacy"
+						target="_blank"
+						rel="noreferrer"
+						className="underline hover:text-primary transition"
+					>
+						here
+					</a>
+					.
+				</p>
+
+				{error && <h1 className="mt-4 text-red-500 font-bold">{error}</h1>}
+			</div>
+		</div>
+	);
+}

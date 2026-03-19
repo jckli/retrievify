@@ -1,72 +1,68 @@
 "use client";
 
-import type { NextPage } from "next";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import type { NextRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { PackagePDropdown } from "@/components/PackagePDropdown";
 
-const PackageOverview: NextPage = () => {
-	const router: NextRouter = useRouter();
+export default function PackageOverview() {
+	const router = useRouter();
 	const [period, setPeriod] = useState("package");
+	const [totalTimeStr, setTotalTimeStr] = useState("Loading...");
 
-	var convTotalTime = "";
-	if (typeof window !== "undefined") {
-		if (localStorage.getItem("songDict") === null) {
+	useEffect(() => {
+		const rawDict = localStorage.getItem("songDict");
+		if (!rawDict) {
+			router.push("/package");
+			return;
+		}
+
+		try {
+			const songjson = JSON.parse(rawDict);
+
+			const totalMs = Object.values(songjson?.Total?.All || {}).reduce(
+				(acc: number, curr: any) => acc + curr,
+				0,
+			);
+
+			setTotalTimeStr(msToTime(totalMs));
+		} catch (e) {
+			console.error("Failed to parse local package data", e);
+			localStorage.clear();
 			router.push("/package");
 		}
-		const songjson: any = JSON.parse(localStorage.getItem("songDict") || "{}");
-		console.log(songjson);
-		var totalTime = 0;
-		for (const time in songjson?.Total.All) {
-			totalTime += songjson?.Total.All[time];
-		}
-		convTotalTime = msToTime(totalTime);
-	}
+	}, [router, period]);
 
 	return (
-		<>
+		<div className="flex font-metropolis text-white bg-[#101010] min-h-screen">
 			<Sidebar active={2} />
-			<div className="navbar:ml-[280px] flex font-metropolis text-white">
-				<div className="m-8 flex flex-col 1.5xl:flex-row">
-					<div className="1.5xl:w-[50%] flex flex-col">
-						<div
-							id="time-total"
-							className="bg-mgray rounded-md 1.5xl:min-w-[50%] h-fit"
-						>
-							<div className="p-5">
-								<div className="flex items-center">
-									<h1 className="font-proximaNova text-3xl">
-										Total Time Listened
-									</h1>
-									<div className="ml-2">
-										<PackagePDropdown
-											setPeriod={setPeriod}
-										/>
-									</div>
-								</div>
-								<div className="mt-4">
-									<h1 className="text-5xl font-bold">
-										{convTotalTime}
-									</h1>
-								</div>
+			<div className="navbar:ml-[280px] m-8 flex flex-col 1.5xl:flex-row w-full">
+				<div className="1.5xl:w-[50%] flex flex-col">
+					<div className="bg-mgray rounded-md 1.5xl:min-w-[50%] p-5">
+						<div className="flex items-center">
+							<h1 className="font-proximaNova text-3xl">
+								Total Time Listened
+							</h1>
+							<div className="ml-4">
+								<PackagePDropdown setPeriod={setPeriod} />
 							</div>
+						</div>
+						<div className="mt-6">
+							<h1 className="text-5xl font-bold text-primary">
+								{totalTimeStr}
+							</h1>
 						</div>
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
-};
+}
 
-export default PackageOverview;
-
-function msToTime(milliseconds: number) {
-	let seconds = milliseconds / 1000;
-	const hours = Math.floor(seconds / 3600);
-	seconds = seconds % 3600;
-	const minutes = Math.floor(seconds / 60);
-	seconds = Math.floor(seconds % 60);
-	return `${hours} hrs, ${minutes} mins, ${seconds} secs`;
+function msToTime(ms: number) {
+	const totalSecs = Math.floor(ms / 1000);
+	const h = Math.floor(totalSecs / 3600);
+	const m = Math.floor((totalSecs % 3600) / 60);
+	const s = totalSecs % 60;
+	return `${h} hrs, ${m} mins, ${s} secs`;
 }

@@ -1,5 +1,5 @@
 {
-  "name": "statsify",
+  "name": "retrievify",
   "private": true,
   "scripts": {
     "dev": "next dev",

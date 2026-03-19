@@ -1,110 +1,83 @@
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Label, ReferenceLine } from "recharts";
 
-export const ObscureChart = (props: any) => {
-    let dataArray: any[] = [];
-    Object.keys(props.data.breakdown).map(function (index) {
-        if (Number(props.data.breakdown[index].N) > 0) {
-            dataArray.push({ N: Number(props.data.breakdown[index].N), you: 0 });
-        }
-    });
-    dataArray.reverse();
+export const ObscureChart = ({ data }: any) => {
+	const rawData = Object.values(data.breakdown)
+		.map((val: any) => Number(val.N))
+		.filter(n => n > 0)
+		.reverse();
 
-    let count = 0;
-    let currentIndex = "";
-    let allTimeIndex = "";
-    for (const key in dataArray) {
-        count += dataArray[key].N;
-        if (
-            count >= props.data.userCountByCountry * (props.data.percentileByCountryRecent / 100) &&
-            currentIndex == ""
-        ) {
-            currentIndex = key;
-        }
-        if (
-            count >= props.data.userCountByCountry * (props.data.percentileByCountryAllTime / 100) &&
-            allTimeIndex == ""
-        ) {
-            allTimeIndex = key;
-        }
-    }
-    dataArray[Number(currentIndex)].you = 1;
-    dataArray[Number(allTimeIndex)].you = 2;
+	const threshold = Math.max(...rawData) * 0.01;
+	const targetRecent = data.userCountByCountry * (data.percentileByCountryRecent / 100);
+	const targetAllTime = data.userCountByCountry * (data.percentileByCountryAllTime / 100);
 
-    let max = Math.max(...dataArray.map(obj => obj.N));
-    let threshold = 0.01 * max;
-    let filtered = dataArray.filter(obj => obj.N >= threshold);
+	let count = 0,
+		idxRecent = -1,
+		idxAllTime = -1;
+	const filtered = rawData.reduce(
+		(acc, N) => {
+			count += N;
+			if (N >= threshold) {
+				acc.push({ N });
+				if (count >= targetRecent && idxRecent === -1) idxRecent = acc.length - 1;
+				if (count >= targetAllTime && idxAllTime === -1) idxAllTime = acc.length - 1;
+			}
+			return acc;
+		},
+		[] as { N: number }[],
+	);
 
-    var currentLineIndex = -1;
-    var allTimeLineIndex = -1;
-    for (let i = 0; i < filtered.length; i++) {
-        if (filtered[i].you == 1) {
-            currentLineIndex = i;
-        } else if (filtered[i].you == 2) {
-            allTimeLineIndex = i;
-        }
-    }
-    if (currentLineIndex == -1) {
-        currentLineIndex = filtered.length - 1;
-    }
-    if (allTimeLineIndex == -1) {
-        allTimeLineIndex = filtered.length - 1;
-    }
+	idxRecent = idxRecent === -1 ? filtered.length - 1 : idxRecent;
+	idxAllTime = idxAllTime === -1 ? filtered.length - 1 : idxAllTime;
 
-    const allTimeLabel = (a: any) => (
-        <g>
-            <foreignObject x={a.viewBox.x - 60} y={a.viewBox.y + 70} width={120} height={100}>
-                <div className="bg-black opacity-70 rounded-lg z-50">
-                    <div className="p-1 flex items-center justify-center">
-                        <p className="text-[11px]">
-                            Your All Time {Math.floor(props.data.percentileByCountryAllTime)}%
-                        </p>
-                    </div>
-                </div>
-            </foreignObject>
-        </g>
-    );
+	const CustomLabel = ({ viewBox, text, yOffset }: any) => (
+		<foreignObject x={viewBox.x - 60} y={viewBox.y + yOffset} width={120} height={100}>
+			<div className="bg-black/80 rounded-lg z-50 p-1 flex justify-center text-center">
+				<p className="text-[11px] text-white opacity-90">{text}</p>
+			</div>
+		</foreignObject>
+	);
 
-    const currentLabel = (a: any) => (
-        <g>
-            <foreignObject x={a.viewBox.x - 60} y={a.viewBox.y + 30} width={120} height={100}>
-                <div className="bg-black opacity-80 rounded-lg z-50">
-                    <div className="p-1 flex items-center justify-center">
-                        <p className="text-[11px] opacity-90">
-                            Your Current {Math.floor(props.data.percentileByCountryRecent)}%
-                        </p>
-                    </div>
-                </div>
-            </foreignObject>
-        </g>
-    );
-
-    return (
-        <>
-            <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={filtered} margin={{ left: 20, top: 20 }}>
-                    <XAxis tick={false}>
-                        <Label value="More Obscure Taste ->" />
-                    </XAxis>
-                    <YAxis tickCount={6}>
-                        <Label angle={-90} value="Users" position="left" offset={15} style={{ textAnchor: "middle" }} />
-                    </YAxis>
-                    <Bar dataKey="N" fill="#4ad3ff" />
-                    <ReferenceLine
-                        x={allTimeLineIndex}
-                        label={allTimeLabel}
-                        stroke="#ff8c00"
-                        strokeWidth={2}
-                        isFront={false}
-                    />
-                    <ReferenceLine x={currentLineIndex} label={currentLabel} stroke="#005b9f" strokeWidth={2} />
-                </BarChart>
-            </ResponsiveContainer>
-        </>
-    );
+	return (
+		<ResponsiveContainer width="100%" height={300}>
+			<BarChart data={filtered} margin={{ left: 20, top: 20 }}>
+				<XAxis tick={false}>
+					<Label value="More Obscure Taste ->" />
+				</XAxis>
+				<YAxis tickCount={6}>
+					<Label
+						angle={-90}
+						value="Users"
+						position="left"
+						offset={15}
+						style={{ textAnchor: "middle" }}
+					/>
+				</YAxis>
+				<Bar dataKey="N" fill="#4ad3ff" />
+				<ReferenceLine
+					x={idxAllTime}
+					stroke="#ff8c00"
+					strokeWidth={2}
+					label={p => (
+						<CustomLabel
+							{...p}
+							text={`Your All Time ${Math.floor(data.percentileByCountryAllTime)}%`}
+							yOffset={70}
+						/>
+					)}
+				/>
+				<ReferenceLine
+					x={idxRecent}
+					stroke="#005b9f"
+					strokeWidth={2}
+					label={p => (
+						<CustomLabel
+							{...p}
+							text={`Your Current ${Math.floor(data.percentileByCountryRecent)}%`}
+							yOffset={30}
+						/>
+					)}
+				/>
+			</BarChart>
+		</ResponsiveContainer>
+	);
 };
-
-function splitArray(arr: number[]): number[] {
-    const startIndex = Math.floor((arr.length - 200) / 2);
-    const endIndex = startIndex + 200;
-    return arr.slice(startIndex, endIndex);
-}

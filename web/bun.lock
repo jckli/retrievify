@@ -11,8 +11,6 @@
         "@fortawesome/react-fontawesome": "^3.2.0",
         "@headlessui/react": "^2.2.9",
         "@heroicons/react": "^2.2.0",
-        "@tailwindcss/line-clamp": "^0.4.4",
-        "@tailwindcss/postcss": "^4.2.2",
         "@types/recharts": "^2.0.1",
         "cookies-next": "^6.1.1",
         "framer-motion": "^12.38.0",
@@ -26,6 +24,7 @@
         "swr": "^2.4.1",
       },
       "devDependencies": {
+        "@tailwindcss/postcss": "^4.2.2",
         "@types/node": "25.5.0",
         "@types/react": "19.2.14",
         "@types/styled-components": "^5.1.36",
@@ -244,8 +243,6 @@
     "@standard-schema/utils": ["@standard-schema/utils@0.3.0", "", {}, "sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g=="],
 
     "@swc/helpers": ["@swc/helpers@0.5.15", "", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g=="],
-
-    "@tailwindcss/line-clamp": ["@tailwindcss/line-clamp@0.4.4", "", { "peerDependencies": { "tailwindcss": ">=2.0.0 || >=3.0.0 || >=3.0.0-alpha.1" } }, "sha512-5U6SY5z8N42VtrCrKlsTAA35gy2VSyYtHWCsg1H87NU1SXnEfekTVlrga9fzUDrrHcGi2Lb5KenUWb4lRQT5/g=="],
 
     "@tailwindcss/node": ["@tailwindcss/node@4.2.2", "", { "dependencies": { "@jridgewell/remapping": "^2.3.5", "enhanced-resolve": "^5.19.0", "jiti": "^2.6.1", "lightningcss": "1.32.0", "magic-string": "^0.30.21", "source-map-js": "^1.2.1", "tailwindcss": "4.2.2" } }, "sha512-pXS+wJ2gZpVXqFaUEjojq7jzMpTGf8rU6ipJz5ovJV6PUGmlJ+jvIwGrzdHdQ80Sg+wmQxUFuoW1UAAwHNEdFA=="],
 
