@@ -31,31 +31,46 @@ const Home: NextPage = () => {
 		`/spotify/topitems/artists?time_range=short_term&limit=50`,
 		fetcher,
 	);
-	const { data: taMed, error: e2 } = useSWR(`/spotify/topitems/artists?time_range=medium_term&limit=50`, fetcher);
-	const { data: taLong, error: e3 } = useSWR(`/spotify/topitems/artists?time_range=long_term&limit=50`, fetcher);
+	const { data: taMed, error: e2 } = useSWR(
+		`/retrievify/spotify/topitems/artists?time_range=medium_term&limit=50`,
+		fetcher,
+	);
+	const { data: taLong, error: e3 } = useSWR(
+		`/retrievify/spotify/topitems/artists?time_range=long_term&limit=50`,
+		fetcher,
+	);
 
-	const { data: ttShort, error: e4 } = useSWR(`/spotify/topitems/tracks?time_range=short_term&limit=50`, fetcher);
-	const { data: ttMed, error: e5 } = useSWR(`/spotify/topitems/tracks?time_range=medium_term&limit=50`, fetcher);
-	const { data: ttLong, error: e6 } = useSWR(`/spotify/topitems/tracks?time_range=long_term&limit=50`, fetcher);
+	const { data: ttShort, error: e4 } = useSWR(
+		`/retrievify/spotify/topitems/tracks?time_range=short_term&limit=50`,
+		fetcher,
+	);
+	const { data: ttMed, error: e5 } = useSWR(
+		`/retrievify/spotify/topitems/tracks?time_range=medium_term&limit=50`,
+		fetcher,
+	);
+	const { data: ttLong, error: e6 } = useSWR(
+		`/retrievify/spotify/topitems/tracks?time_range=long_term&limit=50`,
+		fetcher,
+	);
 
 	const { data: afShort, error: e7 } = useSWR(
 		() =>
 			ttShort
-				? `/spotify/multi-audiofeatures?ids=${ttShort.items.map((i: any) => i.id).join(",")}`
+				? `/retrievify/spotify/multi-audiofeatures?ids=${ttShort.items.map((i: any) => i.id).join(",")}`
 				: null,
 		fetcher,
 	);
 	const { data: afMed, error: e8 } = useSWR(
 		() =>
 			ttMed
-				? `/spotify/multi-audiofeatures?ids=${ttMed.items.map((i: any) => i.id).join(",")}`
+				? `/retrievify/spotify/multi-audiofeatures?ids=${ttMed.items.map((i: any) => i.id).join(",")}`
 				: null,
 		fetcher,
 	);
 	const { data: afLong, error: e9 } = useSWR(
 		() =>
 			ttLong
-				? `/spotify/multi-audiofeatures?ids=${ttLong.items.map((i: any) => i.id).join(",")}`
+				? `/retrievify/spotify/multi-audiofeatures?ids=${ttLong.items.map((i: any) => i.id).join(",")}`
 				: null,
 		fetcher,
 	);
