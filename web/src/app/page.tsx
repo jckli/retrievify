@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { MainButton } from "../components/MainButton";
 import { Footer } from "../components/Footer";
 

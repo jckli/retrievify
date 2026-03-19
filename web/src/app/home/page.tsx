@@ -2,7 +2,7 @@
 
 import type { NextPage } from "next";
 import useSWR from "swr";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";

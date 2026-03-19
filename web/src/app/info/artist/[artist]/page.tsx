@@ -2,7 +2,7 @@
 
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { Sidebar } from "@/components/Sidebar";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
