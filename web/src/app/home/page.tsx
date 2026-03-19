@@ -23,12 +23,12 @@ const Home: NextPage = () => {
 	const [periodAvg, setPeriodAvg] = useState<(typeof terms)[number]>("short_term");
 	const [country, setCountry] = useState("US");
 
-	const { data: playing, error: errPlay } = useSWR(`/spotify/currentlyplaying`, fetcher, {
+	const { data: playing, error: errPlay } = useSWR(`/retrievify/spotify/currentlyplaying`, fetcher, {
 		refreshInterval: 10000,
 	});
 
 	const { data: taShort, error: e1 } = useSWR(
-		`/spotify/topitems/artists?time_range=short_term&limit=50`,
+		`/retrievify/spotify/topitems/artists?time_range=short_term&limit=50`,
 		fetcher,
 	);
 	const { data: taMed, error: e2 } = useSWR(
