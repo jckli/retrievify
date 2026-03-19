@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
-    reactStrictMode: true,
-    images: {
-        domains: ["i.scdn.co"],
-    },
+	reactStrictMode: true,
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "i.scdn.co",
+				port: "",
+				pathname: "/**",
+			},
+		],
+	},
+	allowedDevOrigins: ["192.168.1.72"],
 };

@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
 
 @font-face {
     font-family: ProximaNova;
@@ -9,6 +9,14 @@
 @font-face {
     font-family: Metropolis;
     src: url("/fonts/MetropolisSemiBold.ttf");
+}
+
+@theme {
+  --color-primary: #4ad3ff;
+  --color-mgray: #202020;
+
+  --font-proximaNova: ProximaNova;
+  --font-metropolis: Metropolis;
 }
 
 html,
