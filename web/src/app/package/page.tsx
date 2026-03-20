@@ -49,15 +49,21 @@ export default function PackageUpload() {
 	};
 
 	return (
-		<div className="flex font-metropolis text-white h-screen bg-[#101010]">
+		<>
 			<Sidebar active={2} />
-			<input type="file" className="hidden" accept=".zip" onChange={handleFile} ref={fileRef} />
+			<div className="navbar:ml-[280px] min-h-screen flex flex-col justify-center items-center font-metropolis text-white p-8 text-center">
+				<input
+					type="file"
+					className="hidden"
+					accept=".zip"
+					onChange={handleFile}
+					ref={fileRef}
+				/>
 
-			<div className="navbar:ml-[280px] m-8 flex flex-col justify-center items-center w-full text-center">
 				<button
 					onClick={() => fileRef.current?.click()}
 					disabled={isLoading}
-					className={`border border-dashed border-[#585858] rounded-md transition hover:bg-[#202020] ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+					className={`border border-dashed border-[#585858] rounded-md transition hover:bg-[#202020] w-full max-w-lg ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
 				>
 					<div className="p-10 flex flex-col items-center">
 						<FontAwesomeIcon
@@ -88,6 +94,6 @@ export default function PackageUpload() {
 
 				{error && <h1 className="mt-4 text-red-500 font-bold">{error}</h1>}
 			</div>
-		</div>
+		</>
 	);
 }

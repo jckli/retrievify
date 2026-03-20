@@ -50,7 +50,12 @@ export const AverageStats = ({ topArtists, topTracks, audioFeatures }: any) => {
 		<div className="bg-mgray rounded-md p-5">
 			<div className="flex items-center justify-between sm:justify-start gap-4">
 				<h1 className="font-proximaNova text-3xl">Average Stats</h1>
-				<Dropdown items={periodOptions} initialActiveId={period} onChange={setPeriod} />
+				<Dropdown
+					items={periodOptions}
+					initialActiveId={period}
+					onChange={setPeriod}
+					align="responsive"
+				/>
 			</div>
 			<div className="mt-4 flex gap-4 flex-wrap justify-center">
 				{statConfigs.map(stat => {

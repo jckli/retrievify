@@ -12,7 +12,7 @@ export const Dropdown = ({
 	items: DropdownItem[];
 	initialActiveId: string | number;
 	onChange: (value: string) => void;
-	align?: "left" | "right";
+	align?: "left" | "right" | "responsive"; // NEW: Added 'responsive' type
 }) => {
 	const [active, setActive] = useState(items.find(i => i.id === initialActiveId) || items[0]);
 
@@ -20,6 +20,13 @@ export const Dropdown = ({
 		setActive(item);
 		onChange(item.value);
 	};
+
+	const alignmentClasses =
+		align === "responsive"
+			? "right-0 sm:right-auto sm:left-0 origin-top-right sm:origin-top-left"
+			: align === "right"
+				? "right-0 origin-top-right"
+				: "left-0 origin-top-left";
 
 	return (
 		<Menu as="div" className="relative inline-block text-left z-50">
@@ -42,9 +49,7 @@ export const Dropdown = ({
 
 			<MenuItems
 				transition
-				className={`absolute mt-2 w-56 rounded-md bg-[#303030] shadow-lg ring-1 ring-black/10 focus:outline-none p-1 transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 max-h-60 overflow-y-auto ${
-					align === "right" ? "right-0 origin-top-right" : "left-0 origin-top-left"
-				}`}
+				className={`absolute mt-2 w-56 rounded-md bg-[#303030] shadow-lg ring-1 ring-black/10 focus:outline-none p-1 transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 max-h-60 overflow-y-auto ${alignmentClasses}`}
 			>
 				{items.map(item => (
 					<MenuItem key={item.id}>

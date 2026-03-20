@@ -116,7 +116,7 @@ export const MobileTopLists = ({ topArtists, topTracks }: { topArtists: any; top
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
-									className={`transition-transform duration-300 ${isExpanded ? "-rotate-90" : "rotate-90"}`}
+									className={`w-6 h-6 transition-transform duration-300 ${isExpanded ? "-rotate-90" : "rotate-90"}`}
 								>
 									<path
 										strokeLinecap="round"

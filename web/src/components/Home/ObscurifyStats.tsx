@@ -63,7 +63,12 @@ export const ObscurifyStats = ({ taShort, taLong }: { taShort: any; taLong: any 
 		<div className="bg-mgray rounded-md p-5">
 			<div className="flex items-center justify-between sm:justify-start gap-4">
 				<h1 className="font-proximaNova text-3xl">Obscurify Data</h1>
-				<Dropdown items={countryOptions} initialActiveId={country} onChange={setCountry} />
+				<Dropdown
+					items={countryOptions}
+					initialActiveId={country}
+					onChange={setCountry}
+					align="responsive"
+				/>
 			</div>
 			<div className="mt-4 flex flex-col sm:flex-row justify-between gap-4 mlg:gap-10 mlg:mx-10">
 				{["Recent", "All Time"].map((label, i) => {

@@ -29,7 +29,12 @@ export const TopGenres = ({ topArtists }: { topArtists: any }) => {
 		<div className="bg-mgray rounded-md p-5">
 			<div className="flex items-center justify-between sm:justify-start gap-4">
 				<h1 className="font-proximaNova text-3xl">Top Genres</h1>
-				<Dropdown items={periodOptions} initialActiveId={period} onChange={setPeriod} />
+				<Dropdown
+					items={periodOptions}
+					initialActiveId={period}
+					onChange={setPeriod}
+					align="responsive"
+				/>
 			</div>
 			<div className="mt-4 flex flex-wrap gap-3">
 				{genres[period].map((genre: string, idx: number) => (
