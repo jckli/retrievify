@@ -68,7 +68,7 @@ const Home: NextPage = () => {
 	if (isLoading || isError) {
 		return (
 			<>
-				<h1 className="font-proximaNova text-2xl flex items-center justify-center">
+				<h1 className="font-proximaNova text-2xl flex items-center justify-center min-h-screen">
 					{isError ? "Failed to load data. Are you logged in?" : "Loading..."}
 				</h1>
 			</>

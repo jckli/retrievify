@@ -21,7 +21,7 @@ export default function TrackIndex() {
 
 	if (!track || !af || e1 || e2) {
 		return (
-			<div className="flex items-center justify-center font-proximaNova">
+			<div className="flex items-center justify-center font-proximaNova min-h-screen">
 				{e1 || e2 ? "Failed to load track data." : "Loading..."}
 			</div>
 		);

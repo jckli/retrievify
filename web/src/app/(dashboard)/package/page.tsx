@@ -49,7 +49,7 @@ export default function PackageUpload() {
 
 	return (
 		<>
-			<div className="flex flex-col justify-center items-center font-metropolis p-8 text-center">
+			<div className="flex flex-col justify-center items-center font-metropolis p-8 text-center min-h-screen">
 				<input
 					type="file"
 					className="hidden"

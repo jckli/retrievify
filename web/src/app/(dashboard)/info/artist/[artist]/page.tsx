@@ -27,7 +27,7 @@ export default function ArtistIndex() {
 
 	if (!artist || !topTracks || !related || e1 || e2 || e3) {
 		return (
-			<div className="flex items-center justify-center font-proximaNova">
+			<div className="flex items-center justify-center font-proximaNova min-h-screen">
 				{e1 || e2 || e3 ? "Failed to load artist data." : "Loading..."}
 			</div>
 		);
