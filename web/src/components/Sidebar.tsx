@@ -37,8 +37,10 @@ export const Sidebar = ({ active }: { active?: number }) => {
 
 	const UserDropdown = () => (
 		<Menu as="div" className="relative z-50">
-			<MenuButton className="flex text-sm rounded-full focus:outline-none ring-2 ring-transparent hover:ring-[#606060] transition cursor-pointer">
-				<div className="relative h-9 w-9 rounded-full bg-[#282828] overflow-hidden flex items-center justify-center">
+			<MenuButton
+				className={`flex items-center text-sm rounded-full focus:outline-none ring-2 ring-transparent hover:ring-[#606060] transition cursor-pointer ${isDesktop ? "pr-4" : ""}`}
+			>
+				<div className="relative h-9 w-9 shrink-0 rounded-full bg-[#282828] overflow-hidden flex items-center justify-center">
 					{user?.images?.[0]?.url ? (
 						<Image
 							alt="user-pfp"
@@ -54,7 +56,7 @@ export const Sidebar = ({ active }: { active?: number }) => {
 					)}
 				</div>
 				{isDesktop && (
-					<span className="ml-3 mt-1 text-sm font-medium text-white">
+					<span className="ml-3 text-sm font-medium text-white truncate max-w-[150px]">
 						{user?.display_name || "Loading..."}
 					</span>
 				)}
