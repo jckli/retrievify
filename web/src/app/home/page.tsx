@@ -17,6 +17,8 @@ import { ObscureChart } from "@/components/Home/ObsChart";
 
 const terms = ["short_term", "medium_term", "long_term"] as const;
 
+const basicFetcher = (url: string) => fetch(url).then(res => res.json());
+
 const Home: NextPage = () => {
 	const [periodGenre, setPeriodGenre] = useState<(typeof terms)[number]>("short_term");
 	const [periodAvg, setPeriodAvg] = useState<(typeof terms)[number]>("short_term");
@@ -82,7 +84,7 @@ const Home: NextPage = () => {
 		if (isLoading) return null;
 		const sc = get_obscurify_score(taShort, taLong);
 		return `https://ktp0b5os1g.execute-api.us-east-2.amazonaws.com/dev/getObscurifyData?code=${country}&obscurifyScore=${sc.all_time}&recentObscurifyScore=${sc.recent}`;
-	});
+	}, basicFetcher);
 
 	if (isLoading || isError) {
 		return (
