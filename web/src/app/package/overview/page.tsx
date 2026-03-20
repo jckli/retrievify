@@ -36,9 +36,9 @@ export default function PackageOverview() {
 	return (
 		<div className="flex font-metropolis text-white bg-[#101010] min-h-screen">
 			<Sidebar active={2} />
-			<div className="navbar:ml-[280px] m-8 flex flex-col 1.5xl:flex-row w-full">
-				<div className="1.5xl:w-[50%] flex flex-col">
-					<div className="bg-mgray rounded-md 1.5xl:min-w-[50%] p-5">
+			<div className="navbar:ml-[280px] m-8 flex flex-col xxl:flex-row w-full">
+				<div className="xxl:w-[50%] flex flex-col">
+					<div className="bg-mgray rounded-md xxl:min-w-[50%] p-5">
 						<div className="flex items-center">
 							<h1 className="font-proximaNova text-3xl">
 								Total Time Listened

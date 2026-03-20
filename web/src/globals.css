@@ -27,10 +27,22 @@ body {
 }
 
 @theme {
-  --color-primary: #4ad3ff;
-  --color-mgray: #202020;
+  	--color-primary: #4ad3ff;
+  	--color-mgray: #202020;
 
-  --font-proximaNova: ProximaNova;
-  --font-metropolis: Metropolis;
+  	--font-proximaNova: ProximaNova;
+  	--font-metropolis: Metropolis;
+
+ 	--breakpoint-navbar: 894px;
+    --breakpoint-xxsm: 380px;
+    --breakpoint-xsm: 460px;
+    --breakpoint-sxsm: 510px;
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-mlg: 894px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-xxl: 1440px;
+    --breakpoint-2xl: 1536px;
 }
 

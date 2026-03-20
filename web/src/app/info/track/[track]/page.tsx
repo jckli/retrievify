@@ -42,8 +42,8 @@ export default function TrackIndex() {
 	return (
 		<div className="flex font-metropolis text-white bg-[#101010] min-h-screen">
 			<Sidebar />
-			<div className="navbar:ml-[280px] m-8 flex flex-col 1.5xl:flex-row w-full gap-8">
-				<div className="1.5xl:w-[30%] flex flex-col gap-8">
+			<div className="navbar:ml-[280px] m-8 flex flex-col xxl:flex-row w-full gap-8">
+				<div className="xxl:w-[30%] flex flex-col gap-8">
 					<div className="bg-mgray rounded-md p-5 flex flex-col items-center text-center">
 						<div className="relative h-[256px] w-[256px]">
 							<Image
@@ -119,7 +119,7 @@ export default function TrackIndex() {
 					</div>
 				</div>
 
-				<div className="1.5xl:w-[70%] flex flex-col gap-8">
+				<div className="xxl:w-[70%] flex flex-col gap-8">
 					<div className="bg-mgray rounded-md p-5">
 						<h1 className="font-proximaNova text-3xl mb-6">Audio Analysis</h1>
 

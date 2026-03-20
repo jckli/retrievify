@@ -108,11 +108,11 @@ const Home: NextPage = () => {
 		<>
 			<Sidebar active={1} />
 			<div className="navbar:ml-[280px] flex font-metropolis text-white">
-				<div className="m-6 sm:m-8 grid grid-cols-1 1.5xl:grid-cols-2 gap-8 w-full pr-6 sm:pr-8">
+				<div className="m-6 sm:m-8 grid grid-cols-1 xxl:grid-cols-2 gap-8 w-full pr-6 sm:pr-8">
 					<div className="flex flex-col">
 						<div
 							id="now-playing"
-							className="bg-mgray rounded-md 1.5xl:min-w-[50%] h-fit p-5"
+							className="bg-mgray rounded-md xxl:min-w-[50%] h-fit p-5"
 						>
 							<h1 className="font-proximaNova text-3xl">Now Playing</h1>
 							<div className="mt-4">
@@ -346,10 +346,7 @@ const Home: NextPage = () => {
 						</div>
 					</div>
 					<div className="flex flex-col">
-						<div
-							id="top-genres"
-							className="bg-mgray rounded-md mt-8 1.5xl:mt-0 p-5"
-						>
+						<div id="top-genres" className="bg-mgray rounded-md mt-8 xxl:mt-0 p-5">
 							<div className="flex items-center justify-between sm:justify-start">
 								<h1 className="font-proximaNova text-3xl">
 									Top Genres
