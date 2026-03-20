@@ -16,7 +16,7 @@ export default function AlbumIndex() {
 
 	if (isLoading || error) {
 		return (
-			<div className="flex h-screen items-center justify-center font-proximaNova">
+			<div className="flex items-center justify-center font-proximaNova">
 				{error ? "Failed to load album data." : "Loading..."}
 			</div>
 		);

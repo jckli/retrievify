@@ -4,9 +4,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 	return (
 		<>
 			<Sidebar />
-			<main className="navbar:ml-[280px] min-h-screen w-full font-metropolis text-white">
-				{children}
-			</main>
+			<main className="navbar:ml-[280px] min-h-screen font-metropolis text-white">{children}</main>
 		</>
 	);
 }
