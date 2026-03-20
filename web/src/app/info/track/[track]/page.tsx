@@ -40,155 +40,167 @@ export default function TrackIndex() {
 	];
 
 	return (
-		<div className="flex font-metropolis text-white bg-[#101010] min-h-screen">
+		<>
 			<Sidebar />
-			<div className="navbar:ml-[280px] p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
-				<div className="lg:col-span-4 xxl:col-span-3 flex flex-col gap-8">
-					<div className="bg-mgray rounded-md p-5 flex flex-col items-center text-center">
-						<div className="relative h-[256px] w-[256px]">
-							<Image
-								alt="trackArt"
-								src={track?.album?.images?.[0]?.url}
-								layout="fill"
-								unoptimized
-								draggable={false}
-							/>
+			<div className="navbar:ml-[280px] font-metropolis text-white min-h-screen">
+				<div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+					<div className="lg:col-span-4 xxl:col-span-3 flex flex-col gap-8">
+						<div className="bg-mgray rounded-md p-5 flex flex-col items-center text-center">
+							<div className="relative h-[256px] w-[256px]">
+								<Image
+									alt="trackArt"
+									src={track?.album?.images?.[0]?.url}
+									layout="fill"
+									unoptimized
+									draggable={false}
+								/>
+							</div>
+							<h1 className="text-4xl mt-4">{track?.name}</h1>
+							<p className="text-gray-400 text-lg mt-1">
+								{track?.artists?.map((a: any) => a.name).join(", ")}
+							</p>
 						</div>
-						<h1 className="text-4xl mt-4">{track?.name}</h1>
-						<p className="text-gray-400 text-lg mt-1">
-							{track?.artists?.map((a: any) => a.name).join(", ")}
-						</p>
+
+						<div className="flex flex-col gap-4">
+							<a
+								href={track?.external_urls?.spotify}
+								className="bg-mgray p-5 rounded-md flex items-center justify-center hover:bg-[#404040] transition"
+							>
+								<FontAwesomeIcon icon={faSpotify} size="2x" />
+								<h1 className="ml-2">Open on Spotify</h1>
+							</a>
+							<div className="bg-mgray p-5 rounded-md flex justify-between">
+								<div>
+									<h1 className="font-proximaNova text-2xl text-gray-400">
+										Duration
+									</h1>
+									<h1 className="text-xl mt-1">
+										{formatMilliseconds(track?.duration_ms)}
+									</h1>
+								</div>
+								<div className="text-right">
+									<h1 className="font-proximaNova text-2xl text-gray-400">
+										Popularity
+									</h1>
+									<h1 className="text-xl mt-1">
+										{track?.popularity / 10} / 10
+									</h1>
+								</div>
+							</div>
+
+							<div className="bg-mgray p-5 rounded-md">
+								<h1 className="font-proximaNova text-3xl mb-4">
+									Album
+								</h1>
+								<Link href={`/info/album/${track?.album?.id}`}>
+									<div className="flex items-center gap-4 hover:bg-[#404040] p-2 rounded-lg transition cursor-pointer">
+										<div className="relative h-16 w-16">
+											<Image
+												alt="albumArt"
+												src={
+													track?.album
+														?.images?.[0]
+														?.url
+												}
+												layout="fill"
+												unoptimized
+											/>
+										</div>
+										<div>
+											<h1 className="text-xl">
+												{track?.album?.name}
+											</h1>
+											<p className="text-sm text-gray-400">
+												{new Date(
+													track?.album?.release_date,
+												).getFullYear()}
+											</p>
+										</div>
+									</div>
+								</Link>
+							</div>
+						</div>
 					</div>
 
-					<div className="flex flex-col gap-4">
-						<a
-							href={track?.external_urls?.spotify}
-							className="bg-mgray p-5 rounded-md flex items-center justify-center hover:bg-[#404040] transition"
-						>
-							<FontAwesomeIcon icon={faSpotify} size="2x" />
-							<h1 className="ml-2">Open on Spotify</h1>
-						</a>
-						<div className="bg-mgray p-5 rounded-md flex justify-between">
-							<div>
-								<h1 className="font-proximaNova text-2xl text-gray-400">
-									Duration
-								</h1>
-								<h1 className="text-xl mt-1">
-									{formatMilliseconds(track?.duration_ms)}
-								</h1>
-							</div>
-							<div className="text-right">
-								<h1 className="font-proximaNova text-2xl text-gray-400">
-									Popularity
-								</h1>
-								<h1 className="text-xl mt-1">
-									{track?.popularity / 10} / 10
-								</h1>
-							</div>
-						</div>
+					<div className="lg:col-span-8 xxl:col-span-9 flex flex-col gap-8">
+						<div className="bg-mgray rounded-md p-5">
+							<h1 className="font-proximaNova text-3xl mb-6">
+								Audio Analysis
+							</h1>
 
-						<div className="bg-mgray p-5 rounded-md">
-							<h1 className="font-proximaNova text-3xl mb-4">Album</h1>
-							<Link href={`/info/album/${track?.album?.id}`}>
-								<div className="flex items-center gap-4 hover:bg-[#404040] p-2 rounded-lg transition cursor-pointer">
-									<div className="relative h-16 w-16">
-										<Image
-											alt="albumArt"
-											src={
-												track?.album
-													?.images?.[0]
-													?.url
-											}
-											layout="fill"
-											unoptimized
-										/>
-									</div>
-									<div>
-										<h1 className="text-xl">
-											{track?.album?.name}
+							<div className="flex flex-wrap gap-4 justify-center">
+								{[
+									{
+										title: "Key",
+										val:
+											[
+												"C",
+												"C#",
+												"D",
+												"D#",
+												"E",
+												"F",
+												"F#",
+												"G",
+												"G#",
+												"A",
+												"A#",
+												"B",
+											][af?.key % 12] || "Unknown",
+									},
+									{
+										title: "Mode",
+										val: af?.mode === 0 ? "Minor" : "Major",
+									},
+									{ title: "BPM", val: af?.tempo?.toFixed(1) },
+									{
+										title: "Overall Loudness",
+										val: af?.loudness?.toFixed(2) + " dB",
+									},
+									{
+										title: "Time Signature",
+										val: `${af?.time_signature}/4`,
+									},
+								].map(stat => (
+									<div
+										key={stat.title}
+										className="bg-[#303030] p-4 rounded-md min-w-[140px] text-center"
+									>
+										<h1 className="font-proximaNova text-xl text-gray-400">
+											{stat.title}
 										</h1>
-										<p className="text-sm text-gray-400">
-											{new Date(
-												track?.album?.release_date,
-											).getFullYear()}
+										<p className="text-2xl mt-2">
+											{stat.val}
 										</p>
 									</div>
-								</div>
-							</Link>
-						</div>
-					</div>
-				</div>
+								))}
 
-				<div className="lg:col-span-8 xxl:col-span-9 flex flex-col gap-8">
-					<div className="bg-mgray rounded-md p-5">
-						<h1 className="font-proximaNova text-3xl mb-6">Audio Analysis</h1>
-
-						<div className="flex flex-wrap gap-4 justify-center">
-							{[
-								{
-									title: "Key",
-									val:
-										[
-											"C",
-											"C#",
-											"D",
-											"D#",
-											"E",
-											"F",
-											"F#",
-											"G",
-											"G#",
-											"A",
-											"A#",
-											"B",
-										][af?.key % 12] || "Unknown",
-								},
-								{
-									title: "Mode",
-									val: af?.mode === 0 ? "Minor" : "Major",
-								},
-								{ title: "BPM", val: af?.tempo?.toFixed(1) },
-								{
-									title: "Overall Loudness",
-									val: af?.loudness?.toFixed(2) + " dB",
-								},
-								{
-									title: "Time Signature",
-									val: `${af?.time_signature}/4`,
-								},
-							].map(stat => (
-								<div
-									key={stat.title}
-									className="bg-[#303030] p-4 rounded-md min-w-[140px] text-center"
-								>
-									<h1 className="font-proximaNova text-xl text-gray-400">
-										{stat.title}
-									</h1>
-									<p className="text-2xl mt-2">{stat.val}</p>
-								</div>
-							))}
-
-							{featureBars.map(feat => (
-								<div
-									key={feat.label}
-									className="bg-[#303030] p-5 rounded-md w-full sxsm:w-[220px]"
-								>
-									<h1 className="font-proximaNova text-xl">
-										{feat.label}
-									</h1>
-									<div className="mt-3">
-										<ProgressBar progress={feat.val} />
-										<p className="mt-2 text-sm text-right">
-											{(feat.val / 100).toFixed(2)}
-										</p>
+								{featureBars.map(feat => (
+									<div
+										key={feat.label}
+										className="bg-[#303030] p-5 rounded-md w-full sxsm:w-[220px]"
+									>
+										<h1 className="font-proximaNova text-xl">
+											{feat.label}
+										</h1>
+										<div className="mt-3">
+											<ProgressBar
+												progress={feat.val}
+											/>
+											<p className="mt-2 text-sm text-right">
+												{(
+													feat.val / 100
+												).toFixed(2)}
+											</p>
+										</div>
 									</div>
-								</div>
-							))}
+								))}
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 
