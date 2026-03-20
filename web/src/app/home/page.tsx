@@ -9,7 +9,6 @@ import { Sidebar } from "@/components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { PeriodDropdown } from "@/components/PeriodDropdown";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { fetcher } from "@/utils/fetcher";
 import { MobileTopLists } from "@/components/Home/MobileTopLists";
 import { ProgressBar } from "@/components/ProgressBar";
@@ -109,8 +108,8 @@ const Home: NextPage = () => {
 		<>
 			<Sidebar active={1} />
 			<div className="navbar:ml-[280px] flex font-metropolis text-white">
-				<div className="m-6 sm:m-8 flex flex-col 1.5xl:flex-row w-full">
-					<div className="1.5xl:w-[50%] flex flex-col">
+				<div className="m-6 sm:m-8 grid grid-cols-1 1.5xl:grid-cols-2 gap-8 w-full pr-6 sm:pr-8">
+					<div className="flex flex-col">
 						<div
 							id="now-playing"
 							className="bg-mgray rounded-md 1.5xl:min-w-[50%] h-fit p-5"
@@ -346,9 +345,7 @@ const Home: NextPage = () => {
 							</div>
 						</div>
 					</div>
-
-					<div className="1.5xl:w-[50%] flex flex-col 1.5xl:ml-8">
-						{/* TOP GENRES MODULE */}
+					<div className="flex flex-col">
 						<div
 							id="top-genres"
 							className="bg-mgray rounded-md mt-8 1.5xl:mt-0 p-5"
@@ -392,7 +389,7 @@ function get_averages(topArtists: any, topTracks: any, audioFeatures: any) {
 	terms.forEach(term => {
 		const artists = topArtists[term]?.items || [];
 		const tracks = topTracks[term]?.items || [];
-		const afs = (audioFeatures[term]?.audio_features || []).filter(Boolean); // Remove nulls
+		const afs = (audioFeatures[term]?.audio_features || []).filter(Boolean);
 
 		const avg = (arr: any[], key: string) =>
 			arr.length ? arr.reduce((sum, obj) => sum + (obj[key] || 0), 0) / arr.length : 0;

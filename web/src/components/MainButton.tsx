@@ -1,8 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 export const MainButton = (props: any) => {
 	return (
@@ -14,7 +12,7 @@ export const MainButton = (props: any) => {
             "
 			whileTap={{ scale: 0.95 }}
 		>
-			<span className="font-metropolis font-normal leading-4">{props.text}</span>
+			<span className="font-metropolis font-normal leading-4 text-primary">{props.text}</span>
 		</motion.a>
 	);
 };
