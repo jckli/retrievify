@@ -1,23 +1,28 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { useState } from "react";
 
-const items = [
-	{ id: 1, type: "artists", text: "Artists" },
-	{ id: 2, type: "tracks", text: "Songs" },
-];
+export type DropdownItem = { id: string | number; value: string; label: string };
 
-export const TypeDropdown = ({ setType }: { setType: (type: string) => void }) => {
-	const [active, setActive] = useState(items[0]);
+export const Dropdown = ({
+	items,
+	initialActiveId,
+	onChange,
+}: {
+	items: DropdownItem[];
+	initialActiveId: string | number;
+	onChange: (value: string) => void;
+}) => {
+	const [active, setActive] = useState(items.find(i => i.id === initialActiveId) || items[0]);
 
-	const handleClick = (item: (typeof items)[0]) => {
+	const handleClick = (item: DropdownItem) => {
 		setActive(item);
-		setType(item.type);
+		onChange(item.value);
 	};
 
 	return (
 		<Menu as="div" className="relative inline-block text-left z-50">
 			<MenuButton className="p-2 rounded-md transition-all duration-200 bg-[#303030] hover:bg-[#404040] flex items-center text-white cursor-pointer">
-				{active.text}
+				{active.label}
 				<svg
 					fill="none"
 					viewBox="0 0 24 24"
@@ -32,9 +37,10 @@ export const TypeDropdown = ({ setType }: { setType: (type: string) => void }) =
 					/>
 				</svg>
 			</MenuButton>
+
 			<MenuItems
 				transition
-				className="absolute left-0 origin-top-left mt-2 w-56 rounded-md bg-[#303030] shadow-lg ring-1 ring-black/10 focus:outline-none p-1 transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
+				className="absolute left-0 origin-top-left mt-2 w-56 rounded-md bg-[#303030] shadow-lg ring-1 ring-black/10 focus:outline-none p-1 transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 max-h-60 overflow-y-auto"
 			>
 				{items.map(item => (
 					<MenuItem key={item.id}>
@@ -46,7 +52,7 @@ export const TypeDropdown = ({ setType }: { setType: (type: string) => void }) =
 									: "text-white data-[focus]:bg-[#404040]"
 							}`}
 						>
-							{item.text}
+							{item.label}
 						</button>
 					</MenuItem>
 				))}
