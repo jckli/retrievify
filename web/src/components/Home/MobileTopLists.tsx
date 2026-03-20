@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { useState } from "react";
-import { Dropdown } from "@/components/Dropdown";
+import { Dropdown } from "../Dropdown";
 
 const typeOptions = [
 	{ id: 1, value: "artists", label: "Artists" },
@@ -27,7 +27,7 @@ export const MobileTopLists = ({ topArtists, topTracks }: { topArtists: any; top
 	const visibleList = isExpanded ? dataList.slice(0, 50) : dataList.slice(0, 10);
 
 	return (
-		<div id="top-lists" className="bg-mgray rounded-md mt-8">
+		<div id="top-lists" className="bg-mgray rounded-md">
 			<div className="p-5">
 				<div className="flex flex-col xsm:flex-row xsm:items-center justify-between gap-4">
 					<h1 className="font-proximaNova text-3xl">Top Lists</h1>
@@ -41,6 +41,7 @@ export const MobileTopLists = ({ topArtists, topTracks }: { topArtists: any; top
 							items={periodOptions}
 							initialActiveId={1}
 							onChange={setTopPeriod}
+							align="right"
 						/>
 					</div>
 				</div>
@@ -64,9 +65,9 @@ export const MobileTopLists = ({ topArtists, topTracks }: { topArtists: any; top
 							<Link
 								key={item.id}
 								href={href}
-								className="group p-3 flex items-center justify-between rounded-lg hover:bg-[#404040] transition duration-100"
+								className="group p-3 flex items-center justify-between rounded-lg hover:bg-[#404040] transition duration-100 gap-4"
 							>
-								<div className="flex items-center gap-4">
+								<div className="flex items-center gap-4 flex-1 min-w-0">
 									<div className="relative h-[64px] w-[64px] shrink-0 rounded-md overflow-hidden bg-[#282828]">
 										{imgUrl && (
 											<Image
@@ -79,24 +80,25 @@ export const MobileTopLists = ({ topArtists, topTracks }: { topArtists: any; top
 											/>
 										)}
 									</div>
-									<div className="flex flex-col overflow-hidden">
-										<h1 className="text-xl xsm:text-2xl truncate w-[140px] xxsm:w-[155px] xsm:w-[200px]">
+									<div className="flex flex-col flex-1 min-w-0">
+										<h1 className="text-xl xsm:text-2xl truncate">
 											<span className="text-gray-400 text-lg mr-2">
 												{index + 1}.
 											</span>
 											{item.name}
 										</h1>
-										<h2 className="text-sm xsm:text-base text-gray-400 truncate w-[140px] xxsm:w-[155px] xsm:w-[200px]">
+										<h2 className="text-sm xsm:text-base text-gray-400 truncate">
 											{subtext}
 										</h2>
 									</div>
 								</div>
+
 								<a
 									href={item.external_urls.spotify}
 									target="_blank"
 									rel="noreferrer"
 									onClick={e => e.stopPropagation()}
-									className="ml-2 text-gray-400 group-hover:text-white transition"
+									className="shrink-0 ml-2 text-gray-400 group-hover:text-white transition"
 								>
 									<FontAwesomeIcon icon={faSpotify} size="lg" />
 								</a>

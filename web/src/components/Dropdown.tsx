@@ -7,10 +7,12 @@ export const Dropdown = ({
 	items,
 	initialActiveId,
 	onChange,
+	align = "left",
 }: {
 	items: DropdownItem[];
 	initialActiveId: string | number;
 	onChange: (value: string) => void;
+	align?: "left" | "right";
 }) => {
 	const [active, setActive] = useState(items.find(i => i.id === initialActiveId) || items[0]);
 
@@ -40,7 +42,9 @@ export const Dropdown = ({
 
 			<MenuItems
 				transition
-				className="absolute left-0 origin-top-left mt-2 w-56 rounded-md bg-[#303030] shadow-lg ring-1 ring-black/10 focus:outline-none p-1 transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 max-h-60 overflow-y-auto"
+				className={`absolute mt-2 w-56 rounded-md bg-[#303030] shadow-lg ring-1 ring-black/10 focus:outline-none p-1 transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 max-h-60 overflow-y-auto ${
+					align === "right" ? "right-0 origin-top-right" : "left-0 origin-top-left"
+				}`}
 			>
 				{items.map(item => (
 					<MenuItem key={item.id}>
