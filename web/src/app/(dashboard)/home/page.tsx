@@ -2,7 +2,6 @@
 
 import type { NextPage } from "next";
 import useSWR from "swr";
-import { Sidebar } from "@/components/Sidebar";
 import { fetcher } from "@/utils/fetcher";
 
 import { NowPlaying } from "@/components/Home/NowPlaying";
@@ -69,12 +68,9 @@ const Home: NextPage = () => {
 	if (isLoading || isError) {
 		return (
 			<>
-				<Sidebar />
-				<div className="navbar:ml-[280px] flex font-metropolis text-white min-h-screen items-center justify-center">
-					<h1 className="font-proximaNova text-2xl">
-						{isError ? "Failed to load data. Are you logged in?" : "Loading..."}
-					</h1>
-				</div>
+				<h1 className="font-proximaNova text-2xl">
+					{isError ? "Failed to load data. Are you logged in?" : "Loading..."}
+				</h1>
 			</>
 		);
 	}
@@ -85,22 +81,19 @@ const Home: NextPage = () => {
 
 	return (
 		<>
-			<Sidebar active={1} />
-			<div className="navbar:ml-[280px] font-metropolis text-white min-h-screen">
-				<div className="p-6 sm:p-8 grid grid-cols-1 xxl:grid-cols-2 gap-8 w-full">
-					<div className="flex flex-col gap-8">
-						<NowPlaying playing={playing} />
-						<AverageStats
-							topArtists={topArtists}
-							topTracks={topTracks}
-							audioFeatures={audioFeatures}
-						/>
-						<ObscurifyStats taShort={taShort} taLong={taLong} />
-					</div>
-					<div className="flex flex-col gap-8">
-						<TopGenres topArtists={topArtists} />
-						<MobileTopLists topArtists={topArtists} topTracks={topTracks} />
-					</div>
+			<div className="p-6 sm:p-8 grid grid-cols-1 xxl:grid-cols-2 gap-8 w-full">
+				<div className="flex flex-col gap-8">
+					<NowPlaying playing={playing} />
+					<AverageStats
+						topArtists={topArtists}
+						topTracks={topTracks}
+						audioFeatures={audioFeatures}
+					/>
+					<ObscurifyStats taShort={taShort} taLong={taLong} />
+				</div>
+				<div className="flex flex-col gap-8">
+					<TopGenres topArtists={topArtists} />
+					<MobileTopLists topArtists={topArtists} topTracks={topTracks} />
 				</div>
 			</div>
 		</>

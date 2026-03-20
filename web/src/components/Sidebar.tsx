@@ -19,17 +19,20 @@ import { faHouse, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Squash as Hamburger } from "hamburger-react";
 import { fetcher } from "@/utils/fetcher";
+import { usePathname } from "next/navigation";
 
 function classNames(...classes: any[]) {
 	return classes.filter(Boolean).join(" ");
 }
 
-export const Sidebar = ({ active }: { active?: number }) => {
+export const Sidebar = () => {
 	const isDesktop = useMediaQuery("894px");
 
+	const pathname = usePathname();
+
 	const navigation = [
-		{ name: "Home", icon: faHouse, href: "/home", current: active === 1 },
-		{ name: "Data Package", icon: faBoxOpen, href: "/package", current: active === 2 },
+		{ name: "Home", icon: faHouse, href: "/home", current: pathname.includes("/home") },
+		{ name: "Data Package", icon: faBoxOpen, href: "/package", current: pathname.includes("/package") },
 	];
 
 	const { data: res } = useSWR(`/retrievify/spotify/getuser`, fetcher, { revalidateOnFocus: false });

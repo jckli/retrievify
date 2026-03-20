@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { Sidebar } from "@/components/Sidebar";
 
 export default function PackageUpload() {
 	const router = useRouter();
@@ -40,7 +39,7 @@ export default function PackageUpload() {
 			localStorage.setItem("firstTime", data.firstTime);
 			localStorage.setItem("currentYear", data.currentYear);
 
-			router.push("/package/overview");
+			router.push("/package");
 		} catch (err: any) {
 			setError(err.message);
 		} finally {
@@ -50,8 +49,7 @@ export default function PackageUpload() {
 
 	return (
 		<>
-			<Sidebar active={2} />
-			<div className="navbar:ml-[280px] min-h-screen flex flex-col justify-center items-center font-metropolis text-white p-8 text-center">
+			<div className="flex flex-col justify-center items-center font-metropolis p-8 text-center min-h-screen">
 				<input
 					type="file"
 					className="hidden"
