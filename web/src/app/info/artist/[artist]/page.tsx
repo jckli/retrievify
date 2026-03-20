@@ -38,8 +38,8 @@ export default function ArtistIndex() {
 	return (
 		<div className="flex font-metropolis text-white bg-[#101010] min-h-screen">
 			<Sidebar />
-			<div className="navbar:ml-[280px] p-6 sm:p-8 grid grid-cols-1 xxl:grid-cols-2 gap-8 w-full">
-				<div className="xxl:w-[30%] flex flex-col gap-8">
+			<div className="navbar:ml-[280px] p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+				<div className="lg:col-span-4 xxl:col-span-3 flex flex-col gap-8">
 					<div className="bg-mgray rounded-md p-5 flex flex-col items-center text-center">
 						<div className="relative h-[256px] w-[256px]">
 							<Image
@@ -76,7 +76,7 @@ export default function ArtistIndex() {
 					</div>
 				</div>
 
-				<div className="xxl:w-[70%] flex flex-col gap-8">
+				<div className="lg:col-span-8 xxl:col-span-9 flex flex-col gap-8">
 					{artist?.genres?.length > 0 && (
 						<div className="bg-mgray rounded-md p-5">
 							<h1 className="font-proximaNova text-3xl mb-4">Genres</h1>
