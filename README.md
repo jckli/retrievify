@@ -1,7 +1,16 @@
-# Statsify Rework (v3)
+</br>
+<p align="center">
+  <a href="https://retrievify.hayasaka.moe" style:"margin-bottom: 0;">
+    <img src="https://github.com/jckli/retrievify/blob/v3/web/public/images/logo.png" alt="Logo" width="100" height="100">
+  </a>
+  <h3 align="center">Retrievify</h3>
+  <p align="center">Unlock the full potential of your music experience with Retrievify. Get insights into all your listening habits and see exactly how you've been spending your time listening to music on Spotify.</p>
+</p>
 
-> **todo:** make this look nicer
+## About
 
-this is a rework of the original statsify website. the original website is made fully with flask, and uses jinja and flask's templating system to render the frontend. **this is a HORRIBLE system**. it's slow, it's ugly, and it's not very maintainable. i made it before i knew much about coding, and now i know that not seperating the frontend and backend is shit.
+Retrievify is a website that allows you to manage and unlock how you specifically listen to music on Spotify.
 
-this new rework uses next.js as the frontend, in combination with the sanic python framework as the backend. its _much, much_ faster and actually readable LMAO.
+## Links
+
+https://retrievify.hayasaka.moe
