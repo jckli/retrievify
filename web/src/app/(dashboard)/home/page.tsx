@@ -11,9 +11,13 @@ import { TopGenres } from "@/components/Home/TopGenres";
 import { MobileTopLists } from "@/components/Home/MobileTopLists";
 
 const Home: NextPage = () => {
-	const { data: playing, error: errPlay } = useSWR(`/retrievify/spotify/currentlyplaying`, fetcher, {
-		refreshInterval: 10000,
-	});
+	const { data: playing } = useSWR(
+		`/retrievify/spotify/currentlyplaying`,
+		url => fetcher(url).catch(() => null),
+		{
+			refreshInterval: 10000,
+		},
+	);
 	const { data: taShort, error: e1 } = useSWR(
 		`/retrievify/spotify/topitems/artists?time_range=short_term&limit=50`,
 		fetcher,
@@ -61,7 +65,7 @@ const Home: NextPage = () => {
 		fetcher,
 	);
 
-	const isError = errPlay || e1 || e2 || e3 || e4 || e5 || e6 || e7 || e8 || e9;
+	const isError = e1 || e2 || e3 || e4 || e5 || e6 || e7 || e8 || e9;
 	const isLoading =
 		!taShort || !taMed || !taLong || !ttShort || !ttMed || !ttLong || !afShort || !afMed || !afLong;
 
