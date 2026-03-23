@@ -151,7 +151,7 @@ export default function ScrobblerSetupPage() {
 									<code className="text-[var(--color-primary)] select-all">
 										{typeof window !== "undefined"
 											? window.location.origin +
-												"/scrobbling/callback"
+												"/scrobbler/callback"
 											: ""}
 									</code>
 								</p>
