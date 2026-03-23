@@ -33,10 +33,10 @@ export const Sidebar = () => {
 	const navigation = [
 		{ name: "Home", icon: faHouse, href: "/home", current: pathname.includes("/home") },
 		{
-			name: "Scrobbling",
-			href: "/scrobbling",
+			name: "Scrobbler",
+			href: "/scrobbler",
 			icon: faChartBar,
-			current: pathname.includes("/scrobbling"),
+			current: pathname.includes("/scrobbler"),
 		},
 	];
 

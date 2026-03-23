@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ScrobblingSetupPage() {
+export default function ScrobblerSetupPage() {
 	const [step, setStep] = useState(1);
 	const [error, setError] = useState("");
 
@@ -24,15 +24,13 @@ export default function ScrobblingSetupPage() {
 			return;
 		}
 
-		// 1. Commit all setup data to local storage before the browser leaves the page
 		localStorage.setItem("byok_bsky_handle", formData.bluesky_handle);
 		localStorage.setItem("byok_bsky_pass", formData.bluesky_app_pass);
 		localStorage.setItem("byok_bsky_pds", formData.bluesky_pds);
 		localStorage.setItem("byok_client_id", formData.spotify_client_id);
 		localStorage.setItem("byok_secret", formData.spotify_secret);
 
-		// 2. Fire the Redirect to Spotify (Targeting our new callback route)
-		const redirectUri = window.location.origin + "/scrobbling/callback";
+		const redirectUri = window.location.origin + "/scrobbler/callback";
 		const authUrl = `https://accounts.spotify.com/authorize?client_id=${formData.spotify_client_id}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-recently-played`;
 
 		window.location.href = authUrl;

@@ -9,16 +9,10 @@ import { Cog6ToothIcon, ArrowPathIcon, PlayIcon } from "@heroicons/react/24/outl
 
 type StatType = "tracks" | "artists" | "albums" | "contexts";
 
-interface BaseStat {
-	_id: string;
-	play_count: number;
-	total_duration_ms: number;
-}
-
-export default function ScrobblingDashboard() {
+export default function ScrobblerDashboard() {
 	const [activeTab, setActiveTab] = useState<StatType>("tracks");
 
-	const { data: statusData, isLoading: statusLoading } = useSWR("/retrievify/spotify/scrobbler-status", fetcher);
+	const { data: statusData, isLoading: statusLoading } = useSWR("/retrievify/spotify/scrobbler/status", fetcher);
 	const isSetup = statusData?.setup === true;
 
 	const {
@@ -26,7 +20,7 @@ export default function ScrobblingDashboard() {
 		error: statsError,
 		isLoading: statsLoading,
 		mutate,
-	} = useSWR(isSetup ? `/retrievify/spotify/stats/${activeTab}?limit=15` : null, fetcher);
+	} = useSWR(isSetup ? `/retrievify/spotify/scrobbler/stats?type=${activeTab}&limit=15` : null, fetcher);
 
 	const stats = statsData?.data || [];
 
@@ -75,7 +69,6 @@ export default function ScrobblingDashboard() {
 			<div className="p-4 md:p-8 max-w-5xl mx-auto animate-in fade-in duration-500">
 				<div className="bg-[var(--color-mgray)] border border-white/10 rounded-3xl p-8 md:p-16 text-center shadow-2xl relative overflow-hidden">
 					<div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent opacity-50" />
-
 					<div className="w-20 h-20 bg-black/50 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(74,211,255,0.1)]">
 						<Cog6ToothIcon className="w-10 h-10 text-[var(--color-primary)]" />
 					</div>
@@ -90,8 +83,8 @@ export default function ScrobblingDashboard() {
 					</p>
 
 					<Link
-						href="/scrobbling/setup"
-						className="inline-flex items-center space-x-3 bg-[var(--color-primary)] text-black px-8 py-4 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_20px_rgba(74,211,255,0.4)] transition-all"
+						href="/scrobbler/setup"
+						className="inline-flex items-center space-x-3 bg-[var(--color-primary)] text-black px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform"
 					>
 						<span>Begin Setup Wizard</span>
 						<PlayIcon className="w-5 h-5" />
@@ -110,20 +103,18 @@ export default function ScrobblingDashboard() {
 						Immutable listening history powered by your Mai cluster.
 					</p>
 				</div>
-
 				<div className="flex items-center space-x-3">
 					<button
 						onClick={() => mutate()}
 						disabled={statsLoading}
 						className="p-3 bg-[var(--color-mgray)] border border-white/10 rounded-xl hover:bg-white/5 transition-colors group"
-						title="Force Refresh"
 					>
 						<ArrowPathIcon
 							className={`w-5 h-5 text-gray-300 ${statsLoading ? "animate-spin" : "group-hover:text-white"}`}
 						/>
 					</button>
 					<Link
-						href="/scrobbling/setup"
+						href="/scrobbler/setup"
 						className="flex items-center space-x-2 px-6 py-3 bg-[var(--color-mgray)] border border-white/10 rounded-xl hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all font-bold text-sm uppercase tracking-wider"
 					>
 						<Cog6ToothIcon className="w-5 h-5" />
@@ -137,11 +128,7 @@ export default function ScrobblingDashboard() {
 					<button
 						key={tab}
 						onClick={() => setActiveTab(tab)}
-						className={`px-6 py-2 rounded-lg font-bold capitalize transition-all ${
-							activeTab === tab
-								? "bg-[var(--color-primary)] text-black shadow-md"
-								: "text-gray-400 hover:text-white hover:bg-white/5"
-						}`}
+						className={`px-6 py-2 rounded-lg font-bold capitalize transition-all ${activeTab === tab ? "bg-[var(--color-primary)] text-black shadow-md" : "text-gray-400 hover:text-white hover:bg-white/5"}`}
 					>
 						{tab}
 					</button>
@@ -151,9 +138,6 @@ export default function ScrobblingDashboard() {
 			{statsError ? (
 				<div className="p-8 text-center border border-red-500/20 bg-red-500/10 rounded-2xl">
 					<p className="text-red-400 font-bold">Failed to connect to the Mai cluster.</p>
-					<p className="text-sm text-red-400/80 mt-2">
-						Ensure your Go daemon is running and your database is accessible.
-					</p>
 				</div>
 			) : statsLoading && !statsData ? (
 				<div className="h-96 flex items-center justify-center border border-white/5 rounded-2xl bg-white/5 animate-pulse">
@@ -166,8 +150,7 @@ export default function ScrobblingDashboard() {
 					</div>
 					<h3 className="text-2xl font-bold mb-2">No Data Found</h3>
 					<p className="text-gray-400 max-w-md">
-						Your daemon hasn't scrobbled any songs yet, or you haven't played
-						anything since configuring your keys.
+						Your daemon hasn't scrobbled any songs yet.
 					</p>
 				</div>
 			) : (
@@ -230,7 +213,6 @@ export default function ScrobblingDashboard() {
 							</ResponsiveContainer>
 						</div>
 					</div>
-
 					<div className="bg-[var(--color-mgray)] border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col h-full max-h-[420px]">
 						<h2 className="text-xl font-bold mb-4">Raw Ledger</h2>
 						<ul className="flex-1 overflow-y-auto pr-2 space-y-2 custom-scrollbar">

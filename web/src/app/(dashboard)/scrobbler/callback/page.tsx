@@ -18,9 +18,10 @@ function CallbackProcessor() {
 		const executeSetup = async () => {
 			try {
 				setStatus("Negotiating with Daemon...");
+
 				const payload = {
 					spotify_code: code,
-					redirect_uri: window.location.origin + "/scrobbling/callback",
+					redirect_uri: window.location.origin + "/scrobbler/callback",
 					bluesky_handle: localStorage.getItem("byok_bsky_handle") || "",
 					bluesky_app_pass: localStorage.getItem("byok_bsky_pass") || "",
 					bluesky_pds: localStorage.getItem("byok_bsky_pds") || "https://bsky.social",
@@ -28,9 +29,8 @@ function CallbackProcessor() {
 					spotify_secret: localStorage.getItem("byok_secret") || "",
 				};
 
-				// 2. Fire to the Go Gateway
 				const res = await fetch(
-					"https://gomapi.hayasaka.moe/retrievify/spotify/setup-scrobbler",
+					"https://gomapi.hayasaka.moe/retrievify/spotify/scrobbler/setup",
 					{
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
@@ -44,7 +44,7 @@ function CallbackProcessor() {
 				localStorage.clear();
 
 				setStatus("Engine active. Redirecting...");
-				router.push("/scrobbling");
+				router.push("/scrobbler");
 			} catch (err: any) {
 				setStatus(err.message);
 			}
@@ -65,7 +65,7 @@ function CallbackProcessor() {
 	);
 }
 
-export default function ScrobblingCallbackPage() {
+export default function ScrobblerCallbackPage() {
 	return (
 		<Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
 			<CallbackProcessor />
