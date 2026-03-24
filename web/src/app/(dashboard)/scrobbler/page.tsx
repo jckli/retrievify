@@ -80,18 +80,18 @@ export default function ScrobblerDashboard() {
 
 	if (!isSetup)
 		return (
-			<div className="min-h-[70vh] flex flex-col items-center justify-center animate-in fade-in">
+			<div className="min-h-[70vh] flex flex-col items-center justify-center animate-in fade-in p-4 md:p-8">
 				<div className="bg-[var(--color-mgray)] border border-white/10 rounded-3xl p-10 text-center shadow-2xl max-w-2xl w-full">
 					<Cog6ToothIcon className="w-16 h-16 mx-auto text-[var(--color-primary)] mb-6" />
 					<h1 className="text-4xl font-metropolis font-bold mb-4">
 						Setup scrobbling for Retrievify
 					</h1>
 					<p className="text-gray-400 mb-8">
-						Connect your keys to analyze your listening history.
+						Setup Retrievify to scrobble your listening data.
 					</p>
 					<Link
 						href="/scrobbler/setup"
-						className="inline-flex items-center space-x-3 bg-[var(--color-primary)] text-black px-8 py-4 rounded-full font-bold"
+						className="inline-flex items-center space-x-3 bg-[var(--color-primary)] text-black px-8 py-4 rounded-full font-bold cursor-pointer"
 					>
 						<span>Begin Setup</span>
 						<PlayIcon className="w-5 h-5" />
@@ -101,22 +101,22 @@ export default function ScrobblerDashboard() {
 		);
 
 	return (
-		<div className="space-y-6 animate-in fade-in">
+		<div className="space-y-6 animate-in fade-in p-4 md:p-8 max-w-7xl mx-auto">
 			<header className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
 				<div>
 					<h1 className="text-4xl font-metropolis font-bold">Scrobbler Analytics</h1>
-					<p className="text-gray-400 mt-1">Immutable listening history.</p>
+					<p className="text-gray-400 mt-1">Your Spotify listening history analysis</p>
 				</div>
 				<div className="flex space-x-3">
 					<button
 						onClick={() => mutate()}
-						className="p-3 bg-[var(--color-mgray)] rounded-xl border border-white/10"
+						className="p-3 bg-[var(--color-mgray)] rounded-xl border border-white/10 cursor-pointer hover:bg-white/5 transition-colors"
 					>
 						<ArrowPathIcon className="w-5 h-5 text-gray-300" />
 					</button>
 					<Link
 						href="/scrobbler/setup"
-						className="flex items-center px-6 py-3 bg-[var(--color-mgray)] rounded-xl border border-white/10 text-sm font-bold"
+						className="flex items-center px-6 py-3 bg-[var(--color-mgray)] rounded-xl border border-white/10 text-sm font-bold cursor-pointer hover:bg-white/5 transition-colors"
 					>
 						<Cog6ToothIcon className="w-5 h-5 mr-2" /> Configure
 					</Link>
@@ -129,7 +129,7 @@ export default function ScrobblerDashboard() {
 						<button
 							key={t}
 							onClick={() => setTab(t)}
-							className={`px-6 py-2 rounded-lg font-bold capitalize ${tab === t ? "bg-[var(--color-primary)] text-black" : "text-gray-400"}`}
+							className={`px-6 py-2 rounded-lg font-bold capitalize cursor-pointer transition-colors ${tab === t ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
 						>
 							{t}
 						</button>
@@ -138,13 +138,13 @@ export default function ScrobblerDashboard() {
 				<div className="flex space-x-2 bg-[var(--color-mgray)] p-1 rounded-xl border border-white/10">
 					<button
 						onClick={() => setRange("thisMonth")}
-						className={`px-6 py-2 rounded-lg font-bold ${range === "thisMonth" ? "bg-[var(--color-primary)] text-black" : "text-gray-400"}`}
+						className={`px-6 py-2 rounded-lg font-bold cursor-pointer transition-colors ${range === "thisMonth" ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
 					>
 						This Month
 					</button>
 					<button
 						onClick={() => setRange("allTime")}
-						className={`px-6 py-2 rounded-lg font-bold ${range === "allTime" ? "bg-[var(--color-primary)] text-black" : "text-gray-400"}`}
+						className={`px-6 py-2 rounded-lg font-bold cursor-pointer transition-colors ${range === "allTime" ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
 					>
 						All Time
 					</button>
@@ -152,7 +152,7 @@ export default function ScrobblerDashboard() {
 			</div>
 
 			{dbError ? (
-				<div className="p-8 text-center bg-red-500/10 text-red-400 rounded-2xl">
+				<div className="p-8 text-center bg-red-500/10 text-red-400 rounded-2xl font-bold">
 					Failed to fetch data.
 				</div>
 			) : isLoading ? (
@@ -161,7 +161,7 @@ export default function ScrobblerDashboard() {
 					<p className="text-gray-400 font-bold">Grabbing scrobbling data...</p>
 				</div>
 			) : chartData.length === 0 ? (
-				<div className="h-96 flex items-center justify-center border border-dashed border-white/10 rounded-2xl text-gray-400">
+				<div className="h-96 flex items-center justify-center border border-dashed border-white/10 rounded-2xl text-gray-400 font-bold">
 					No data found.
 				</div>
 			) : (
@@ -203,6 +203,7 @@ export default function ScrobblerDashboard() {
 													? "var(--color-primary)"
 													: "#333"
 											}
+											className="transition-all duration-300 hover:opacity-80 cursor-pointer"
 										/>
 									))}
 								</Bar>

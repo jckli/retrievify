@@ -35,14 +35,15 @@ export default function ScrobblerSetupPage() {
 		localStorage.setItem("byok_secret", formData.secret);
 
 		const redirectUri = window.location.origin + "/scrobbler/callback";
+
 		window.location.href = `https://accounts.spotify.com/authorize?client_id=${formData.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-recently-played`;
 	};
 
 	return (
-		<div className="max-w-xl mx-auto mt-10 animate-in fade-in duration-500">
+		<div className="max-w-xl mx-auto mt-10 p-4 md:p-8 animate-in fade-in duration-500">
 			<Link
 				href="/scrobbler"
-				className="inline-flex items-center text-gray-400 hover:text-white mb-6 font-bold text-sm transition-colors"
+				className="inline-flex items-center text-gray-400 hover:text-white mb-6 font-bold text-sm transition-colors cursor-pointer"
 			>
 				<ArrowLeftIcon className="w-4 h-4 mr-2" /> Back to Dashboard
 			</Link>
@@ -136,7 +137,7 @@ export default function ScrobblerSetupPage() {
 
 						<button
 							onClick={handleNext}
-							className="w-full mt-6 bg-white text-black font-bold p-4 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center"
+							className="w-full mt-6 bg-white text-black font-bold p-4 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center cursor-pointer"
 						>
 							Continue to Spotify <ArrowRightIcon className="w-5 h-5 ml-2" />
 						</button>
@@ -183,15 +184,15 @@ export default function ScrobblerSetupPage() {
 						<div className="flex gap-3 mt-6">
 							<button
 								onClick={() => setStep(1)}
-								className="px-6 py-4 bg-white/5 hover:bg-white/10 text-white font-bold rounded-xl transition-colors"
+								className="px-6 py-4 bg-white/5 hover:bg-white/10 text-white font-bold rounded-xl transition-colors cursor-pointer"
 							>
 								Back
 							</button>
 							<button
 								onClick={handleAuth}
-								className="flex-1 bg-[var(--color-primary)] text-black font-bold p-4 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center shadow-[0_0_20px_rgba(74,211,255,0.2)]"
+								className="flex-1 bg-[var(--color-primary)] text-black font-bold p-4 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center shadow-[0_0_20px_rgba(74,211,255,0.2)] cursor-pointer"
 							>
-								Authorize Engine{" "}
+								Complete Setup{" "}
 								<CheckCircleIcon className="w-5 h-5 ml-2" />
 							</button>
 						</div>
