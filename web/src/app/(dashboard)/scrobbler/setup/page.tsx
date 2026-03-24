@@ -1,226 +1,202 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
 export default function ScrobblerSetupPage() {
 	const [step, setStep] = useState(1);
 	const [error, setError] = useState("");
-
 	const [formData, setFormData] = useState({
-		bluesky_handle: "",
-		bluesky_app_pass: "",
-		bluesky_pds: "https://bsky.social",
-		spotify_client_id: "",
-		spotify_secret: "",
+		bskyHandle: "",
+		bskyPass: "",
+		bskyPds: "https://bsky.social",
+		clientId: "",
+		secret: "",
 	});
 
-	const handleNext = () => setStep(s => s + 1);
-	const handlePrev = () => setStep(s => s - 1);
+	const handleNext = () => {
+		if (!formData.bskyHandle || !formData.bskyPass || !formData.bskyPds) {
+			return setError("All Bluesky fields are required to enable PDS dual-writing.");
+		}
+		setError("");
+		setStep(2);
+	};
 
-	const handleSpotifyAuth = () => {
-		if (!formData.spotify_client_id || !formData.spotify_secret) {
-			setError("Please enter both Spotify developer keys.");
-			return;
+	const handleAuth = () => {
+		if (!formData.clientId || !formData.secret) {
+			return setError("Spotify API keys are strictly required.");
 		}
 
-		localStorage.setItem("byok_bsky_handle", formData.bluesky_handle);
-		localStorage.setItem("byok_bsky_pass", formData.bluesky_app_pass);
-		localStorage.setItem("byok_bsky_pds", formData.bluesky_pds);
-		localStorage.setItem("byok_client_id", formData.spotify_client_id);
-		localStorage.setItem("byok_secret", formData.spotify_secret);
+		localStorage.setItem("byok_bsky_handle", formData.bskyHandle);
+		localStorage.setItem("byok_bsky_pass", formData.bskyPass);
+		localStorage.setItem("byok_bsky_pds", formData.bskyPds);
+		localStorage.setItem("byok_client_id", formData.clientId);
+		localStorage.setItem("byok_secret", formData.secret);
 
 		const redirectUri = window.location.origin + "/scrobbler/callback";
-		const authUrl = `https://accounts.spotify.com/authorize?client_id=${formData.spotify_client_id}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-recently-played`;
-
-		window.location.href = authUrl;
+		window.location.href = `http://googleusercontent.com/spotify.com/7{formData.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-recently-played`;
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center p-4">
-			<div className="w-full max-w-2xl bg-[var(--color-mgray)] border border-white/10 rounded-2xl shadow-2xl overflow-hidden relative">
-				<div className="h-1 w-full bg-black/50 absolute top-0 left-0">
-					<motion.div
-						className="h-full bg-[var(--color-primary)]"
-						initial={{ width: "50%" }}
-						animate={{ width: `${(step / 2) * 100}%` }}
-						transition={{ duration: 0.3 }}
+		<div className="max-w-xl mx-auto mt-10 animate-in fade-in duration-500">
+			<Link
+				href="/scrobbler"
+				className="inline-flex items-center text-gray-400 hover:text-white mb-6 font-bold text-sm transition-colors"
+			>
+				<ArrowLeftIcon className="w-4 h-4 mr-2" /> Back to Dashboard
+			</Link>
+
+			<div className="bg-[var(--color-mgray)] rounded-3xl border border-white/10 p-8 shadow-2xl">
+				<div className="flex items-center justify-between mb-8 relative">
+					<div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-white/5 rounded-full z-0" />
+					<div
+						className={`absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-[var(--color-primary)] rounded-full z-0 transition-all duration-300 ${step === 1 ? "w-1/2" : "w-full"}`}
 					/>
+
+					<div
+						className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center font-bold border-4 border-[var(--color-mgray)] ${step >= 1 ? "bg-[var(--color-primary)] text-black" : "bg-gray-700 text-gray-400"}`}
+					>
+						1
+					</div>
+					<div
+						className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center font-bold border-4 border-[var(--color-mgray)] transition-colors duration-300 ${step >= 2 ? "bg-[var(--color-primary)] text-black" : "bg-gray-800 text-gray-400"}`}
+					>
+						2
+					</div>
 				</div>
 
-				<div className="p-8 sm:p-12">
-					<AnimatePresence mode="wait">
-						{step === 1 && (
-							<motion.div
-								key="step1"
-								initial={{ opacity: 0, x: 20 }}
-								animate={{ opacity: 1, x: 0 }}
-								exit={{ opacity: 0, x: -20 }}
+				<h1 className="text-3xl font-metropolis font-bold mb-2">
+					{step === 1 ? "Connect your PDS" : "Authorize Spotify"}
+				</h1>
+				<p className="text-gray-400 text-sm mb-6">
+					{step === 1
+						? "Configure your decentralized backup layer."
+						: "Link your custom API keys to bypass tracking limits."}
+				</p>
+
+				{error && (
+					<div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl mb-6 text-sm font-bold">
+						{error}
+					</div>
+				)}
+
+				{step === 1 && (
+					<div className="space-y-4 animate-in slide-in-from-right-4">
+						<div>
+							<label className="block text-sm font-bold text-gray-300 mb-1.5">
+								Bluesky Handle
+							</label>
+							<input
+								type="text"
+								placeholder="e.g., jckli.bsky.social"
+								className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 text-white outline-none focus:border-[var(--color-primary)] transition-colors"
+								value={formData.bskyHandle}
+								onChange={e =>
+									setFormData({
+										...formData,
+										bskyHandle: e.target.value,
+									})
+								}
+							/>
+						</div>
+						<div>
+							<label className="block text-sm font-bold text-gray-300 mb-1.5">
+								App Password
+							</label>
+							<input
+								type="password"
+								placeholder="xxxx-xxxx-xxxx-xxxx"
+								className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 text-white outline-none focus:border-[var(--color-primary)] transition-colors"
+								value={formData.bskyPass}
+								onChange={e =>
+									setFormData({
+										...formData,
+										bskyPass: e.target.value,
+									})
+								}
+							/>
+						</div>
+						<div>
+							<label className="block text-sm font-bold text-gray-300 mb-1.5">
+								PDS URL
+							</label>
+							<input
+								type="text"
+								className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 text-gray-400 outline-none focus:border-[var(--color-primary)] transition-colors"
+								value={formData.bskyPds}
+								onChange={e =>
+									setFormData({
+										...formData,
+										bskyPds: e.target.value,
+									})
+								}
+							/>
+						</div>
+
+						<button
+							onClick={handleNext}
+							className="w-full mt-6 bg-white text-black font-bold p-4 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center"
+						>
+							Continue to Spotify <ArrowRightIcon className="w-5 h-5 ml-2" />
+						</button>
+					</div>
+				)}
+
+				{step === 2 && (
+					<div className="space-y-4 animate-in slide-in-from-right-4">
+						<div>
+							<label className="block text-sm font-bold text-gray-300 mb-1.5">
+								Spotify Client ID
+							</label>
+							<input
+								type="text"
+								placeholder="32-character hex string"
+								className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 text-white outline-none focus:border-[var(--color-primary)] transition-colors"
+								value={formData.clientId}
+								onChange={e =>
+									setFormData({
+										...formData,
+										clientId: e.target.value,
+									})
+								}
+							/>
+						</div>
+						<div>
+							<label className="block text-sm font-bold text-gray-300 mb-1.5">
+								Spotify Client Secret
+							</label>
+							<input
+								type="password"
+								placeholder="32-character hex string"
+								className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 text-white outline-none focus:border-[var(--color-primary)] transition-colors"
+								value={formData.secret}
+								onChange={e =>
+									setFormData({
+										...formData,
+										secret: e.target.value,
+									})
+								}
+							/>
+						</div>
+
+						<div className="flex gap-3 mt-6">
+							<button
+								onClick={() => setStep(1)}
+								className="px-6 py-4 bg-white/5 hover:bg-white/10 text-white font-bold rounded-xl transition-colors"
 							>
-								<h2 className="text-2xl font-bold mb-2">
-									AT Protocol Sync
-								</h2>
-								<p className="text-sm text-gray-500 mb-6">
-									First, configure where Retrievify pushes your
-									listening history on the decentralized web.
-								</p>
-
-								<div className="space-y-4">
-									<div>
-										<label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-											Bluesky Handle
-										</label>
-										<input
-											type="text"
-											className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)]"
-											value={formData.bluesky_handle}
-											onChange={e =>
-												setFormData({
-													...formData,
-													bluesky_handle:
-														e.target
-															.value,
-												})
-											}
-											placeholder="e.g. sakuta.bsky.social"
-										/>
-									</div>
-									<div>
-										<label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-											App Password
-										</label>
-										<input
-											type="password"
-											className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)]"
-											value={
-												formData.bluesky_app_pass
-											}
-											onChange={e =>
-												setFormData({
-													...formData,
-													bluesky_app_pass:
-														e.target
-															.value,
-												})
-											}
-											placeholder="xxxx-xxxx-xxxx-xxxx"
-										/>
-									</div>
-									<div>
-										<label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-											PDS URL
-										</label>
-										<input
-											type="text"
-											className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)]"
-											value={formData.bluesky_pds}
-											onChange={e =>
-												setFormData({
-													...formData,
-													bluesky_pds:
-														e.target
-															.value,
-												})
-											}
-										/>
-									</div>
-								</div>
-								<button
-									onClick={handleNext}
-									className="w-full mt-8 py-4 bg-[var(--color-primary)] text-black font-bold rounded-xl hover:scale-[1.02] transition-transform"
-								>
-									Next: Spotify Keys
-								</button>
-							</motion.div>
-						)}
-
-						{step === 2 && (
-							<motion.div
-								key="step2"
-								initial={{ opacity: 0, x: 20 }}
-								animate={{ opacity: 1, x: 0 }}
-								exit={{ opacity: 0, x: -20 }}
+								Back
+							</button>
+							<button
+								onClick={handleAuth}
+								className="flex-1 bg-[var(--color-primary)] text-black font-bold p-4 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center shadow-[0_0_20px_rgba(74,211,255,0.2)]"
 							>
-								<h2 className="text-2xl font-bold mb-2">
-									Spotify Developer Keys
-								</h2>
-								<p className="text-sm text-gray-500 mb-6">
-									Enter your custom Spotify App credentials.
-									Ensure your Redirect URI is set exactly to:{" "}
-									<br />
-									<code className="text-[var(--color-primary)] select-all">
-										{typeof window !== "undefined"
-											? window.location.origin +
-												"/scrobbler/callback"
-											: ""}
-									</code>
-								</p>
-
-								<div className="space-y-4">
-									<div>
-										<label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-											Client ID
-										</label>
-										<input
-											type="text"
-											className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)]"
-											value={
-												formData.spotify_client_id
-											}
-											onChange={e =>
-												setFormData({
-													...formData,
-													spotify_client_id:
-														e.target
-															.value,
-												})
-											}
-											placeholder="e.g. 8a4b..."
-										/>
-									</div>
-									<div>
-										<label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-											Client Secret
-										</label>
-										<input
-											type="password"
-											className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)]"
-											value={formData.spotify_secret}
-											onChange={e =>
-												setFormData({
-													...formData,
-													spotify_secret:
-														e.target
-															.value,
-												})
-											}
-											placeholder="••••••••••••••••"
-										/>
-									</div>
-								</div>
-								{error && (
-									<p className="text-red-400 text-sm mt-4">
-										{error}
-									</p>
-								)}
-								<div className="flex space-x-4 mt-8">
-									<button
-										onClick={handlePrev}
-										className="px-6 py-3 border border-white/10 rounded-xl hover:bg-white/5 transition-colors"
-									>
-										Back
-									</button>
-									<button
-										onClick={handleSpotifyAuth}
-										className="flex-1 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors"
-									>
-										Authorize App
-									</button>
-								</div>
-							</motion.div>
-						)}
-					</AnimatePresence>
-				</div>
+								Authorize Engine{" "}
+								<CheckCircleIcon className="w-5 h-5 ml-2" />
+							</button>
+						</div>
+					</div>
+				)}
 			</div>
 		</div>
 	);
