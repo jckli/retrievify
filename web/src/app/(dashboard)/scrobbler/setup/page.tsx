@@ -35,7 +35,7 @@ export default function ScrobblerSetupPage() {
 		localStorage.setItem("byok_secret", formData.secret);
 
 		const redirectUri = window.location.origin + "/scrobbler/callback";
-		window.location.href = `http://googleusercontent.com/spotify.com/7{formData.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-recently-played`;
+		window.location.href = `https://accounts.spotify.com/authorize?client_id=${formData.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-recently-played`;
 	};
 
 	return (
