@@ -52,11 +52,7 @@ export default function ScrobblerSetupPage() {
 	};
 
 	const handleWipe = async () => {
-		if (
-			!confirm(
-				"Are you entirely sure? This will instantly wipe all scrobbling data from MongoDB and completely erase your history from the Bluesky PDS.",
-			)
-		)
+		if (!confirm("Are you entirely sure? This will instantly wipe all scrobbling data from Retrievify."))
 			return;
 		setIsWiping(true);
 		try {
@@ -232,15 +228,15 @@ export default function ScrobblerSetupPage() {
 				<div className="bg-red-500/5 border border-red-500/20 rounded-3xl p-6 text-center">
 					<h3 className="text-red-400 font-bold font-metropolis mb-2">Danger Zone</h3>
 					<p className="text-sm text-red-400/70 font-proximaNova mb-4">
-						This action cannot be undone. All local and PDS scrobbling history will
-						be permanently destroyed.
+						This action cannot be undone. All scrobbling history will be permanently
+						deleted.
 					</p>
 					<button
 						onClick={handleWipe}
 						disabled={isWiping}
 						className="inline-flex items-center px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl font-bold transition-colors cursor-pointer disabled:opacity-50 font-proximaNova"
 					>
-						{isWiping ? "Erasing Data..." : "Nuke Scrobbler History"}
+						{isWiping ? "Erasing Data..." : "Erase Scrobbler History"}
 						<TrashIcon className="w-5 h-5 ml-2" />
 					</button>
 				</div>
