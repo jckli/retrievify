@@ -5,17 +5,11 @@ import useSWR from "swr";
 import Link from "next/link";
 import { fetcher } from "@/utils/fetcher";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import {
-	Cog6ToothIcon,
-	ArrowPathIcon,
-	PlayIcon,
-	ClockIcon,
-	ChevronLeftIcon,
-	ChevronRightIcon,
-} from "@heroicons/react/24/outline";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCog, faSync, faPlay, faClock, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 type StatType = "tracks" | "artists" | "albums";
-type TimeRange = "allTime" | "thisMonth" | "timeline";
+type TimeRange = "allTime" | "thisMonth";
 
 export default function ScrobblerDashboard() {
 	const [tab, setTab] = useState<StatType>("tracks");
@@ -25,68 +19,77 @@ export default function ScrobblerDashboard() {
 	const { data: statusData, isLoading: statusLoading } = useSWR("/retrievify/spotify/scrobbler/status", fetcher);
 	const isSetup = statusData?.setup === true;
 
-	const endpoint =
-		range === "allTime"
-			? `stats?type=${tab}&limit=15`
-			: range === "thisMonth"
-				? `history?type=${tab}&limit=15`
-				: `timeline?page=${page}&limit=50`;
-
+	const chartEndpoint = range === "allTime" ? `stats?type=${tab}&limit=15` : `history?type=${tab}&limit=15`;
 	const {
-		data: dbData,
-		error: dbError,
-		isLoading: dbLoading,
-		mutate,
-	} = useSWR(isSetup ? `/retrievify/spotify/scrobbler/${endpoint}` : null, fetcher);
-
-	const rawStats = dbData?.data || [];
-	const ids = rawStats
-		.map((s: any) => s.spotify_id || s.track_id)
+		data: dbChartData,
+		error: dbChartError,
+		isLoading: dbChartLoading,
+		mutate: mutateCharts,
+	} = useSWR(isSetup ? `/retrievify/spotify/scrobbler/${chartEndpoint}` : null, fetcher);
+	const topStats = dbChartData?.data || [];
+	const topIds = topStats
+		.map((s: any) => s.spotify_id)
 		.filter(Boolean)
 		.join(",");
+	const { data: spotTopData, isLoading: spotTopLoading } = useSWR(
+		topIds ? `/retrievify/spotify/${tab}?ids=${topIds}` : null,
+		fetcher,
+	);
 
-	const { data: spotData, isLoading: spotLoading } = useSWR(
-		ids && range !== "timeline"
-			? `/retrievify/spotify/${tab}?ids=${ids}`
-			: ids && range === "timeline"
-				? `/retrievify/spotify/tracks?ids=${Array.from(new Set(rawStats.map((s: any) => s.track_id))).join(",")}`
-				: null,
+	const {
+		data: dbTimelineData,
+		isLoading: dbTimelineLoading,
+		mutate: mutateTimeline,
+	} = useSWR(isSetup ? `/retrievify/spotify/scrobbler/timeline?page=${page}&limit=50` : null, fetcher);
+	const timelineStats = dbTimelineData?.data || [];
+	const hasNextPage = dbTimelineData?.has_next || false;
+	const timelineIds = Array.from(new Set(timelineStats.map((s: any) => s.track_id)))
+		.filter(Boolean)
+		.join(",");
+	const { data: spotTimelineData } = useSWR(
+		timelineIds ? `/retrievify/spotify/tracks?ids=${timelineIds}` : null,
 		fetcher,
 	);
 
 	const chartData = useMemo(() => {
-		if (!spotData && rawStats.length > 0 && !spotLoading) return rawStats;
-		if (!spotData) return [];
-
-		const spotItems = spotData[range === "timeline" ? "tracks" : tab] || [];
+		if (!spotTopData) return [];
+		const spotItems = spotTopData[tab] || [];
 		const spotMap = new Map(spotItems.map((i: any) => [i.id, i]));
 
-		return rawStats.map((stat: any) => {
-			const id = stat.spotify_id || stat.track_id;
-			const item: any = spotMap.get(id) || {};
+		return topStats.map((stat: any) => {
+			const item: any = spotMap.get(stat.spotify_id) || {};
 			return {
 				...stat,
 				displayName: item.name || "Unknown",
-				subtext:
-					tab === "artists" && range !== "timeline"
-						? "Artist"
-						: item.artists?.[0]?.name || "Unknown",
-				imageUrl:
-					tab === "tracks" || range === "timeline"
-						? item.album?.images?.[0]?.url
-						: item.images?.[0]?.url,
+				subtext: tab === "artists" ? "Artist" : item.artists?.[0]?.name || "Unknown",
+				imageUrl: tab === "tracks" ? item.album?.images?.[0]?.url : item.images?.[0]?.url,
 			};
 		});
-	}, [rawStats, spotData, tab, range, spotLoading]);
+	}, [topStats, spotTopData, tab]);
 
-	const isLoading = dbLoading || (rawStats.length > 0 && spotLoading);
-	const isTimeline = range === "timeline";
+	const recentData = useMemo(() => {
+		if (!spotTimelineData) return [];
+		const spotItems = spotTimelineData.tracks || [];
+		const spotMap = new Map(spotItems.map((i: any) => [i.id, i]));
+
+		return timelineStats.map((stat: any) => {
+			const item: any = spotMap.get(stat.track_id) || {};
+			return {
+				...stat,
+				displayName: item.name || "Unknown Track",
+				subtext: item.artists?.map((a: any) => a.name).join(", ") || "Unknown Artist",
+				imageUrl: item.album?.images?.[0]?.url || "/images/logo.png",
+			};
+		});
+	}, [timelineStats, spotTimelineData]);
+
+	const isChartLoading = dbChartLoading || (topStats.length > 0 && spotTopLoading);
 
 	const CustomTooltip = ({ active, payload }: any) => {
 		if (active && payload && payload.length) {
 			const d = payload[0].payload;
 			return (
-				<div className="bg-[var(--color-mgray)] border border-white/10 p-4 rounded-xl shadow-2xl flex items-center space-x-4">
+				<div className="bg-mgray border border-white/10 p-4 rounded-xl shadow-2xl flex items-center space-x-4 z-50">
 					<img
 						src={d.imageUrl || "/images/logo.png"}
 						alt=""
@@ -107,17 +110,24 @@ export default function ScrobblerDashboard() {
 	};
 
 	if (statusLoading)
-		return <div className="p-8 text-center text-gray-500 animate-pulse font-bold">Checking status...</div>;
+		return (
+			<div className="p-8 text-center text-gray-500 font-bold min-h-[70vh] flex items-center justify-center">
+				Loading...
+			</div>
+		);
 
 	if (!isSetup)
 		return (
 			<div className="min-h-[70vh] flex flex-col items-center justify-center animate-in fade-in p-4 md:p-8">
-				<div className="bg-[var(--color-mgray)] border border-white/10 rounded-3xl p-10 md:p-16 text-center shadow-2xl max-w-2xl w-full">
-					<Cog6ToothIcon className="w-16 h-16 mx-auto text-[var(--color-primary)] mb-6" />
+				<div className="bg-mgray border border-white/10 rounded-3xl p-10 md:p-16 text-center shadow-2xl max-w-2xl w-full">
+					<FontAwesomeIcon
+						icon={faCog}
+						className="text-6xl text-[var(--color-primary)] mb-6"
+					/>
 					<h1 className="text-4xl font-metropolis font-bold mb-4">
 						Setup scrobbling for Retrievify
 					</h1>
-					<p className="text-gray-400 mb-8 text-lg">
+					<p className="text-gray-400 mb-8 text-lg font-proximaNova">
 						Connect your keys to track and analyze your listening history.
 					</p>
 					<Link
@@ -125,94 +135,87 @@ export default function ScrobblerDashboard() {
 						className="inline-flex items-center space-x-3 bg-[var(--color-primary)] text-black px-8 py-4 rounded-full font-bold cursor-pointer hover:scale-105 transition-transform"
 					>
 						<span>Begin Setup</span>
-						<PlayIcon className="w-5 h-5" />
+						<FontAwesomeIcon icon={faPlay} className="ml-1" />
 					</Link>
 				</div>
 			</div>
 		);
 
 	return (
-		<div className="space-y-6 animate-in fade-in p-4 md:p-8 max-w-7xl mx-auto">
+		<div className="space-y-10 animate-in fade-in p-4 md:p-8 max-w-7xl mx-auto w-full">
+			{/* Header */}
 			<header className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
 				<div>
 					<h1 className="text-4xl font-metropolis font-bold">Scrobbler Analytics</h1>
-					<p className="text-gray-400 mt-1">Your immutable listening history.</p>
+					<p className="text-gray-400 mt-1 font-proximaNova">
+						Your immutable listening history.
+					</p>
 				</div>
 				<div className="flex space-x-3">
 					<button
-						onClick={() => mutate()}
-						className="p-3 bg-[var(--color-mgray)] rounded-xl border border-white/10 cursor-pointer hover:bg-white/5 transition-colors"
+						onClick={() => {
+							mutateCharts();
+							mutateTimeline();
+						}}
+						className="p-3 bg-mgray rounded-xl border border-white/10 cursor-pointer hover:bg-[#303030] transition-colors"
 					>
-						<ArrowPathIcon className="w-5 h-5 text-gray-300" />
+						<FontAwesomeIcon icon={faSync} className="text-gray-300" />
 					</button>
 					<Link
 						href="/scrobbler/setup"
-						className="flex items-center px-6 py-3 bg-[var(--color-mgray)] rounded-xl border border-white/10 text-sm font-bold cursor-pointer hover:bg-white/5 transition-colors"
+						className="flex items-center px-6 py-3 bg-mgray rounded-xl border border-white/10 text-sm font-bold cursor-pointer hover:bg-[#303030] transition-colors font-metropolis"
 					>
-						<Cog6ToothIcon className="w-5 h-5 mr-2" /> Configure
+						<FontAwesomeIcon icon={faCog} className="mr-2" /> Configure
 					</Link>
 				</div>
 			</header>
 
-			<div className="flex flex-wrap gap-4 justify-between items-center">
-				<div className="flex space-x-2 bg-[var(--color-mgray)] p-1 rounded-xl border border-white/10">
-					{(["tracks", "artists", "albums"] as StatType[]).map(t => (
+			<div className="space-y-6">
+				<div className="flex flex-wrap gap-4 justify-between items-center font-proximaNova">
+					<div className="flex space-x-2 bg-mgray p-1 rounded-xl border border-white/10">
+						{(["tracks", "artists", "albums"] as StatType[]).map(t => (
+							<button
+								key={t}
+								onClick={() => setTab(t)}
+								className={`px-6 py-2 rounded-lg font-bold capitalize cursor-pointer transition-colors ${tab === t ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
+							>
+								{t}
+							</button>
+						))}
+					</div>
+					<div className="flex space-x-2 bg-mgray p-1 rounded-xl border border-white/10">
 						<button
-							key={t}
-							onClick={() => {
-								setTab(t);
-								setRange("allTime");
-							}}
-							className={`px-6 py-2 rounded-lg font-bold capitalize cursor-pointer transition-colors ${tab === t && !isTimeline ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
+							onClick={() => setRange("thisMonth")}
+							className={`px-6 py-2 rounded-lg font-bold cursor-pointer transition-colors ${range === "thisMonth" ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
 						>
-							{t}
+							This Month
 						</button>
-					))}
+						<button
+							onClick={() => setRange("allTime")}
+							className={`px-6 py-2 rounded-lg font-bold cursor-pointer transition-colors ${range === "allTime" ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
+						>
+							All Time
+						</button>
+					</div>
 				</div>
-				<div className="flex space-x-2 bg-[var(--color-mgray)] p-1 rounded-xl border border-white/10">
-					<button
-						onClick={() => {
-							setRange("timeline");
-							setPage(1);
-						}}
-						className={`px-6 py-2 rounded-lg font-bold cursor-pointer transition-colors ${isTimeline ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
-					>
-						Timeline
-					</button>
-					<button
-						onClick={() => setRange("thisMonth")}
-						className={`px-6 py-2 rounded-lg font-bold cursor-pointer transition-colors ${range === "thisMonth" ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
-					>
-						This Month
-					</button>
-					<button
-						onClick={() => setRange("allTime")}
-						className={`px-6 py-2 rounded-lg font-bold cursor-pointer transition-colors ${range === "allTime" ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
-					>
-						All Time
-					</button>
-				</div>
-			</div>
 
-			{dbError ? (
-				<div className="p-8 text-center bg-red-500/10 text-red-400 rounded-2xl font-bold">
-					Failed to fetch data.
-				</div>
-			) : isLoading ? (
-				<div className="h-96 flex flex-col items-center justify-center bg-[var(--color-mgray)] rounded-2xl animate-pulse">
-					<div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin mb-4" />
-					<p className="text-gray-400 font-bold">Grabbing scrobbling data...</p>
-				</div>
-			) : chartData.length === 0 ? (
-				<div className="h-96 flex items-center justify-center border border-dashed border-white/10 rounded-2xl text-gray-400 font-bold">
-					No data found. Start playing music!
-				</div>
-			) : (
-				<div
-					className={`grid grid-cols-1 ${isTimeline ? "xl:grid-cols-1" : "xl:grid-cols-3"} gap-6`}
-				>
-					{!isTimeline && (
-						<div className="xl:col-span-2 bg-[var(--color-mgray)] border border-white/10 rounded-2xl p-6 h-[500px] shadow-2xl">
+				{dbChartError ? (
+					<div className="p-8 text-center bg-red-500/10 text-red-400 rounded-2xl font-bold font-proximaNova">
+						Failed to fetch data.
+					</div>
+				) : isChartLoading ? (
+					<div className="h-96 flex flex-col items-center justify-center bg-mgray rounded-2xl">
+						<p className="text-gray-400 font-bold font-proximaNova">
+							Loading charts...
+						</p>
+					</div>
+				) : chartData.length === 0 ? (
+					<div className="h-96 flex items-center justify-center border border-dashed border-white/10 rounded-2xl text-gray-400 font-bold font-proximaNova">
+						No data found. Start playing music!
+					</div>
+				) : (
+					<div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+						<div className="xl:col-span-2 bg-mgray border border-white/10 rounded-2xl p-6 h-[500px]">
 							<ResponsiveContainer width="100%" height="100%">
 								<BarChart
 									data={chartData}
@@ -226,7 +229,11 @@ export default function ScrobblerDashboard() {
 									<XAxis
 										dataKey="displayName"
 										stroke="#555"
-										tick={{ fill: "#888", fontSize: 12 }}
+										tick={{
+											fill: "#888",
+											fontSize: 12,
+											fontFamily: "ProximaNova",
+										}}
 										tickLine={false}
 										axisLine={false}
 										tickFormatter={v =>
@@ -238,7 +245,11 @@ export default function ScrobblerDashboard() {
 									/>
 									<YAxis
 										stroke="#555"
-										tick={{ fill: "#888", fontSize: 12 }}
+										tick={{
+											fill: "#888",
+											fontSize: 12,
+											fontFamily: "ProximaNova",
+										}}
 										tickLine={false}
 										axisLine={false}
 									/>
@@ -264,86 +275,124 @@ export default function ScrobblerDashboard() {
 								</BarChart>
 							</ResponsiveContainer>
 						</div>
-					)}
 
-					<div
-						className={`bg-[var(--color-mgray)] border border-white/10 rounded-2xl p-6 flex flex-col ${isTimeline ? "h-[70vh]" : "h-[500px]"} shadow-2xl`}
-					>
-						<div className="flex justify-between items-center mb-4">
-							<h2 className="text-xl font-metropolis font-bold">Ledger</h2>
-							{isTimeline && (
-								<div className="flex space-x-2">
-									<button
-										disabled={page === 1}
-										onClick={() => setPage(p => p - 1)}
-										className="p-1.5 bg-white/5 hover:bg-white/10 rounded-lg disabled:opacity-30 transition-colors"
+						<div className="bg-mgray border border-white/10 rounded-2xl p-6 flex flex-col h-[500px]">
+							<h2 className="text-xl font-metropolis font-bold mb-4">
+								Scoreboard
+							</h2>
+							<ul className="flex-1 overflow-y-auto pr-2 space-y-2 custom-scrollbar font-proximaNova">
+								{chartData.map((s: any, i: number) => (
+									<Link
+										href={`/info/${tab.slice(0, -1)}/${s.spotify_id}`}
+										key={i}
 									>
-										<ChevronLeftIcon className="w-5 h-5 text-white" />
-									</button>
-									<button
-										onClick={() => setPage(p => p + 1)}
-										className="p-1.5 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-									>
-										<ChevronRightIcon className="w-5 h-5 text-white" />
-									</button>
-								</div>
-							)}
-						</div>
-						<ul className="flex-1 overflow-y-auto pr-2 space-y-2 custom-scrollbar">
-							{chartData.map((s: any, i: number) => (
-								<Link
-									href={`/info/${isTimeline ? "track" : tab.slice(0, -1)}/${s.spotify_id || s.track_id}`}
-									key={i}
-								>
-									<li className="flex items-center justify-between p-3 hover:bg-white/5 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-white/5">
-										<div className="flex items-center space-x-4 overflow-hidden">
-											<span
-												className={`w-5 font-bold text-center ${i === 0 && !isTimeline ? "text-[var(--color-primary)]" : "text-gray-500"}`}
-											>
-												{isTimeline ? (
-													<ClockIcon className="w-5 h-5 mx-auto" />
-												) : (
-													i + 1
-												)}
-											</span>
-											<img
-												src={
-													s.imageUrl ||
-													"/images/logo.png"
-												}
-												className="w-12 h-12 rounded-lg object-cover group-hover:scale-105 transition-transform"
-												alt=""
-											/>
-											<div className="truncate">
-												<p className="font-bold text-sm text-white truncate group-hover:text-[var(--color-primary)] transition-colors">
-													{s.displayName}
-												</p>
-												<p className="text-xs text-gray-400 truncate mt-0.5">
-													{isTimeline
-														? new Date(
-																s.played_at,
-															).toLocaleString()
-														: s.subtext}
-												</p>
+										<li className="flex items-center justify-between p-3 hover:bg-[#303030] rounded-xl transition-colors cursor-pointer group border border-transparent">
+											<div className="flex items-center space-x-4 overflow-hidden">
+												<span
+													className={`w-6 font-bold text-center ${i === 0 ? "text-[var(--color-primary)]" : "text-gray-500"}`}
+												>
+													{i + 1}
+												</span>
+												<img
+													src={
+														s.imageUrl ||
+														"/images/logo.png"
+													}
+													className="w-12 h-12 rounded-lg object-cover group-hover:scale-105 transition-transform"
+													alt=""
+												/>
+												<div className="truncate">
+													<p className="font-bold text-sm text-white truncate group-hover:text-[var(--color-primary)] transition-colors font-metropolis">
+														{
+															s.displayName
+														}
+													</p>
+													<p className="text-xs text-gray-400 truncate mt-0.5">
+														{
+															s.subtext
+														}
+													</p>
+												</div>
 											</div>
-										</div>
-										{!isTimeline && (
 											<div className="pl-4 text-right">
-												<p className="text-sm font-bold text-white">
+												<p className="text-sm font-bold text-white font-metropolis">
 													{s.play_count}
 												</p>
 												<p className="text-[10px] text-gray-500 uppercase mt-0.5 tracking-wider">
 													Plays
 												</p>
 											</div>
-										)}
-									</li>
-								</Link>
-							))}
-						</ul>
+										</li>
+									</Link>
+								))}
+							</ul>
+						</div>
+					</div>
+				)}
+			</div>
+
+			<div className="bg-mgray border border-white/10 rounded-2xl p-6 shadow-2xl">
+				<div className="flex justify-between items-center mb-6">
+					<h2 className="text-2xl font-metropolis font-bold flex items-center">
+						<FontAwesomeIcon
+							icon={faClock}
+							className="text-[var(--color-primary)] mr-3"
+						/>{" "}
+						Recently Played
+					</h2>
+					<div className="flex space-x-2">
+						<button
+							disabled={page === 1}
+							onClick={() => setPage(p => p - 1)}
+							className="p-2.5 px-4 bg-[#303030] hover:bg-[#404040] rounded-lg disabled:opacity-30 transition-colors cursor-pointer text-white"
+						>
+							<FontAwesomeIcon icon={faChevronLeft} />
+						</button>
+						<button
+							disabled={!hasNextPage}
+							onClick={() => setPage(p => p + 1)}
+							className="p-2.5 px-4 bg-[#303030] hover:bg-[#404040] rounded-lg disabled:opacity-30 transition-colors cursor-pointer text-white"
+						>
+							<FontAwesomeIcon icon={faChevronRight} />
+						</button>
 					</div>
 				</div>
-			)}
+
+				{dbTimelineLoading ? (
+					<div className="h-64 flex items-center justify-center">
+						<p className="text-gray-400 font-bold font-proximaNova">
+							Loading timeline...
+						</p>
+					</div>
+				) : (
+					<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+						{recentData.map((s: any, i: number) => (
+							<Link href={`/info/track/${s.track_id}`} key={i}>
+								<div className="flex items-center p-3 hover:bg-[#303030] rounded-xl transition-colors cursor-pointer group border border-white/5">
+									<img
+										src={s.imageUrl || "/images/logo.png"}
+										className="w-14 h-14 rounded-lg object-cover group-hover:scale-105 transition-transform shadow-md"
+										alt=""
+									/>
+									<div className="ml-4 truncate flex-1">
+										<p className="font-bold text-white truncate group-hover:text-[var(--color-primary)] transition-colors font-metropolis">
+											{s.displayName}
+										</p>
+										<p className="text-sm text-gray-400 truncate mt-0.5">
+											{s.subtext}
+										</p>
+										<p className="text-xs text-gray-500 mt-1 font-proximaNova">
+											{new Date(
+												s.played_at,
+											).toLocaleString()}
+										</p>
+									</div>
+								</div>
+							</Link>
+						))}
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }
