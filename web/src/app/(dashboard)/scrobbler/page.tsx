@@ -75,7 +75,7 @@ export default function ScrobblerDashboard() {
         isLoading: insightsLoading,
         mutate: refreshInsights,
     } = useSWR(
-        isSetup && selectedPeriod.ready
+        isSetup && selectedPeriod.ready && activeTab === "overview"
             ? `/retrievify/spotify/scrobbler/insights?timezone=${encodeURIComponent(timezone)}${rangeSuffix}`
             : null,
         fetcher,
@@ -86,7 +86,7 @@ export default function ScrobblerDashboard() {
         isLoading: statsLoading,
         mutate: refreshStats,
     } = useSWR(
-        isSetup && selectedPeriod.ready
+        isSetup && selectedPeriod.ready && activeTab === "top"
             ? `/retrievify/spotify/scrobbler/stats?type=${statType}&limit=15${rangeSuffix}`
             : null,
         fetcher,
@@ -97,7 +97,7 @@ export default function ScrobblerDashboard() {
         isLoading: timelineLoading,
         mutate: refreshTimeline,
     } = useSWR(
-        isSetup && selectedPeriod.ready
+        isSetup && selectedPeriod.ready && activeTab === "history"
             ? `/retrievify/spotify/scrobbler/timeline?page=${page}&limit=50${rangeSuffix}`
             : null,
         fetcher,
@@ -109,7 +109,7 @@ export default function ScrobblerDashboard() {
         .filter(Boolean)
         .join(",");
     const { data: spotifyTopData, isLoading: spotifyTopLoading } = useSWR(
-        topIds ? `/retrievify/spotify/${statType}?ids=${topIds}` : null,
+        activeTab === "top" && topIds ? `/retrievify/spotify/${statType}?ids=${topIds}` : null,
         fetcher,
     );
 
@@ -118,7 +118,7 @@ export default function ScrobblerDashboard() {
         .filter(Boolean)
         .join(",");
     const { data: spotifyTimelineData } = useSWR(
-        timelineIds ? `/retrievify/spotify/tracks?ids=${timelineIds}` : null,
+        activeTab === "history" && timelineIds ? `/retrievify/spotify/tracks?ids=${timelineIds}` : null,
         fetcher,
     );
 
@@ -185,9 +185,9 @@ export default function ScrobblerDashboard() {
     const hasNextPage = timelineData?.has_next || false;
     const isTopLoading = statsLoading || (topStats.length > 0 && spotifyTopLoading);
     const refresh = () => {
-        refreshInsights();
-        refreshStats();
-        refreshTimeline();
+        if (activeTab === "overview") refreshInsights();
+        if (activeTab === "top") refreshStats();
+        if (activeTab === "history") refreshTimeline();
     };
 
     return (
