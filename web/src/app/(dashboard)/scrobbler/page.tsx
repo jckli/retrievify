@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import useSWR from "swr";
 import { Area, AreaChart, Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -122,6 +122,19 @@ export default function ScrobblerDashboard() {
         fetcher,
     );
 
+    const insightArtists = insightsData?.data?.top_artists || [];
+    const discoveries = insightsData?.data?.discoveries || {};
+    const insightArtistIds = Array.from(new Set([...insightArtists, ...(discoveries.artists || [])].map((item: any) => item.spotify_id).filter(Boolean))).join(",");
+    const { data: spotifyInsightArtists } = useSWR(
+        activeTab === "overview" && insightArtistIds ? `/retrievify/spotify/artists?ids=${insightArtistIds}` : null,
+        fetcher,
+    );
+    const insightTrackId = insightsData?.data?.top_track?.spotify_id;
+    const { data: spotifyInsightTrack } = useSWR(
+        activeTab === "overview" && insightTrackId ? `/retrievify/spotify/tracks?ids=${insightTrackId}` : null,
+        fetcher,
+    );
+
     const topMusic = useMemo(() => {
         const spotifyItems = spotifyTopData?.[statType] || [];
         const spotifyByID = new Map(spotifyItems.map((item: any) => [item.id, item]));
@@ -159,6 +172,25 @@ export default function ScrobblerDashboard() {
             plays: values.find((item: any) => item._id === hour)?.count || 0,
         }));
     }, [insightsData]);
+
+    const daily = insightsData?.data?.daily || [];
+    const habits = insightsData?.data?.habits || {};
+    const heatmap = useMemo(() => {
+        const values = new Map((insightsData?.data?.weekday_hourly || []).map((item: any) => [`${item._id?.day}-${item._id?.hour}`, item]));
+        const cells = Array.from({ length: 7 }, (_, day) => Array.from({ length: 24 }, (_, hour) => values.get(`${day}-${hour}`) || { plays: 0, total_time_ms: 0 }));
+        const max = Math.max(1, ...cells.flat().map((item: any) => item.plays));
+        return { cells, max };
+    }, [insightsData]);
+    const genres = useMemo(() => {
+        const weights = new Map<string, number>();
+        const plays = new Map<string, number>(insightArtists.map((item: any) => [item.spotify_id, Number(item.play_count) || 0]));
+        for (const artist of (spotifyInsightArtists?.artists || []) as any[]) for (const genre of artist.genres || []) weights.set(String(genre), (weights.get(String(genre)) || 0) + (plays.get(artist.id) || 0));
+        return [...weights.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+    }, [spotifyInsightArtists, insightArtists]);
+    const discoveryArtists = useMemo(() => {
+        const byId = new Map((spotifyInsightArtists?.artists || []).map((artist: any) => [artist.id, artist]));
+        return (discoveries.artists || []).map((item: any) => byId.get(item.spotify_id)).filter(Boolean);
+    }, [spotifyInsightArtists, discoveries]);
 
     if (statusLoading)
         return <div className="min-h-[70vh] grid place-items-center text-gray-400">Loading listening data…</div>;
@@ -291,14 +323,58 @@ export default function ScrobblerDashboard() {
                                 <SummaryCard label="Time listened" value={formatDuration(summary?.total_time_ms)} />
                                 <SummaryCard label="Plays" value={Number(summary?.total_plays || 0).toLocaleString()} />
                                 <SummaryCard
+                                    label="Artists"
+                                    value={Number(summary?.unique_artists || 0).toLocaleString()}
+                                />
+                                <SummaryCard
                                     label="Tracks"
                                     value={Number(summary?.unique_tracks || 0).toLocaleString()}
                                 />
-                                <SummaryCard
-                                    label="Albums"
-                                    value={Number(summary?.unique_albums || 0).toLocaleString()}
-                                />
                             </div>
+                            <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                                <InsightCard label="Longest streak" value={`${habits.longest_streak_days || 0} days`} />
+                                <InsightCard label="Listening sessions" value={Number(habits.sessions || 0).toLocaleString()} />
+                                <InsightCard label="Longest session" value={formatDuration(habits.longest_session_ms)} />
+                                <InsightCard label="Plays per track" value={(Number(summary?.total_plays || 0) / Math.max(1, Number(summary?.unique_tracks || 0))).toFixed(1)} />
+                            </section>
+                            <section className="rounded-xl border border-white/10 bg-mgray p-5">
+                                <h2 className="text-lg font-bold font-metropolis">Listening activity</h2>
+                                <p className="text-sm text-gray-400 mt-1">Every day in {selectedPeriod.label.toLowerCase()}.</p>
+                                <div className="h-56 mt-5">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={daily} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+                                            <XAxis dataKey="date" tick={{ fill: "#888", fontSize: 11 }} tickLine={false} axisLine={false} minTickGap={40} tickFormatter={(value: string) => value.slice(5)} />
+                                            <YAxis tick={{ fill: "#888", fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
+                                            <Tooltip contentStyle={{ background: "#202020", border: "1px solid rgba(255,255,255,.1)", borderRadius: 8 }} formatter={(value) => [`${Number(value || 0)} plays`, "Played"]} />
+                                            <Area type="monotone" dataKey="plays" stroke="#4ad3ff" strokeWidth={2} fill="#4ad3ff" fillOpacity={0.18} />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </section>
+                            <section className="rounded-xl border border-white/10 bg-mgray p-5 overflow-x-auto">
+                                <h2 className="text-lg font-bold font-metropolis">Your listening week</h2>
+                                <p className="text-sm text-gray-400 mt-1">Darker to brighter means more plays in your local time.</p>
+                                <div className="mt-5 min-w-[620px] grid grid-cols-[40px_repeat(24,minmax(0,1fr))] gap-1 text-[10px] text-gray-500">
+                                    <span />{Array.from({ length: 24 }, (_, hour) => <span key={hour} className="text-center">{hour % 3 === 0 ? hour : ""}</span>)}
+                                    {heatmap.cells.map((row: any[], day: number) => <Fragment key={day}><span className="self-center">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day]}</span>{row.map((cell: any, hour: number) => <span key={hour} title={`${cell.plays} plays · ${formatDuration(cell.total_time_ms)}`} className="aspect-square rounded-sm" style={{ backgroundColor: `rgba(74,211,255,${0.08 + (cell.plays / heatmap.max) * 0.82})` }} />)}</Fragment>)}
+                                </div>
+                            </section>
+                            <div className="grid gap-5 lg:grid-cols-2">
+                                <section className="rounded-xl border border-white/10 bg-mgray p-5">
+                                    <h2 className="text-lg font-bold font-metropolis">On repeat</h2>
+                                    {spotifyInsightTrack?.tracks?.[0] ? <Link href={`/info/track/${insightTrackId}`} className="mt-4 flex items-center gap-4 rounded-lg p-2 hover:bg-white/5"><img src={spotifyInsightTrack.tracks[0].album?.images?.[0]?.url || "/images/logo.png"} alt="" className="h-16 w-16 rounded object-cover" /><div className="min-w-0"><p className="font-bold truncate">{spotifyInsightTrack.tracks[0].name}</p><p className="text-sm text-gray-400 truncate">{spotifyInsightTrack.tracks[0].artists?.map((artist: any) => artist.name).join(", ")}</p><p className="mt-1 text-xs text-[var(--color-primary)]">{insightsData?.data?.top_track?.play_count || 0} plays · {formatDuration(insightsData?.data?.top_track?.total_duration_ms)}</p></div></Link> : <p className="mt-4 text-sm text-gray-400">No track data for this period.</p>}
+                                </section>
+                                <section className="rounded-xl border border-white/10 bg-mgray p-5">
+                                    <h2 className="text-lg font-bold font-metropolis">Taste snapshot</h2>
+                                    <p className="text-sm text-gray-400 mt-1">Genres from your top artists this period.</p>
+                                    {genres.length ? <div className="mt-4 flex flex-wrap gap-2">{genres.map(([genre, plays]) => <span key={genre} className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm capitalize">{genre} <span className="text-gray-500">{plays}</span></span>)}</div> : <p className="mt-4 text-sm text-gray-400">Spotify genre data is unavailable for these artists.</p>}
+                                </section>
+                            </div>
+                            <section className="rounded-xl border border-white/10 bg-mgray p-5">
+                                <h2 className="text-lg font-bold font-metropolis">Discoveries</h2>
+                                <p className="text-sm text-gray-400 mt-1">{Number(discoveries.count?.[0]?.count || 0).toLocaleString()} artists first appeared in this period.</p>
+                                {discoveryArtists.length ? <div className="mt-4 flex flex-wrap gap-2">{discoveryArtists.map((artist: any) => <span key={artist.id} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1 pr-3"><img src={artist.images?.[2]?.url || artist.images?.[0]?.url || "/images/logo.png"} alt="" className="h-6 w-6 rounded-full object-cover" />{artist.name}</span>)}</div> : null}
+                            </section>
                             <section className="rounded-xl border border-white/10 bg-mgray p-5">
                                 <h2 className="text-lg font-bold font-metropolis">Listening by time of day</h2>
                                 <p className="text-sm text-gray-400 mt-1">When you played music in your local time.</p>
@@ -464,6 +540,10 @@ function SummaryCard({ label, value }: { label: string; value: string }) {
             <p className="text-2xl font-bold mt-2">{value}</p>
         </div>
     );
+}
+
+function InsightCard({ label, value }: { label: string; value: string }) {
+    return <div className="rounded-xl border border-white/10 bg-mgray p-4"><p className="text-xs uppercase tracking-wide text-gray-400">{label}</p><p className="mt-2 text-lg font-bold">{value}</p></div>;
 }
 
 function LoadingState() {
