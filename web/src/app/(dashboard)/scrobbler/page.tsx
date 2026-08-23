@@ -194,21 +194,19 @@ export default function ScrobblerDashboard() {
         <div className="max-w-7xl mx-auto w-full p-4 md:p-8 space-y-6">
             <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
-                    <p className="text-sm text-[var(--color-primary)] font-bold">Listening</p>
-                    <h1 className="text-3xl md:text-4xl font-bold font-metropolis mt-1">Your music, clearly.</h1>
-                    <p className="text-gray-400 mt-2">{selectedPeriod.label}</p>
+                    <h1 className="text-3xl md:text-4xl font-bold font-metropolis">Your Scrobbler</h1>
                 </div>
                 <div className="flex items-center gap-2">
                     <button
                         onClick={refresh}
-                        className="p-3 rounded-lg border border-white/10 bg-mgray hover:bg-white/10"
+                        className="h-11 w-11 inline-flex items-center justify-center cursor-pointer rounded-lg border border-white/10 bg-mgray hover:bg-white/10"
                         aria-label="Refresh listening data"
                     >
                         <FontAwesomeIcon icon={faSync} />
                     </button>
                     <Link
                         href="/scrobbler/setup"
-                        className="px-4 py-3 rounded-lg border border-white/10 bg-mgray hover:bg-white/10 text-sm font-bold"
+                        className="h-11 inline-flex items-center px-4 cursor-pointer rounded-lg border border-white/10 bg-mgray hover:bg-white/10 text-sm font-bold"
                     >
                         <FontAwesomeIcon icon={faCog} className="mr-2" />
                         Settings
@@ -228,31 +226,31 @@ export default function ScrobblerDashboard() {
                         <button
                             key={value}
                             onClick={() => setPeriod(value)}
-                            className={`px-3 py-2 rounded-md text-sm font-bold ${period === value ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
+                            className={`cursor-pointer px-3 py-2 rounded-md text-sm font-bold ${period === value ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
                         >
                             {label}
                         </button>
                     ))}
                 </div>
                 {period === "custom" && (
-                    <div className="flex flex-wrap items-center gap-2 text-sm text-gray-300">
-                        <label>
-                            From{" "}
+                    <div className="flex flex-wrap items-end gap-3 text-gray-300">
+                        <label className="flex flex-col gap-1 text-xs font-bold uppercase tracking-wide text-gray-400">
+                            From
                             <input
                                 type="date"
                                 value={startDate}
                                 onChange={event => setStartDate(event.target.value)}
-                                className="ml-1 rounded bg-black/30 border border-white/10 px-2 py-1.5"
+                                className="h-10 cursor-pointer rounded-md border border-white/10 bg-[#151515] px-3 text-sm font-normal normal-case tracking-normal text-white [color-scheme:dark] outline-none focus:border-[var(--color-primary)]"
                             />
                         </label>
-                        <label>
-                            To{" "}
+                        <label className="flex flex-col gap-1 text-xs font-bold uppercase tracking-wide text-gray-400">
+                            To
                             <input
                                 type="date"
                                 value={endDate}
                                 min={startDate}
                                 onChange={event => setEndDate(event.target.value)}
-                                className="ml-1 rounded bg-black/30 border border-white/10 px-2 py-1.5"
+                                className="h-10 cursor-pointer rounded-md border border-white/10 bg-[#151515] px-3 text-sm font-normal normal-case tracking-normal text-white [color-scheme:dark] outline-none focus:border-[var(--color-primary)]"
                             />
                         </label>
                     </div>
@@ -270,7 +268,7 @@ export default function ScrobblerDashboard() {
                     <button
                         key={value}
                         onClick={() => setActiveTab(value)}
-                        className={`pb-3 text-sm font-bold border-b-2 ${activeTab === value ? "border-[var(--color-primary)] text-white" : "border-transparent text-gray-500 hover:text-gray-300"}`}
+                        className={`cursor-pointer pb-3 text-sm font-bold border-b-2 ${activeTab === value ? "border-[var(--color-primary)] text-white" : "border-transparent text-gray-500 hover:text-gray-300"}`}
                     >
                         {label}
                     </button>
@@ -350,7 +348,7 @@ export default function ScrobblerDashboard() {
                             <button
                                 key={value}
                                 onClick={() => setStatType(value)}
-                                className={`capitalize px-3 py-2 rounded-md text-sm font-bold ${statType === value ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
+                                className={`cursor-pointer capitalize px-3 py-2 rounded-md text-sm font-bold ${statType === value ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
                             >
                                 {value}
                             </button>
@@ -410,14 +408,14 @@ export default function ScrobblerDashboard() {
                             <button
                                 disabled={page === 1}
                                 onClick={() => setPage(current => current - 1)}
-                                className="p-2 disabled:opacity-30"
+                                className="cursor-pointer p-2 disabled:cursor-not-allowed disabled:opacity-30"
                             >
                                 <FontAwesomeIcon icon={faChevronLeft} />
                             </button>
                             <button
                                 disabled={!hasNextPage}
                                 onClick={() => setPage(current => current + 1)}
-                                className="p-2 disabled:opacity-30"
+                                className="cursor-pointer p-2 disabled:cursor-not-allowed disabled:opacity-30"
                             >
                                 <FontAwesomeIcon icon={faChevronRight} />
                             </button>
@@ -442,7 +440,11 @@ export default function ScrobblerDashboard() {
                                         <p className="font-bold truncate">{play.name}</p>
                                         <p className="text-sm text-gray-400 truncate">{play.artist}</p>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            {new Date(play.played_at).toLocaleString()}
+                                            {new Date(play.played_at).toLocaleDateString(undefined, {
+                                                month: "2-digit",
+                                                day: "2-digit",
+                                                year: "numeric",
+                                            })}
                                         </p>
                                     </div>
                                 </Link>
