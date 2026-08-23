@@ -1,496 +1,523 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import useSWR from "swr";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { fetcher } from "@/utils/fetcher";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import useSWR from "swr";
+import { Area, AreaChart, Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCog, faSync, faPlay, faClock, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faChevronRight, faCog, faPlay, faSync } from "@fortawesome/free-solid-svg-icons";
+import { fetcher } from "@/utils/fetcher";
 
-import AdvancedInsights from "@/components/Scrobbler/AdvancedInsights";
-import DeepLab from "@/components/Scrobbler/DeepLab";
-
+type DashboardTab = "overview" | "top" | "history";
+type Period = "all" | "month" | "custom";
 type StatType = "tracks" | "artists" | "albums";
-type TimeRange = "allTime" | "thisMonth";
-type TabType = "history" | "overview" | "lab";
+
+type Stat = {
+    spotify_id: string;
+    play_count: number;
+    total_duration_ms: number;
+};
+
+function formatDuration(durationMs = 0) {
+    const minutes = Math.floor(durationMs / 60000);
+    const hours = Math.floor(minutes / 60);
+    return hours ? `${hours}h ${minutes % 60}m` : `${minutes}m`;
+}
+
+function localDayMs(value: string, end = false) {
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day, end ? 23 : 0, end ? 59 : 0, end ? 59 : 0, end ? 999 : 0).getTime();
+}
+
+function periodDetails(period: Period, startDate: string, endDate: string) {
+    if (period === "all") return { label: "All time", query: "", ready: true };
+    if (period === "month") {
+        const now = new Date();
+        return {
+            label: "This month",
+            query: new URLSearchParams({
+                start: String(new Date(now.getFullYear(), now.getMonth(), 1).getTime()),
+                end: String(now.getTime()),
+            }).toString(),
+            ready: true,
+        };
+    }
+    if (!startDate || !endDate) return { label: "Custom range", query: "", ready: false };
+    return {
+        label: `${startDate} to ${endDate}`,
+        query: new URLSearchParams({
+            start: String(localDayMs(startDate)),
+            end: String(localDayMs(endDate, true)),
+        }).toString(),
+        ready: localDayMs(startDate) <= localDayMs(endDate, true),
+    };
+}
 
 export default function ScrobblerDashboard() {
-	const [activeTab, setActiveTab] = useState<TabType>("history");
+    const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
+    const [period, setPeriod] = useState<Period>("all");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [statType, setStatType] = useState<StatType>("tracks");
+    const [page, setPage] = useState(1);
+    const timezone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC", []);
+    const selectedPeriod = useMemo(() => periodDetails(period, startDate, endDate), [period, startDate, endDate]);
 
-	const [tab, setTab] = useState<StatType>("tracks");
-	const [range, setRange] = useState<TimeRange>("allTime");
-	const [page, setPage] = useState(1);
+    useEffect(() => setPage(1), [period, startDate, endDate]);
 
-	const { data: statusData, isLoading: statusLoading } = useSWR("/retrievify/spotify/scrobbler/status", fetcher);
-	const isSetup = statusData?.setup === true;
+    const { data: statusData, isLoading: statusLoading } = useSWR("/retrievify/spotify/scrobbler/status", fetcher);
+    const isSetup = statusData?.setup === true;
+    const rangeSuffix = selectedPeriod.query ? `&${selectedPeriod.query}` : "";
 
-	const chartEndpoint = range === "allTime" ? `stats?type=${tab}&limit=15` : `history?type=${tab}&limit=15`;
-	const {
-		data: dbChartData,
-		error: dbChartError,
-		isLoading: dbChartLoading,
-		mutate: mutateCharts,
-	} = useSWR(isSetup ? `/retrievify/spotify/scrobbler/${chartEndpoint}` : null, fetcher);
+    const {
+        data: insightsData,
+        error: insightsError,
+        isLoading: insightsLoading,
+        mutate: refreshInsights,
+    } = useSWR(
+        isSetup && selectedPeriod.ready
+            ? `/retrievify/spotify/scrobbler/insights?timezone=${encodeURIComponent(timezone)}${rangeSuffix}`
+            : null,
+        fetcher,
+    );
+    const {
+        data: statsData,
+        error: statsError,
+        isLoading: statsLoading,
+        mutate: refreshStats,
+    } = useSWR(
+        isSetup && selectedPeriod.ready
+            ? `/retrievify/spotify/scrobbler/stats?type=${statType}&limit=15${rangeSuffix}`
+            : null,
+        fetcher,
+    );
+    const {
+        data: timelineData,
+        error: timelineError,
+        isLoading: timelineLoading,
+        mutate: refreshTimeline,
+    } = useSWR(
+        isSetup && selectedPeriod.ready
+            ? `/retrievify/spotify/scrobbler/timeline?page=${page}&limit=50${rangeSuffix}`
+            : null,
+        fetcher,
+    );
 
-	const topStats = dbChartData?.data || [];
-	const topIds = topStats
-		.map((s: any) => s.spotify_id)
-		.filter(Boolean)
-		.join(",");
+    const topStats: Stat[] = statsData?.data || [];
+    const topIds = topStats
+        .map(item => item.spotify_id)
+        .filter(Boolean)
+        .join(",");
+    const { data: spotifyTopData, isLoading: spotifyTopLoading } = useSWR(
+        topIds ? `/retrievify/spotify/${statType}?ids=${topIds}` : null,
+        fetcher,
+    );
 
-	const { data: spotTopData, isLoading: spotTopLoading } = useSWR(
-		topIds ? `/retrievify/spotify/${tab}?ids=${topIds}` : null,
-		fetcher,
-	);
+    const timeline = timelineData?.data || [];
+    const timelineIds = Array.from(new Set(timeline.map((item: any) => item.track_id)))
+        .filter(Boolean)
+        .join(",");
+    const { data: spotifyTimelineData } = useSWR(
+        timelineIds ? `/retrievify/spotify/tracks?ids=${timelineIds}` : null,
+        fetcher,
+    );
 
-	const {
-		data: dbTimelineData,
-		isLoading: dbTimelineLoading,
-		mutate: mutateTimeline,
-	} = useSWR(isSetup ? `/retrievify/spotify/scrobbler/timeline?page=${page}&limit=50` : null, fetcher);
+    const topMusic = useMemo(() => {
+        const spotifyItems = spotifyTopData?.[statType] || [];
+        const spotifyByID = new Map(spotifyItems.map((item: any) => [item.id, item]));
+        return topStats.map(stat => {
+            const item: any = spotifyByID.get(stat.spotify_id) || {};
+            return {
+                ...stat,
+                name: item.name || "Unknown",
+                subtitle:
+                    statType === "artists"
+                        ? "Artist"
+                        : item.artists?.map((artist: any) => artist.name).join(", ") || "Unknown artist",
+                image: statType === "tracks" ? item.album?.images?.[0]?.url : item.images?.[0]?.url,
+            };
+        });
+    }, [spotifyTopData, statType, topStats]);
 
-	const timelineStats = dbTimelineData?.data || [];
-	const hasNextPage = dbTimelineData?.has_next || false;
-	const timelineIds = Array.from(new Set(timelineStats.map((s: any) => s.track_id)))
-		.filter(Boolean)
-		.join(",");
+    const recentPlays = useMemo(() => {
+        const spotifyByID = new Map((spotifyTimelineData?.tracks || []).map((item: any) => [item.id, item]));
+        return timeline.map((play: any) => {
+            const track: any = spotifyByID.get(play.track_id) || {};
+            return {
+                ...play,
+                name: track.name || "Unknown track",
+                artist: track.artists?.map((artist: any) => artist.name).join(", ") || "Unknown artist",
+                image: track.album?.images?.[0]?.url || "/images/logo.png",
+            };
+        });
+    }, [spotifyTimelineData, timeline]);
 
-	const { data: spotTimelineData } = useSWR(
-		timelineIds ? `/retrievify/spotify/tracks?ids=${timelineIds}` : null,
-		fetcher,
-	);
+    const hourly = useMemo(() => {
+        const values = insightsData?.data?.hourly || [];
+        return Array.from({ length: 24 }, (_, hour) => ({
+            hour: `${String(hour).padStart(2, "0")}:00`,
+            plays: values.find((item: any) => item._id === hour)?.count || 0,
+        }));
+    }, [insightsData]);
 
-	const chartData = useMemo(() => {
-		if (!spotTopData) return [];
-		const spotItems = spotTopData[tab] || [];
-		const spotMap = new Map(spotItems.map((i: any) => [i.id, i]));
+    if (statusLoading)
+        return <div className="min-h-[70vh] grid place-items-center text-gray-400">Loading listening data…</div>;
 
-		return topStats.map((stat: any) => {
-			const item: any = spotMap.get(stat.spotify_id) || {};
-			return {
-				...stat,
-				displayName: item.name || "Unknown",
-				subtext: tab === "artists" ? "Artist" : item.artists?.[0]?.name || "Unknown",
-				imageUrl: tab === "tracks" ? item.album?.images?.[0]?.url : item.images?.[0]?.url,
-			};
-		});
-	}, [topStats, spotTopData, tab]);
+    if (!isSetup) {
+        return (
+            <div className="min-h-[70vh] grid place-items-center p-6">
+                <div className="max-w-md text-center bg-mgray border border-white/10 rounded-2xl p-8">
+                    <FontAwesomeIcon icon={faCog} className="text-4xl text-[var(--color-primary)] mb-5" />
+                    <h1 className="text-2xl font-bold font-metropolis">Set up listening history</h1>
+                    <p className="text-gray-400 mt-3">Connect Spotify to start saving your recent plays.</p>
+                    <Link
+                        href="/scrobbler/setup"
+                        className="inline-flex items-center gap-2 mt-6 px-5 py-3 rounded-lg bg-[var(--color-primary)] text-black font-bold"
+                    >
+                        Start setup <FontAwesomeIcon icon={faPlay} />
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
-	const recentData = useMemo(() => {
-		if (!spotTimelineData) return [];
-		const spotItems = spotTimelineData.tracks || [];
-		const spotMap = new Map(spotItems.map((i: any) => [i.id, i]));
+    const summary = insightsData?.data?.summary;
+    const hasNextPage = timelineData?.has_next || false;
+    const isTopLoading = statsLoading || (topStats.length > 0 && spotifyTopLoading);
+    const refresh = () => {
+        refreshInsights();
+        refreshStats();
+        refreshTimeline();
+    };
 
-		return timelineStats.map((stat: any) => {
-			const item: any = spotMap.get(stat.track_id) || {};
-			return {
-				...stat,
-				displayName: item.name || "Unknown Track",
-				subtext: item.artists?.map((a: any) => a.name).join(", ") || "Unknown Artist",
-				imageUrl: item.album?.images?.[0]?.url || "/images/logo.png",
-			};
-		});
-	}, [timelineStats, spotTimelineData]);
+    return (
+        <div className="max-w-7xl mx-auto w-full p-4 md:p-8 space-y-6">
+            <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <p className="text-sm text-[var(--color-primary)] font-bold">Listening</p>
+                    <h1 className="text-3xl md:text-4xl font-bold font-metropolis mt-1">Your music, clearly.</h1>
+                    <p className="text-gray-400 mt-2">{selectedPeriod.label}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={refresh}
+                        className="p-3 rounded-lg border border-white/10 bg-mgray hover:bg-white/10"
+                        aria-label="Refresh listening data"
+                    >
+                        <FontAwesomeIcon icon={faSync} />
+                    </button>
+                    <Link
+                        href="/scrobbler/setup"
+                        className="px-4 py-3 rounded-lg border border-white/10 bg-mgray hover:bg-white/10 text-sm font-bold"
+                    >
+                        <FontAwesomeIcon icon={faCog} className="mr-2" />
+                        Settings
+                    </Link>
+                </div>
+            </header>
 
-	const isChartLoading = dbChartLoading || (topStats.length > 0 && spotTopLoading);
+            <section className="flex flex-col gap-3 rounded-xl border border-white/10 bg-mgray p-3 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-wrap gap-1">
+                    {(
+                        [
+                            ["all", "All time"],
+                            ["month", "This month"],
+                            ["custom", "Custom"],
+                        ] as const
+                    ).map(([value, label]) => (
+                        <button
+                            key={value}
+                            onClick={() => setPeriod(value)}
+                            className={`px-3 py-2 rounded-md text-sm font-bold ${period === value ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+                {period === "custom" && (
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-gray-300">
+                        <label>
+                            From{" "}
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={event => setStartDate(event.target.value)}
+                                className="ml-1 rounded bg-black/30 border border-white/10 px-2 py-1.5"
+                            />
+                        </label>
+                        <label>
+                            To{" "}
+                            <input
+                                type="date"
+                                value={endDate}
+                                min={startDate}
+                                onChange={event => setEndDate(event.target.value)}
+                                className="ml-1 rounded bg-black/30 border border-white/10 px-2 py-1.5"
+                            />
+                        </label>
+                    </div>
+                )}
+            </section>
 
-	const CustomTooltip = ({ active, payload }: any) => {
-		if (active && payload && payload.length) {
-			const d = payload[0].payload;
-			return (
-				<div className="bg-mgray border border-white/10 p-4 rounded-xl shadow-2xl flex items-center space-x-4 z-50">
-					<img
-						src={d.imageUrl || "/images/logo.png"}
-						alt=""
-						className="w-12 h-12 rounded-md object-cover"
-					/>
-					<div>
-						<p className="font-bold text-white mb-1 font-metropolis">
-							{d.displayName}
-						</p>
-						<p className="text-[var(--color-primary)] font-bold">
-							{payload[0].value} Plays
-						</p>
-					</div>
-				</div>
-			);
-		}
-		return null;
-	};
+            <nav className="flex gap-5 border-b border-white/10" aria-label="Scrobbler sections">
+                {(
+                    [
+                        ["overview", "Overview"],
+                        ["top", "Top music"],
+                        ["history", "History"],
+                    ] as const
+                ).map(([value, label]) => (
+                    <button
+                        key={value}
+                        onClick={() => setActiveTab(value)}
+                        className={`pb-3 text-sm font-bold border-b-2 ${activeTab === value ? "border-[var(--color-primary)] text-white" : "border-transparent text-gray-500 hover:text-gray-300"}`}
+                    >
+                        {label}
+                    </button>
+                ))}
+            </nav>
 
-	if (statusLoading)
-		return (
-			<div className="p-8 text-center text-gray-500 font-bold min-h-[70vh] flex items-center justify-center">
-				Loading...
-			</div>
-		);
+            {!selectedPeriod.ready ? (
+                <div className="rounded-xl border border-dashed border-white/15 p-10 text-center text-gray-400">
+                    Choose a start and end date to see that range.
+                </div>
+            ) : activeTab === "overview" ? (
+                <div className="space-y-6">
+                    {insightsError ? (
+                        <ErrorState />
+                    ) : insightsLoading ? (
+                        <LoadingState />
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                                <SummaryCard label="Time listened" value={formatDuration(summary?.total_time_ms)} />
+                                <SummaryCard label="Plays" value={Number(summary?.total_plays || 0).toLocaleString()} />
+                                <SummaryCard
+                                    label="Tracks"
+                                    value={Number(summary?.unique_tracks || 0).toLocaleString()}
+                                />
+                                <SummaryCard
+                                    label="Albums"
+                                    value={Number(summary?.unique_albums || 0).toLocaleString()}
+                                />
+                            </div>
+                            <section className="rounded-xl border border-white/10 bg-mgray p-5">
+                                <h2 className="text-lg font-bold font-metropolis">Listening by time of day</h2>
+                                <p className="text-sm text-gray-400 mt-1">When you played music in your local time.</p>
+                                <div className="h-72 mt-5">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={hourly} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+                                            <XAxis
+                                                dataKey="hour"
+                                                tick={{ fill: "#888", fontSize: 11 }}
+                                                tickLine={false}
+                                                axisLine={false}
+                                                interval={2}
+                                            />
+                                            <YAxis
+                                                tick={{ fill: "#888", fontSize: 11 }}
+                                                tickLine={false}
+                                                axisLine={false}
+                                                allowDecimals={false}
+                                            />
+                                            <Tooltip
+                                                contentStyle={{
+                                                    background: "#202020",
+                                                    border: "1px solid rgba(255,255,255,.1)",
+                                                    borderRadius: 8,
+                                                }}
+                                                formatter={value => [`${Number(value || 0)} plays`, "Played"]}
+                                            />
+                                            <Area
+                                                type="monotone"
+                                                dataKey="plays"
+                                                stroke="#4ad3ff"
+                                                strokeWidth={2}
+                                                fill="#4ad3ff"
+                                                fillOpacity={0.18}
+                                            />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </section>
+                        </>
+                    )}
+                </div>
+            ) : activeTab === "top" ? (
+                <div className="space-y-5">
+                    <div className="flex gap-1 w-fit rounded-lg border border-white/10 bg-mgray p-1">
+                        {(["tracks", "artists", "albums"] as StatType[]).map(value => (
+                            <button
+                                key={value}
+                                onClick={() => setStatType(value)}
+                                className={`capitalize px-3 py-2 rounded-md text-sm font-bold ${statType === value ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
+                            >
+                                {value}
+                            </button>
+                        ))}
+                    </div>
+                    {statsError ? (
+                        <ErrorState />
+                    ) : isTopLoading ? (
+                        <LoadingState />
+                    ) : topMusic.length === 0 ? (
+                        <EmptyState />
+                    ) : (
+                        <div className="grid grid-cols-1 xl:grid-cols-5 gap-5">
+                            <section className="xl:col-span-3 rounded-xl border border-white/10 bg-mgray p-5 h-[420px]">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={topMusic} margin={{ top: 12, right: 8, left: -20, bottom: 0 }}>
+                                        <XAxis
+                                            dataKey="name"
+                                            tick={{ fill: "#888", fontSize: 11 }}
+                                            tickLine={false}
+                                            axisLine={false}
+                                            tickFormatter={(name: string) =>
+                                                name.length > 14 ? `${name.slice(0, 14)}…` : name
+                                            }
+                                        />
+                                        <YAxis
+                                            tick={{ fill: "#888", fontSize: 11 }}
+                                            tickLine={false}
+                                            axisLine={false}
+                                            allowDecimals={false}
+                                        />
+                                        <Tooltip content={<TopTooltip />} cursor={{ fill: "rgba(255,255,255,.04)" }} />
+                                        <Bar dataKey="play_count" radius={[4, 4, 0, 0]}>
+                                            {topMusic.map((_, index) => (
+                                                <Cell key={index} fill={index === 0 ? "#4ad3ff" : "#3b3b3b"} />
+                                            ))}
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </section>
+                            <ol className="xl:col-span-2 space-y-2 rounded-xl border border-white/10 bg-mgray p-3 max-h-[420px] overflow-y-auto">
+                                {topMusic.map((item, index) => (
+                                    <TopRow key={item.spotify_id} item={item} index={index} type={statType} />
+                                ))}
+                            </ol>
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <section className="rounded-xl border border-white/10 bg-mgray p-5">
+                    <div className="flex items-center justify-between mb-5">
+                        <div>
+                            <h2 className="text-lg font-bold font-metropolis">Recently played</h2>
+                            <p className="text-sm text-gray-400 mt-1">{selectedPeriod.label}</p>
+                        </div>
+                        <div className="flex gap-1">
+                            <button
+                                disabled={page === 1}
+                                onClick={() => setPage(current => current - 1)}
+                                className="p-2 disabled:opacity-30"
+                            >
+                                <FontAwesomeIcon icon={faChevronLeft} />
+                            </button>
+                            <button
+                                disabled={!hasNextPage}
+                                onClick={() => setPage(current => current + 1)}
+                                className="p-2 disabled:opacity-30"
+                            >
+                                <FontAwesomeIcon icon={faChevronRight} />
+                            </button>
+                        </div>
+                    </div>
+                    {timelineError ? (
+                        <ErrorState />
+                    ) : timelineLoading ? (
+                        <LoadingState />
+                    ) : recentPlays.length === 0 ? (
+                        <EmptyState />
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {recentPlays.map((play: any) => (
+                                <Link
+                                    key={`${play.track_id}-${play.played_at}`}
+                                    href={`/info/track/${play.track_id}`}
+                                    className="flex gap-3 rounded-lg p-2 hover:bg-white/5"
+                                >
+                                    <img src={play.image} alt="" className="w-12 h-12 rounded object-cover" />
+                                    <div className="min-w-0">
+                                        <p className="font-bold truncate">{play.name}</p>
+                                        <p className="text-sm text-gray-400 truncate">{play.artist}</p>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            {new Date(play.played_at).toLocaleString()}
+                                        </p>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </section>
+            )}
+        </div>
+    );
+}
 
-	if (!isSetup)
-		return (
-			<div className="min-h-[70vh] flex flex-col items-center justify-center animate-in fade-in p-4 md:p-8">
-				<div className="bg-mgray border border-white/10 rounded-3xl p-10 md:p-16 text-center shadow-2xl max-w-2xl w-full">
-					<FontAwesomeIcon
-						icon={faCog}
-						className="text-6xl text-[var(--color-primary)] mb-6"
-					/>
-					<h1 className="text-4xl font-metropolis font-bold mb-4">
-						Setup scrobbling for Retrievify
-					</h1>
-					<p className="text-gray-400 mb-8 text-lg font-proximaNova">
-						Connect your keys to track and analyze your listening history.
-					</p>
-					<Link
-						href="/scrobbler/setup"
-						className="inline-flex items-center space-x-3 bg-[var(--color-primary)] text-black px-8 py-4 rounded-full font-bold cursor-pointer hover:scale-105 transition-transform"
-					>
-						<span>Begin Setup</span>
-						<FontAwesomeIcon icon={faPlay} className="ml-1" />
-					</Link>
-				</div>
-			</div>
-		);
+function SummaryCard({ label, value }: { label: string; value: string }) {
+    return (
+        <div className="rounded-xl border border-white/10 bg-mgray p-4">
+            <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
+            <p className="text-2xl font-bold mt-2">{value}</p>
+        </div>
+    );
+}
 
-	return (
-		<div className="space-y-8 animate-in fade-in p-4 md:p-8 max-w-7xl mx-auto w-full">
-			<header className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
-				<div>
-					<h1 className="text-4xl font-metropolis font-bold">Scrobbler Analytics</h1>
-					<p className="text-gray-400 mt-1 font-proximaNova">
-						Your immutable listening history.
-					</p>
-				</div>
-				<div className="flex space-x-3">
-					<button
-						onClick={() => {
-							mutateCharts();
-							mutateTimeline();
-						}}
-						className="p-3 bg-mgray rounded-xl border border-white/10 cursor-pointer hover:bg-[#303030] transition-colors"
-					>
-						<FontAwesomeIcon icon={faSync} className="text-gray-300" />
-					</button>
-					<Link
-						href="/scrobbler/setup"
-						className="flex items-center px-6 py-3 bg-mgray rounded-xl border border-white/10 text-sm font-bold cursor-pointer hover:bg-[#303030] transition-colors font-metropolis"
-					>
-						<FontAwesomeIcon icon={faCog} className="mr-2" /> Configure
-					</Link>
-				</div>
-			</header>
+function LoadingState() {
+    return <div className="rounded-xl border border-white/10 bg-mgray p-10 text-center text-gray-400">Loading…</div>;
+}
 
-			<div className="flex space-x-2 bg-mgray p-1 rounded-xl border border-white/10 w-fit">
-				<button
-					onClick={() => setActiveTab("history")}
-					className={`px-6 py-2 rounded-lg font-metropolis font-bold text-sm transition-all duration-200 ${
-						activeTab === "history"
-							? "bg-[var(--color-primary)] text-black shadow-md"
-							: "text-gray-400 hover:text-white cursor-pointer"
-					}`}
-				>
-					Timeline
-				</button>
-				<button
-					onClick={() => setActiveTab("overview")}
-					className={`px-6 py-2 rounded-lg font-metropolis font-bold text-sm transition-all duration-200 ${
-						activeTab === "overview"
-							? "bg-[var(--color-primary)] text-black shadow-md"
-							: "text-gray-400 hover:text-white cursor-pointer"
-					}`}
-				>
-					Overview
-				</button>
-				<button
-					onClick={() => setActiveTab("lab")}
-					className={`px-6 py-2 rounded-lg font-metropolis font-bold text-sm transition-all duration-200 ${
-						activeTab === "lab"
-							? "bg-[var(--color-primary)] text-black shadow-md"
-							: "text-gray-400 hover:text-white cursor-pointer"
-					}`}
-				>
-					Deep Lab
-				</button>
-			</div>
+function EmptyState() {
+    return (
+        <div className="rounded-xl border border-dashed border-white/15 p-10 text-center text-gray-400">
+            Nothing to show for this period.
+        </div>
+    );
+}
 
-			<div className="w-full relative min-h-[60vh]">
-				{activeTab === "history" && (
-					<div className="space-y-10 animate-in fade-in duration-500">
-						<div className="space-y-6">
-							<div className="flex flex-wrap gap-4 justify-between items-center font-proximaNova">
-								<div className="flex space-x-2 bg-mgray p-1 rounded-xl border border-white/10">
-									{(
-										[
-											"tracks",
-											"artists",
-											"albums",
-										] as StatType[]
-									).map(t => (
-										<button
-											key={t}
-											onClick={() => setTab(t)}
-											className={`px-6 py-2 rounded-lg font-bold capitalize cursor-pointer transition-colors ${tab === t ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
-										>
-											{t}
-										</button>
-									))}
-								</div>
-								<div className="flex space-x-2 bg-mgray p-1 rounded-xl border border-white/10">
-									<button
-										onClick={() => setRange("thisMonth")}
-										className={`px-6 py-2 rounded-lg font-bold cursor-pointer transition-colors ${range === "thisMonth" ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
-									>
-										This Month
-									</button>
-									<button
-										onClick={() => setRange("allTime")}
-										className={`px-6 py-2 rounded-lg font-bold cursor-pointer transition-colors ${range === "allTime" ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
-									>
-										All Time
-									</button>
-								</div>
-							</div>
+function ErrorState() {
+    return (
+        <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-6 text-red-300">
+            Couldn’t load this section. Try refreshing.
+        </div>
+    );
+}
 
-							{dbChartError ? (
-								<div className="p-8 text-center bg-red-500/10 text-red-400 rounded-2xl font-bold font-proximaNova">
-									Failed to fetch data.
-								</div>
-							) : isChartLoading ? (
-								<div className="h-96 flex flex-col items-center justify-center bg-mgray rounded-2xl">
-									<p className="text-gray-400 font-bold font-proximaNova">
-										Loading charts...
-									</p>
-								</div>
-							) : chartData.length === 0 ? (
-								<div className="h-96 flex items-center justify-center border border-dashed border-white/10 rounded-2xl text-gray-400 font-bold font-proximaNova">
-									No data found. Start playing music!
-								</div>
-							) : (
-								<div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-									<div className="xl:col-span-2 bg-mgray border border-white/10 rounded-2xl p-6 h-[500px]">
-										<ResponsiveContainer
-											width="100%"
-											height="100%"
-										>
-											<BarChart
-												data={chartData}
-												margin={{
-													top: 10,
-													right: 10,
-													left: -20,
-													bottom: 0,
-												}}
-											>
-												<XAxis
-													dataKey="displayName"
-													stroke="#555"
-													tick={{
-														fill: "#888",
-														fontSize: 12,
-														fontFamily: "ProximaNova",
-													}}
-													tickLine={false}
-													axisLine={false}
-													tickFormatter={v =>
-														v?.length >
-														12
-															? v.substring(
-																	0,
-																	12,
-																) +
-																"..."
-															: v
-													}
-												/>
-												<YAxis
-													stroke="#555"
-													tick={{
-														fill: "#888",
-														fontSize: 12,
-														fontFamily: "ProximaNova",
-													}}
-													tickLine={false}
-													axisLine={false}
-												/>
-												<Tooltip
-													cursor={{
-														fill: "rgba(255,255,255,0.05)",
-													}}
-													content={
-														<CustomTooltip />
-													}
-												/>
-												<Bar
-													dataKey="play_count"
-													radius={[
-														6, 6, 0,
-														0,
-													]}
-												>
-													{chartData.map(
-														(
-															e: any,
-															i: number,
-														) => (
-															<Cell
-																key={
-																	i
-																}
-																fill={
-																	i ===
-																	0
-																		? "var(--color-primary)"
-																		: "#333"
-																}
-																className="transition-all duration-300 hover:opacity-80 cursor-pointer"
-															/>
-														),
-													)}
-												</Bar>
-											</BarChart>
-										</ResponsiveContainer>
-									</div>
+function TopTooltip({ active, payload }: any) {
+    if (!active || !payload?.length) return null;
+    const item = payload[0].payload;
+    return (
+        <div className="rounded-lg border border-white/10 bg-[#202020] p-3">
+            <p className="font-bold">{item.name}</p>
+            <p className="text-sm text-gray-400">{item.subtitle}</p>
+            <p className="text-sm text-[var(--color-primary)] mt-2">
+                {item.play_count} plays · {formatDuration(item.total_duration_ms)}
+            </p>
+        </div>
+    );
+}
 
-									<div className="bg-mgray border border-white/10 rounded-2xl p-6 flex flex-col h-[500px]">
-										<h2 className="text-xl font-metropolis font-bold mb-4">
-											Scoreboard
-										</h2>
-										<ul className="flex-1 overflow-y-auto pr-2 space-y-2 custom-scrollbar font-proximaNova">
-											{chartData.map(
-												(s: any, i: number) => (
-													<Link
-														href={`/info/${tab.slice(0, -1)}/${s.spotify_id}`}
-														key={i}
-													>
-														<li className="flex items-center justify-between p-3 hover:bg-[#303030] rounded-xl transition-colors cursor-pointer group border border-transparent">
-															<div className="flex items-center space-x-4 overflow-hidden">
-																<span
-																	className={`w-6 font-bold text-center ${i === 0 ? "text-[var(--color-primary)]" : "text-gray-500"}`}
-																>
-																	{i +
-																		1}
-																</span>
-																<img
-																	src={
-																		s.imageUrl ||
-																		"/images/logo.png"
-																	}
-																	className="w-12 h-12 rounded-lg object-cover group-hover:scale-105 transition-transform"
-																	alt=""
-																/>
-																<div className="truncate">
-																	<p className="font-bold text-sm text-white truncate group-hover:text-[var(--color-primary)] transition-colors font-metropolis">
-																		{
-																			s.displayName
-																		}
-																	</p>
-																	<p className="text-xs text-gray-400 truncate mt-0.5">
-																		{
-																			s.subtext
-																		}
-																	</p>
-																</div>
-															</div>
-															<div className="pl-4 text-right">
-																<p className="text-sm font-bold text-white font-metropolis">
-																	{
-																		s.play_count
-																	}
-																</p>
-																<p className="text-[10px] text-gray-500 uppercase mt-0.5 tracking-wider">
-																	Plays
-																</p>
-															</div>
-														</li>
-													</Link>
-												),
-											)}
-										</ul>
-									</div>
-								</div>
-							)}
-						</div>
-
-						<div className="bg-mgray border border-white/10 rounded-2xl p-6 shadow-2xl">
-							<div className="flex justify-between items-center mb-6">
-								<h2 className="text-2xl font-metropolis font-bold flex items-center">
-									<FontAwesomeIcon
-										icon={faClock}
-										className="text-[var(--color-primary)] mr-3"
-									/>{" "}
-									Recently Played
-								</h2>
-								<div className="flex space-x-2">
-									<button
-										disabled={page === 1}
-										onClick={() => setPage(p => p - 1)}
-										className="p-2.5 px-4 bg-[#303030] hover:bg-[#404040] rounded-lg disabled:opacity-30 transition-colors cursor-pointer text-white"
-									>
-										<FontAwesomeIcon icon={faChevronLeft} />
-									</button>
-									<button
-										disabled={!hasNextPage}
-										onClick={() => setPage(p => p + 1)}
-										className="p-2.5 px-4 bg-[#303030] hover:bg-[#404040] rounded-lg disabled:opacity-30 transition-colors cursor-pointer text-white"
-									>
-										<FontAwesomeIcon
-											icon={faChevronRight}
-										/>
-									</button>
-								</div>
-							</div>
-
-							{dbTimelineLoading ? (
-								<div className="h-64 flex items-center justify-center">
-									<p className="text-gray-400 font-bold font-proximaNova">
-										Loading timeline...
-									</p>
-								</div>
-							) : (
-								<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-									{recentData.map((s: any, i: number) => (
-										<Link
-											href={`/info/track/${s.track_id}`}
-											key={i}
-										>
-											<div className="flex items-center p-3 hover:bg-[#303030] rounded-xl transition-colors cursor-pointer group border border-white/5">
-												<img
-													src={
-														s.imageUrl ||
-														"/images/logo.png"
-													}
-													className="w-14 h-14 rounded-lg object-cover group-hover:scale-105 transition-transform shadow-md"
-													alt=""
-												/>
-												<div className="ml-4 truncate flex-1">
-													<p className="font-bold text-white truncate group-hover:text-[var(--color-primary)] transition-colors font-metropolis">
-														{
-															s.displayName
-														}
-													</p>
-													<p className="text-sm text-gray-400 truncate mt-0.5">
-														{
-															s.subtext
-														}
-													</p>
-													<p className="text-xs text-gray-500 mt-1 font-proximaNova">
-														{new Date(
-															s.played_at,
-														).toLocaleString()}
-													</p>
-												</div>
-											</div>
-										</Link>
-									))}
-								</div>
-							)}
-						</div>
-					</div>
-				)}
-
-				{activeTab === "overview" && <AdvancedInsights />}
-
-				{activeTab === "lab" && <DeepLab />}
-			</div>
-		</div>
-	);
+function TopRow({ item, index, type }: { item: any; index: number; type: StatType }) {
+    const singular = type.slice(0, -1);
+    return (
+        <li>
+            <Link
+                href={`/info/${singular}/${item.spotify_id}`}
+                className="flex items-center gap-3 rounded-lg p-2 hover:bg-white/5"
+            >
+                <span className="w-5 text-sm text-gray-500">{index + 1}</span>
+                <img src={item.image || "/images/logo.png"} alt="" className="w-11 h-11 rounded object-cover" />
+                <div className="min-w-0 flex-1">
+                    <p className="font-bold text-sm truncate">{item.name}</p>
+                    <p className="text-xs text-gray-400 truncate">{item.subtitle}</p>
+                </div>
+                <p className="text-right text-xs text-gray-400 whitespace-nowrap">
+                    {item.play_count} plays
+                    <br />
+                    {formatDuration(item.total_duration_ms)}
+                </p>
+            </Link>
+        </li>
+    );
 }
