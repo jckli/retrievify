@@ -124,9 +124,14 @@ export default function ScrobblerDashboard() {
 
     const insightArtists = insightsData?.data?.top_artists || [];
     const discoveries = insightsData?.data?.discoveries || {};
-    const insightArtistIds = Array.from(new Set([...insightArtists, ...(discoveries.artists || [])].map((item: any) => item.spotify_id).filter(Boolean))).join(",");
+    const insightArtistIds = insightArtists.map((item: any) => item.spotify_id).filter(Boolean).join(",");
+    const discoveryArtistIds = (discoveries.artists || []).map((item: any) => item.spotify_id).filter(Boolean).join(",");
     const { data: spotifyInsightArtists } = useSWR(
         activeTab === "overview" && insightArtistIds ? `/retrievify/spotify/artists?ids=${insightArtistIds}` : null,
+        fetcher,
+    );
+    const { data: spotifyDiscoveryArtists } = useSWR(
+        activeTab === "overview" && discoveryArtistIds ? `/retrievify/spotify/artists?ids=${discoveryArtistIds}` : null,
         fetcher,
     );
     const insightTrackId = insightsData?.data?.top_track?.spotify_id;
@@ -188,9 +193,9 @@ export default function ScrobblerDashboard() {
         return [...weights.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
     }, [spotifyInsightArtists, insightArtists]);
     const discoveryArtists = useMemo(() => {
-        const byId = new Map((spotifyInsightArtists?.artists || []).map((artist: any) => [artist.id, artist]));
+        const byId = new Map((spotifyDiscoveryArtists?.artists || []).map((artist: any) => [artist.id, artist]));
         return (discoveries.artists || []).map((item: any) => byId.get(item.spotify_id)).filter(Boolean);
-    }, [spotifyInsightArtists, discoveries]);
+    }, [spotifyDiscoveryArtists, discoveries]);
 
     if (statusLoading)
         return <div className="min-h-[70vh] grid place-items-center text-gray-400">Loading listening data…</div>;
@@ -356,7 +361,7 @@ export default function ScrobblerDashboard() {
                                 <p className="text-sm text-gray-400 mt-1">Darker to brighter means more plays in your local time.</p>
                                 <div className="mt-5 min-w-[620px] grid grid-cols-[40px_repeat(24,minmax(0,1fr))] gap-1 text-[10px] text-gray-500">
                                     <span />{Array.from({ length: 24 }, (_, hour) => <span key={hour} className="text-center">{hour % 3 === 0 ? hour : ""}</span>)}
-                                    {heatmap.cells.map((row: any[], day: number) => <Fragment key={day}><span className="self-center">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day]}</span>{row.map((cell: any, hour: number) => <span key={hour} title={`${cell.plays} plays · ${formatDuration(cell.total_time_ms)}`} className="aspect-square rounded-sm" style={{ backgroundColor: `rgba(74,211,255,${0.08 + (cell.plays / heatmap.max) * 0.82})` }} />)}</Fragment>)}
+                                    {heatmap.cells.map((row: any[], day: number) => <Fragment key={day}><span className="self-center">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day]}</span>{row.map((cell: any, hour: number) => <span key={hour} title={`${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][day]}, ${String(hour).padStart(2, "0")}:00–${String((hour + 1) % 24).padStart(2, "0")}:00 — ${cell.plays} plays · ${formatDuration(cell.total_time_ms)}`} aria-label={`${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][day]}, ${hour}:00: ${cell.plays} plays, ${formatDuration(cell.total_time_ms)}`} className="aspect-square rounded-sm" style={{ backgroundColor: `rgba(74,211,255,${0.08 + (cell.plays / heatmap.max) * 0.82})` }} />)}</Fragment>)}
                                 </div>
                             </section>
                             <div className="grid gap-5 lg:grid-cols-2">
