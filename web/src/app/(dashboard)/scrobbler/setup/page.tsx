@@ -12,6 +12,9 @@ export default function ScrobblerSetupPage() {
 	const [step, setStep] = useState(1);
 	const [error, setError] = useState("");
 	const [isWiping, setIsWiping] = useState(false);
+	const [historyFile, setHistoryFile] = useState<File | null>(null);
+	const [isImporting, setIsImporting] = useState(false);
+	const [importResult, setImportResult] = useState<any>(null);
 	const [formData, setFormData] = useState({
 		bskyHandle: "",
 		bskyPass: "",
@@ -64,6 +67,30 @@ export default function ScrobblerSetupPage() {
 		} catch {
 			setError("Failed to wipe data.");
 			setIsWiping(false);
+		}
+	};
+
+	const handleImport = async () => {
+		if (!historyFile) return;
+		setError("");
+		setImportResult(null);
+		setIsImporting(true);
+		try {
+			const body = new FormData();
+			body.append("file", historyFile);
+			const response = await fetch("https://gomapi.hayasaka.moe/retrievify/spotify/scrobbler/import", {
+				method: "POST",
+				body,
+				credentials: "include",
+			});
+			const payload = await response.json();
+			if (!response.ok) throw new Error(payload.error || "Import failed.");
+			setImportResult(payload.data);
+			setHistoryFile(null);
+		} catch (err: any) {
+			setError(err.message || "Import failed.");
+		} finally {
+			setIsImporting(false);
 		}
 	};
 
@@ -223,6 +250,18 @@ export default function ScrobblerSetupPage() {
 					</div>
 				)}
 			</div>
+
+			{config?.data && (
+				<div className="mb-8 rounded-3xl border border-white/10 bg-mgray p-6">
+					<h3 className="font-bold font-metropolis">Import Spotify history</h3>
+					<p className="mt-2 text-sm text-gray-400 font-proximaNova">Upload Spotify’s Extended Streaming History ZIP. Only music played for more than 30 seconds is imported; it stays in Retrievify and is not sent to Teal.</p>
+					<div className="mt-4 flex flex-col gap-3 sm:flex-row">
+						<input type="file" accept=".zip,application/zip" onChange={event => setHistoryFile(event.target.files?.[0] || null)} className="block min-w-0 flex-1 cursor-pointer text-sm text-gray-400 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:font-bold file:text-white hover:file:bg-white/15" />
+						<button onClick={handleImport} disabled={!historyFile || isImporting} className="cursor-pointer rounded-xl bg-[var(--color-primary)] px-5 py-3 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50">{isImporting ? "Importing…" : "Import history"}</button>
+					</div>
+					{importResult && <p className="mt-4 text-sm text-green-300">Imported {Number(importResult.imported).toLocaleString()} plays. Skipped {Number(importResult.duplicates).toLocaleString()} duplicates and {Number(importResult.unavailable).toLocaleString()} unavailable tracks.</p>}
+				</div>
+			)}
 
 			{config?.data && (
 				<div className="bg-red-500/5 border border-red-500/20 rounded-3xl p-6 text-center">
