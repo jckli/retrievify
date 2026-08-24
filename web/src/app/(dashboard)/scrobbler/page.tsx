@@ -12,6 +12,8 @@ type DashboardTab = "overview" | "recap" | "top" | "history";
 type Period = "all" | "month" | "year" | "custom";
 type StatType = "tracks" | "artists" | "albums";
 
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 type Stat = {
     spotify_id: string;
     play_count: number;
@@ -106,6 +108,12 @@ export default function ScrobblerDashboard() {
             setSelectedYear(availableYears[0]);
         }
     }, [availableYears, selectedYear]);
+
+    useEffect(() => {
+        if (availableYears.length && !availableYears.includes(Number(selectedMonth.slice(0, 4)))) {
+            setSelectedMonth(`${availableYears[0]}-${selectedMonth.slice(5)}`);
+        }
+    }, [availableYears, selectedMonth]);
 
     const {
         data: insightsData,
@@ -398,15 +406,34 @@ export default function ScrobblerDashboard() {
                     </select>
                 )}
                 {period === "year" && !availableYears.length && <span className="text-sm text-gray-400">Loading years…</span>}
-                {period === "month" && (
-                    <input
-                        type="month"
-                        value={selectedMonth}
-                        max={`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`}
-                        onChange={event => setSelectedMonth(event.target.value)}
-                        className="h-10 cursor-pointer rounded-md border border-white/10 bg-[#151515] px-3 text-sm text-white [color-scheme:dark] outline-none focus:border-[var(--color-primary)]"
-                    />
+                {period === "month" && availableYears.length > 0 && (
+                    <div className="flex gap-2">
+                        <select
+                            value={selectedMonth.slice(5)}
+                            onChange={event => setSelectedMonth(`${selectedMonth.slice(0, 4)}-${event.target.value}`)}
+                            className="h-10 cursor-pointer rounded-md border border-white/10 bg-[#151515] px-3 text-sm text-white [color-scheme:dark]"
+                        >
+                            {months.map((month, index) => (
+                                <option key={month} value={String(index + 1).padStart(2, "0")} disabled={Number(selectedMonth.slice(0, 4)) === new Date().getFullYear() && index > new Date().getMonth()}>
+                                    {month}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            value={selectedMonth.slice(0, 4)}
+                            onChange={event => {
+                                setSelectedYear(Number(event.target.value));
+                                setSelectedMonth(`${event.target.value}-${selectedMonth.slice(5)}`);
+                            }}
+                            className="h-10 cursor-pointer rounded-md border border-white/10 bg-[#151515] px-3 text-sm text-white [color-scheme:dark]"
+                        >
+                            {availableYears.map(year => (
+                                <option key={year}>{year}</option>
+                            ))}
+                        </select>
+                    </div>
                 )}
+                {period === "month" && !availableYears.length && <span className="text-sm text-gray-400">Loading months…</span>}
             </section>
 
             <nav className="flex gap-5 border-b border-white/10" aria-label="Scrobbler sections">
