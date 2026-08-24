@@ -8,8 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight, faCog, faPlay, faSync } from "@fortawesome/free-solid-svg-icons";
 import { fetcher } from "@/utils/fetcher";
 
-type DashboardTab = "overview" | "top" | "history";
-type Period = "all" | "month" | "custom";
+type DashboardTab = "overview" | "recap" | "top" | "history";
+type Period = "all" | "month" | "year" | "custom";
 type StatType = "tracks" | "artists" | "albums";
 
 type Stat = {
@@ -29,7 +29,7 @@ function localDayMs(value: string, end = false) {
     return new Date(year, month - 1, day, end ? 23 : 0, end ? 59 : 0, end ? 59 : 0, end ? 999 : 0).getTime();
 }
 
-function periodDetails(period: Period, startDate: string, endDate: string) {
+function periodDetails(period: Period, startDate: string, endDate: string, year: number) {
     if (period === "all") return { label: "All time", query: "", ready: true };
     if (period === "month") {
         const now = new Date();
@@ -42,6 +42,15 @@ function periodDetails(period: Period, startDate: string, endDate: string) {
             ready: true,
         };
     }
+    if (period === "year")
+        return {
+            label: String(year),
+            query: new URLSearchParams({
+                start: String(new Date(year, 0, 1).getTime()),
+                end: String(new Date(year, 11, 31, 23, 59, 59, 999).getTime()),
+            }).toString(),
+            ready: true,
+        };
     if (!startDate || !endDate) return { label: "Custom range", query: "", ready: false };
     return {
         label: `${startDate} to ${endDate}`,
@@ -60,9 +69,20 @@ export default function ScrobblerDashboard() {
     const [endDate, setEndDate] = useState("");
     const [statType, setStatType] = useState<StatType>("tracks");
     const [page, setPage] = useState(1);
-    const [hoveredHeatmap, setHoveredHeatmap] = useState<{ day: number; hour: number; plays: number; time: number; x: number; y: number } | null>(null);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [hoveredHeatmap, setHoveredHeatmap] = useState<{
+        day: number;
+        hour: number;
+        plays: number;
+        time: number;
+        x: number;
+        y: number;
+    } | null>(null);
     const timezone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC", []);
-    const selectedPeriod = useMemo(() => periodDetails(period, startDate, endDate), [period, startDate, endDate]);
+    const selectedPeriod = useMemo(
+        () => periodDetails(period, startDate, endDate, selectedYear),
+        [period, startDate, endDate, selectedYear],
+    );
 
     useEffect(() => setPage(1), [period, startDate, endDate]);
 
@@ -125,8 +145,14 @@ export default function ScrobblerDashboard() {
 
     const insightArtists = insightsData?.data?.top_artists || [];
     const discoveries = insightsData?.data?.discoveries || {};
-    const insightArtistIds = insightArtists.map((item: any) => item.spotify_id).filter(Boolean).join(",");
-    const discoveryArtistIds = (discoveries.artists || []).map((item: any) => item.spotify_id).filter(Boolean).join(",");
+    const insightArtistIds = insightArtists
+        .map((item: any) => item.spotify_id)
+        .filter(Boolean)
+        .join(",");
+    const discoveryArtistIds = (discoveries.artists || [])
+        .map((item: any) => item.spotify_id)
+        .filter(Boolean)
+        .join(",");
     const { data: spotifyInsightArtists } = useSWR(
         activeTab === "overview" && insightArtistIds ? `/retrievify/spotify/artists?ids=${insightArtistIds}` : null,
         fetcher,
@@ -138,6 +164,33 @@ export default function ScrobblerDashboard() {
     const insightTrackId = insightsData?.data?.top_track?.spotify_id;
     const { data: spotifyInsightTrack } = useSWR(
         activeTab === "overview" && insightTrackId ? `/retrievify/spotify/tracks?ids=${insightTrackId}` : null,
+        fetcher,
+    );
+    const {
+        data: recapData,
+        error: recapError,
+        isLoading: recapLoading,
+        mutate: refreshRecap,
+    } = useSWR(
+        activeTab === "recap" && period === "year"
+            ? `/retrievify/spotify/scrobbler/recap?year=${selectedYear}&timezone=${encodeURIComponent(timezone)}`
+            : null,
+        fetcher,
+    );
+    const recapArtistIds = Array.from(
+        new Set(
+            [...(recapData?.data?.top_artists || []), ...(recapData?.data?.monthly || [])]
+                .map((item: any) => item.spotify_id)
+                .filter(Boolean),
+        ),
+    ).join(",");
+    const { data: spotifyRecapArtists } = useSWR(
+        activeTab === "recap" && recapArtistIds ? `/retrievify/spotify/artists?ids=${recapArtistIds}` : null,
+        fetcher,
+    );
+    const recapTrackID = recapData?.data?.archive?.top_track;
+    const { data: spotifyRecapTrack } = useSWR(
+        activeTab === "recap" && recapTrackID ? `/retrievify/spotify/tracks?ids=${recapTrackID}` : null,
         fetcher,
     );
 
@@ -182,15 +235,23 @@ export default function ScrobblerDashboard() {
     const daily = insightsData?.data?.daily || [];
     const habits = insightsData?.data?.habits || {};
     const heatmap = useMemo(() => {
-        const values = new Map((insightsData?.data?.weekday_hourly || []).map((item: any) => [`${item._id?.day}-${item._id?.hour}`, item]));
-        const cells = Array.from({ length: 7 }, (_, day) => Array.from({ length: 24 }, (_, hour) => values.get(`${day}-${hour}`) || { plays: 0, total_time_ms: 0 }));
+        const values = new Map(
+            (insightsData?.data?.weekday_hourly || []).map((item: any) => [`${item._id?.day}-${item._id?.hour}`, item]),
+        );
+        const cells = Array.from({ length: 7 }, (_, day) =>
+            Array.from({ length: 24 }, (_, hour) => values.get(`${day}-${hour}`) || { plays: 0, total_time_ms: 0 }),
+        );
         const max = Math.max(1, ...cells.flat().map((item: any) => item.plays));
         return { cells, max };
     }, [insightsData]);
     const genres = useMemo(() => {
         const weights = new Map<string, number>();
-        const plays = new Map<string, number>(insightArtists.map((item: any) => [item.spotify_id, Number(item.play_count) || 0]));
-        for (const artist of (spotifyInsightArtists?.artists || []) as any[]) for (const genre of artist.genres || []) weights.set(String(genre), (weights.get(String(genre)) || 0) + (plays.get(artist.id) || 0));
+        const plays = new Map<string, number>(
+            insightArtists.map((item: any) => [item.spotify_id, Number(item.play_count) || 0]),
+        );
+        for (const artist of (spotifyInsightArtists?.artists || []) as any[])
+            for (const genre of artist.genres || [])
+                weights.set(String(genre), (weights.get(String(genre)) || 0) + (plays.get(artist.id) || 0));
         return [...weights.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
     }, [spotifyInsightArtists, insightArtists]);
     const discoveryArtists = useMemo(() => {
@@ -224,6 +285,7 @@ export default function ScrobblerDashboard() {
     const isTopLoading = statsLoading || (topStats.length > 0 && spotifyTopLoading);
     const refresh = () => {
         if (activeTab === "overview") refreshInsights();
+        if (activeTab === "recap") refreshRecap();
         if (activeTab === "top") refreshStats();
         if (activeTab === "history") refreshTimeline();
     };
@@ -258,6 +320,7 @@ export default function ScrobblerDashboard() {
                         [
                             ["all", "All time"],
                             ["month", "This month"],
+                            ["year", "Year"],
                             ["custom", "Custom"],
                         ] as const
                     ).map(([value, label]) => (
@@ -293,12 +356,27 @@ export default function ScrobblerDashboard() {
                         </label>
                     </div>
                 )}
+                {period === "year" && (
+                    <select
+                        value={selectedYear}
+                        onChange={event => setSelectedYear(Number(event.target.value))}
+                        className="h-10 cursor-pointer rounded-md border border-white/10 bg-[#151515] px-3 text-sm text-white [color-scheme:dark]"
+                    >
+                        {Array.from(
+                            { length: new Date().getFullYear() - 2020 + 1 },
+                            (_, index) => new Date().getFullYear() - index,
+                        ).map(year => (
+                            <option key={year}>{year}</option>
+                        ))}
+                    </select>
+                )}
             </section>
 
             <nav className="flex gap-5 border-b border-white/10" aria-label="Scrobbler sections">
                 {(
                     [
                         ["overview", "Overview"],
+                        ["recap", "Year in music"],
                         ["top", "Top music"],
                         ["history", "History"],
                     ] as const
@@ -317,6 +395,23 @@ export default function ScrobblerDashboard() {
                 <div className="rounded-xl border border-dashed border-white/15 p-10 text-center text-gray-400">
                     Choose a start and end date to see that range.
                 </div>
+            ) : activeTab === "recap" ? (
+                period !== "year" ? (
+                    <div className="rounded-xl border border-dashed border-white/15 p-10 text-center text-gray-400">
+                        Choose a calendar year to view your recap.
+                    </div>
+                ) : recapError ? (
+                    <ErrorState />
+                ) : recapLoading ? (
+                    <LoadingState />
+                ) : (
+                    <YearRecap
+                        recap={recapData?.data}
+                        artists={spotifyRecapArtists?.artists || []}
+                        track={spotifyRecapTrack?.tracks?.[0]}
+                        year={selectedYear}
+                    />
+                )
             ) : activeTab === "overview" ? (
                 <div className="space-y-6">
                     {insightsError ? (
@@ -339,48 +434,228 @@ export default function ScrobblerDashboard() {
                             </div>
                             <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
                                 <InsightCard label="Longest streak" value={`${habits.longest_streak_days || 0} days`} />
-                                <InsightCard label="Listening sessions" value={Number(habits.sessions || 0).toLocaleString()} />
-                                <InsightCard label="Longest session" value={formatDuration(habits.longest_session_ms)} />
-                                <InsightCard label="Plays per track" value={(Number(summary?.total_plays || 0) / Math.max(1, Number(summary?.unique_tracks || 0))).toFixed(1)} />
+                                <InsightCard
+                                    label="Listening sessions"
+                                    value={Number(habits.sessions || 0).toLocaleString()}
+                                />
+                                <InsightCard
+                                    label="Longest session"
+                                    value={formatDuration(habits.longest_session_ms)}
+                                />
+                                <InsightCard
+                                    label="Plays per track"
+                                    value={(
+                                        Number(summary?.total_plays || 0) /
+                                        Math.max(1, Number(summary?.unique_tracks || 0))
+                                    ).toFixed(1)}
+                                />
                             </section>
                             <section className="rounded-xl border border-white/10 bg-mgray p-5">
                                 <h2 className="text-lg font-bold font-metropolis">Listening activity</h2>
-                                <p className="text-sm text-gray-400 mt-1">Every day in {selectedPeriod.label.toLowerCase()}.</p>
+                                <p className="text-sm text-gray-400 mt-1">
+                                    Every day in {selectedPeriod.label.toLowerCase()}.
+                                </p>
                                 <div className="h-56 mt-5">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <AreaChart data={daily} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-                                            <XAxis dataKey="date" tick={{ fill: "#888", fontSize: 11 }} tickLine={false} axisLine={false} minTickGap={40} tickFormatter={(value: string) => value.slice(5)} />
-                                            <YAxis tick={{ fill: "#888", fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
-                                            <Tooltip contentStyle={{ background: "#202020", border: "1px solid rgba(255,255,255,.1)", borderRadius: 8 }} formatter={(value) => [`${Number(value || 0)} plays`, "Played"]} />
-                                            <Area type="monotone" dataKey="plays" stroke="#4ad3ff" strokeWidth={2} fill="#4ad3ff" fillOpacity={0.18} />
+                                            <XAxis
+                                                dataKey="date"
+                                                tick={{ fill: "#888", fontSize: 11 }}
+                                                tickLine={false}
+                                                axisLine={false}
+                                                minTickGap={40}
+                                                tickFormatter={(value: string) => value.slice(5)}
+                                            />
+                                            <YAxis
+                                                tick={{ fill: "#888", fontSize: 11 }}
+                                                tickLine={false}
+                                                axisLine={false}
+                                                allowDecimals={false}
+                                            />
+                                            <Tooltip
+                                                contentStyle={{
+                                                    background: "#202020",
+                                                    border: "1px solid rgba(255,255,255,.1)",
+                                                    borderRadius: 8,
+                                                }}
+                                                formatter={value => [`${Number(value || 0)} plays`, "Played"]}
+                                            />
+                                            <Area
+                                                type="monotone"
+                                                dataKey="plays"
+                                                stroke="#4ad3ff"
+                                                strokeWidth={2}
+                                                fill="#4ad3ff"
+                                                fillOpacity={0.18}
+                                            />
                                         </AreaChart>
                                     </ResponsiveContainer>
                                 </div>
                             </section>
                             <section className="rounded-xl border border-white/10 bg-mgray p-5 overflow-x-auto">
                                 <h2 className="text-lg font-bold font-metropolis">Your listening week</h2>
-                                <p className="text-sm text-gray-400 mt-1">Darker to brighter means more plays in your local time.</p>
+                                <p className="text-sm text-gray-400 mt-1">
+                                    Darker to brighter means more plays in your local time.
+                                </p>
                                 <div className="mt-5 min-w-[620px] grid grid-cols-[40px_repeat(24,minmax(0,1fr))] gap-1 text-[10px] text-gray-500">
-                                    <span />{Array.from({ length: 24 }, (_, hour) => <span key={hour} className="text-center">{hour % 3 === 0 ? hour : ""}</span>)}
-                                    {heatmap.cells.map((row: any[], day: number) => <Fragment key={day}><span className="self-center">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day]}</span>{row.map((cell: any, hour: number) => <button key={hour} type="button" onMouseMove={event => setHoveredHeatmap({ day, hour, plays: cell.plays, time: cell.total_time_ms, x: event.clientX, y: event.clientY })} onMouseLeave={() => setHoveredHeatmap(null)} onFocus={event => { const rect = event.currentTarget.getBoundingClientRect(); setHoveredHeatmap({ day, hour, plays: cell.plays, time: cell.total_time_ms, x: rect.left + rect.width / 2, y: rect.top }); }} onBlur={() => setHoveredHeatmap(null)} aria-label={`${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][day]}, ${hour}:00: ${cell.plays} plays, ${formatDuration(cell.total_time_ms)}`} className="aspect-square cursor-pointer rounded-sm outline-none ring-[var(--color-primary)] focus:ring-2" style={{ backgroundColor: `rgba(74,211,255,${0.08 + (cell.plays / heatmap.max) * 0.82})` }} />)}</Fragment>)}
+                                    <span />
+                                    {Array.from({ length: 24 }, (_, hour) => (
+                                        <span key={hour} className="text-center">
+                                            {hour % 3 === 0 ? hour : ""}
+                                        </span>
+                                    ))}
+                                    {heatmap.cells.map((row: any[], day: number) => (
+                                        <Fragment key={day}>
+                                            <span className="self-center">
+                                                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day]}
+                                            </span>
+                                            {row.map((cell: any, hour: number) => (
+                                                <button
+                                                    key={hour}
+                                                    type="button"
+                                                    onMouseMove={event =>
+                                                        setHoveredHeatmap({
+                                                            day,
+                                                            hour,
+                                                            plays: cell.plays,
+                                                            time: cell.total_time_ms,
+                                                            x: event.clientX,
+                                                            y: event.clientY,
+                                                        })
+                                                    }
+                                                    onMouseLeave={() => setHoveredHeatmap(null)}
+                                                    onFocus={event => {
+                                                        const rect = event.currentTarget.getBoundingClientRect();
+                                                        setHoveredHeatmap({
+                                                            day,
+                                                            hour,
+                                                            plays: cell.plays,
+                                                            time: cell.total_time_ms,
+                                                            x: rect.left + rect.width / 2,
+                                                            y: rect.top,
+                                                        });
+                                                    }}
+                                                    onBlur={() => setHoveredHeatmap(null)}
+                                                    aria-label={`${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][day]}, ${hour}:00: ${cell.plays} plays, ${formatDuration(cell.total_time_ms)}`}
+                                                    className="aspect-square cursor-pointer rounded-sm outline-none ring-[var(--color-primary)] focus:ring-2"
+                                                    style={{
+                                                        backgroundColor: `rgba(74,211,255,${0.08 + (cell.plays / heatmap.max) * 0.82})`,
+                                                    }}
+                                                />
+                                            ))}
+                                        </Fragment>
+                                    ))}
                                 </div>
-                                {hoveredHeatmap ? <div className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full rounded-md border border-white/10 bg-[#202020] px-3 py-2 text-xs text-white shadow-xl" style={{ left: hoveredHeatmap.x, top: hoveredHeatmap.y - 10 }}><p className="font-bold">{["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][hoveredHeatmap.day]}, {String(hoveredHeatmap.hour).padStart(2, "0")}:00</p><p className="text-gray-300">{hoveredHeatmap.plays} plays · {formatDuration(hoveredHeatmap.time)}</p></div> : null}
+                                {hoveredHeatmap ? (
+                                    <div
+                                        className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full rounded-md border border-white/10 bg-[#202020] px-3 py-2 text-xs text-white shadow-xl"
+                                        style={{ left: hoveredHeatmap.x, top: hoveredHeatmap.y - 10 }}
+                                    >
+                                        <p className="font-bold">
+                                            {
+                                                [
+                                                    "Sunday",
+                                                    "Monday",
+                                                    "Tuesday",
+                                                    "Wednesday",
+                                                    "Thursday",
+                                                    "Friday",
+                                                    "Saturday",
+                                                ][hoveredHeatmap.day]
+                                            }
+                                            , {String(hoveredHeatmap.hour).padStart(2, "0")}:00
+                                        </p>
+                                        <p className="text-gray-300">
+                                            {hoveredHeatmap.plays} plays · {formatDuration(hoveredHeatmap.time)}
+                                        </p>
+                                    </div>
+                                ) : null}
                             </section>
                             <div className="grid gap-5 lg:grid-cols-2">
                                 <section className="rounded-xl border border-white/10 bg-mgray p-5">
                                     <h2 className="text-lg font-bold font-metropolis">On repeat</h2>
-                                    {spotifyInsightTrack?.tracks?.[0] ? <Link href={`/info/track/${insightTrackId}`} className="mt-4 flex items-center gap-4 rounded-lg p-2 hover:bg-white/5"><img src={spotifyInsightTrack.tracks[0].album?.images?.[0]?.url || "/images/logo.png"} alt="" className="h-16 w-16 rounded object-cover" /><div className="min-w-0"><p className="font-bold truncate">{spotifyInsightTrack.tracks[0].name}</p><p className="text-sm text-gray-400 truncate">{spotifyInsightTrack.tracks[0].artists?.map((artist: any) => artist.name).join(", ")}</p><p className="mt-1 text-xs text-[var(--color-primary)]">{insightsData?.data?.top_track?.play_count || 0} plays · {formatDuration(insightsData?.data?.top_track?.total_duration_ms)}</p></div></Link> : <p className="mt-4 text-sm text-gray-400">No track data for this period.</p>}
+                                    {spotifyInsightTrack?.tracks?.[0] ? (
+                                        <Link
+                                            href={`/info/track/${insightTrackId}`}
+                                            className="mt-4 flex items-center gap-4 rounded-lg p-2 hover:bg-white/5"
+                                        >
+                                            <img
+                                                src={
+                                                    spotifyInsightTrack.tracks[0].album?.images?.[0]?.url ||
+                                                    "/images/logo.png"
+                                                }
+                                                alt=""
+                                                className="h-16 w-16 rounded object-cover"
+                                            />
+                                            <div className="min-w-0">
+                                                <p className="font-bold truncate">
+                                                    {spotifyInsightTrack.tracks[0].name}
+                                                </p>
+                                                <p className="text-sm text-gray-400 truncate">
+                                                    {spotifyInsightTrack.tracks[0].artists
+                                                        ?.map((artist: any) => artist.name)
+                                                        .join(", ")}
+                                                </p>
+                                                <p className="mt-1 text-xs text-[var(--color-primary)]">
+                                                    {insightsData?.data?.top_track?.play_count || 0} plays ·{" "}
+                                                    {formatDuration(insightsData?.data?.top_track?.total_duration_ms)}
+                                                </p>
+                                            </div>
+                                        </Link>
+                                    ) : (
+                                        <p className="mt-4 text-sm text-gray-400">No track data for this period.</p>
+                                    )}
                                 </section>
                                 <section className="rounded-xl border border-white/10 bg-mgray p-5">
                                     <h2 className="text-lg font-bold font-metropolis">Taste snapshot</h2>
-                                    <p className="text-sm text-gray-400 mt-1">Genres from your top artists this period.</p>
-                                    {genres.length ? <div className="mt-4 flex flex-wrap gap-2">{genres.map(([genre, plays]) => <span key={genre} className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm capitalize">{genre} <span className="text-gray-500">{plays}</span></span>)}</div> : <p className="mt-4 text-sm text-gray-400">Spotify genre data is unavailable for these artists.</p>}
+                                    <p className="text-sm text-gray-400 mt-1">
+                                        Genres from your top artists this period.
+                                    </p>
+                                    {genres.length ? (
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            {genres.map(([genre, plays]) => (
+                                                <span
+                                                    key={genre}
+                                                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm capitalize"
+                                                >
+                                                    {genre} <span className="text-gray-500">{plays}</span>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="mt-4 text-sm text-gray-400">
+                                            Spotify genre data is unavailable for these artists.
+                                        </p>
+                                    )}
                                 </section>
                             </div>
                             <section className="rounded-xl border border-white/10 bg-mgray p-5">
                                 <h2 className="text-lg font-bold font-metropolis">Your biggest discoveries</h2>
-                                <p className="text-sm text-gray-400 mt-1">{Number(discoveries.count?.[0]?.count || 0).toLocaleString()} artists first appeared in this period.</p>
-                                {discoveryArtists.length ? <div className="mt-4 flex flex-wrap gap-2">{discoveryArtists.map((artist: any) => <span key={artist.id} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1 pr-3"><img src={artist.images?.[2]?.url || artist.images?.[0]?.url || "/images/logo.png"} alt="" className="h-6 w-6 rounded-full object-cover" />{artist.name}</span>)}</div> : null}
+                                <p className="text-sm text-gray-400 mt-1">
+                                    {Number(discoveries.count?.[0]?.count || 0).toLocaleString()} artists first appeared
+                                    in this period.
+                                </p>
+                                {discoveryArtists.length ? (
+                                    <div className="mt-4 flex flex-wrap gap-2">
+                                        {discoveryArtists.map((artist: any) => (
+                                            <span
+                                                key={artist.id}
+                                                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1 pr-3"
+                                            >
+                                                <img
+                                                    src={
+                                                        artist.images?.[2]?.url ||
+                                                        artist.images?.[0]?.url ||
+                                                        "/images/logo.png"
+                                                    }
+                                                    alt=""
+                                                    className="h-6 w-6 rounded-full object-cover"
+                                                />
+                                                {artist.name}
+                                            </span>
+                                        ))}
+                                    </div>
+                                ) : null}
                             </section>
                             <section className="rounded-xl border border-white/10 bg-mgray p-5">
                                 <h2 className="text-lg font-bold font-metropolis">Listening by time of day</h2>
@@ -550,7 +825,130 @@ function SummaryCard({ label, value }: { label: string; value: string }) {
 }
 
 function InsightCard({ label, value }: { label: string; value: string }) {
-    return <div className="rounded-xl border border-white/10 bg-mgray p-4"><p className="text-xs uppercase tracking-wide text-gray-400">{label}</p><p className="mt-2 text-lg font-bold">{value}</p></div>;
+    return (
+        <div className="rounded-xl border border-white/10 bg-mgray p-4">
+            <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
+            <p className="mt-2 text-lg font-bold">{value}</p>
+        </div>
+    );
+}
+
+function YearRecap({ recap, artists, track, year }: { recap: any; artists: any[]; track: any; year: number }) {
+    const artistByID = new Map(artists.map(artist => [artist.id, artist]));
+    const topArtists = recap?.top_artists || [];
+    const monthly = recap?.monthly || [];
+    const archive = recap?.archive || {};
+    const date = archive.biggest_day?.split("-");
+    const biggestDay = date ? `${date[1]}/${date[2]}/${date[0]}` : "—";
+
+    if (!recap?.summary?.total_plays) return <EmptyState />;
+
+    return (
+        <div className="space-y-6">
+            <section className="rounded-xl border border-white/10 bg-mgray p-5 md:p-7">
+                <p className="text-sm font-bold text-[var(--color-primary)]">{year} recap</p>
+                <h2 className="mt-1 text-2xl font-bold font-metropolis">Your year in music</h2>
+                <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+                    <SummaryCard label="Time listened" value={formatDuration(recap.summary.total_time_ms)} />
+                    <SummaryCard label="Plays" value={Number(recap.summary.total_plays).toLocaleString()} />
+                    <SummaryCard label="Sessions" value={Number(archive.sessions || 0).toLocaleString()} />
+                    <SummaryCard label="Longest session" value={formatDuration(archive.longest_session_ms)} />
+                </div>
+            </section>
+
+            <section className="rounded-xl border border-white/10 bg-mgray p-5">
+                <h2 className="text-lg font-bold font-metropolis">Top artist sprint</h2>
+                <p className="mt-1 text-sm text-gray-400">The five artists you returned to most.</p>
+                <ol className="mt-4 grid gap-2 md:grid-cols-5">
+                    {topArtists.map((item: any, index: number) => {
+                        const artist = artistByID.get(item.spotify_id) as any;
+                        return (
+                            <li key={item.spotify_id}>
+                                <Link
+                                    href={`/info/artist/${item.spotify_id}`}
+                                    className="flex items-center gap-3 rounded-lg p-2 hover:bg-white/5"
+                                >
+                                    <span className="w-4 text-sm text-gray-500">{index + 1}</span>
+                                    <img
+                                        src={artist?.images?.[2]?.url || artist?.images?.[0]?.url || "/images/logo.png"}
+                                        alt=""
+                                        className="h-10 w-10 rounded-full object-cover"
+                                    />
+                                    <span className="min-w-0">
+                                        <span className="block truncate text-sm font-bold">
+                                            {artist?.name || "Unknown artist"}
+                                        </span>
+                                        <span className="text-xs text-gray-400">{item.plays} plays</span>
+                                    </span>
+                                </Link>
+                            </li>
+                        );
+                    })}
+                </ol>
+            </section>
+
+            <section className="rounded-xl border border-white/10 bg-mgray p-5">
+                <h2 className="text-lg font-bold font-metropolis">Music evolution</h2>
+                <p className="mt-1 text-sm text-gray-400">Your most-played artist each month.</p>
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+                    {monthly.map((item: any) => {
+                        const artist = artistByID.get(item.spotify_id) as any;
+                        return (
+                            <div key={item.month} className="rounded-lg border border-white/10 bg-white/[.03] p-3">
+                                <p className="text-xs font-bold text-gray-500">{item.month}</p>
+                                <p className="mt-2 truncate text-sm font-bold">{artist?.name || "No plays"}</p>
+                                <p className="mt-1 text-xs text-gray-400">{item.plays ? `${item.plays} plays` : ""}</p>
+                            </div>
+                        );
+                    })}
+                </div>
+            </section>
+
+            <section className="grid gap-5 lg:grid-cols-2">
+                <div className="rounded-xl border border-white/10 bg-mgray p-5">
+                    <h2 className="text-lg font-bold font-metropolis">Listening archive</h2>
+                    <div className="mt-4 space-y-3 text-sm">
+                        <p className="flex justify-between gap-4">
+                            <span className="text-gray-400">Biggest listening day</span>
+                            <span className="text-right font-bold">
+                                {biggestDay} · {formatDuration(archive.biggest_day_time_ms)}
+                            </span>
+                        </p>
+                        <p className="flex justify-between gap-4">
+                            <span className="text-gray-400">Longest session</span>
+                            <span className="font-bold">{formatDuration(archive.longest_session_ms)}</span>
+                        </p>
+                    </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-mgray p-5">
+                    <h2 className="text-lg font-bold font-metropolis">Most replayed track</h2>
+                    {track ? (
+                        <Link
+                            href={`/info/track/${track.id}`}
+                            className="mt-4 flex items-center gap-3 rounded-lg p-2 hover:bg-white/5"
+                        >
+                            <img
+                                src={track.album?.images?.[0]?.url || "/images/logo.png"}
+                                alt=""
+                                className="h-12 w-12 rounded object-cover"
+                            />
+                            <span className="min-w-0">
+                                <span className="block truncate font-bold">{track.name}</span>
+                                <span className="block truncate text-sm text-gray-400">
+                                    {track.artists?.map((artist: any) => artist.name).join(", ")}
+                                </span>
+                                <span className="text-xs text-[var(--color-primary)]">
+                                    {archive.top_track_plays} plays
+                                </span>
+                            </span>
+                        </Link>
+                    ) : (
+                        <p className="mt-4 text-sm text-gray-400">Loading track details…</p>
+                    )}
+                </div>
+            </section>
+        </div>
+    );
 }
 
 function LoadingState() {
