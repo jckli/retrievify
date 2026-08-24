@@ -60,7 +60,7 @@ export default function ScrobblerDashboard() {
     const [endDate, setEndDate] = useState("");
     const [statType, setStatType] = useState<StatType>("tracks");
     const [page, setPage] = useState(1);
-    const [hoveredHeatmap, setHoveredHeatmap] = useState<{ day: number; hour: number; plays: number; time: number } | null>(null);
+    const [hoveredHeatmap, setHoveredHeatmap] = useState<{ day: number; hour: number; plays: number; time: number; x: number; y: number } | null>(null);
     const timezone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC", []);
     const selectedPeriod = useMemo(() => periodDetails(period, startDate, endDate), [period, startDate, endDate]);
 
@@ -187,7 +187,6 @@ export default function ScrobblerDashboard() {
         const max = Math.max(1, ...cells.flat().map((item: any) => item.plays));
         return { cells, max };
     }, [insightsData]);
-    const heatmapDetail = hoveredHeatmap && `${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][hoveredHeatmap.day]}, ${String(hoveredHeatmap.hour).padStart(2, "0")}:00–${String((hoveredHeatmap.hour + 1) % 24).padStart(2, "0")}:00 · ${hoveredHeatmap.plays} plays · ${formatDuration(hoveredHeatmap.time)}`;
     const genres = useMemo(() => {
         const weights = new Map<string, number>();
         const plays = new Map<string, number>(insightArtists.map((item: any) => [item.spotify_id, Number(item.play_count) || 0]));
@@ -363,9 +362,9 @@ export default function ScrobblerDashboard() {
                                 <p className="text-sm text-gray-400 mt-1">Darker to brighter means more plays in your local time.</p>
                                 <div className="mt-5 min-w-[620px] grid grid-cols-[40px_repeat(24,minmax(0,1fr))] gap-1 text-[10px] text-gray-500">
                                     <span />{Array.from({ length: 24 }, (_, hour) => <span key={hour} className="text-center">{hour % 3 === 0 ? hour : ""}</span>)}
-                                    {heatmap.cells.map((row: any[], day: number) => <Fragment key={day}><span className="self-center">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day]}</span>{row.map((cell: any, hour: number) => <button key={hour} type="button" onMouseEnter={() => setHoveredHeatmap({ day, hour, plays: cell.plays, time: cell.total_time_ms })} onFocus={() => setHoveredHeatmap({ day, hour, plays: cell.plays, time: cell.total_time_ms })} aria-label={`${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][day]}, ${hour}:00: ${cell.plays} plays, ${formatDuration(cell.total_time_ms)}`} className="aspect-square cursor-pointer rounded-sm outline-none ring-[var(--color-primary)] focus:ring-2" style={{ backgroundColor: `rgba(74,211,255,${0.08 + (cell.plays / heatmap.max) * 0.82})` }} />)}</Fragment>)}
+                                    {heatmap.cells.map((row: any[], day: number) => <Fragment key={day}><span className="self-center">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day]}</span>{row.map((cell: any, hour: number) => <button key={hour} type="button" onMouseMove={event => setHoveredHeatmap({ day, hour, plays: cell.plays, time: cell.total_time_ms, x: event.clientX, y: event.clientY })} onMouseLeave={() => setHoveredHeatmap(null)} onFocus={event => { const rect = event.currentTarget.getBoundingClientRect(); setHoveredHeatmap({ day, hour, plays: cell.plays, time: cell.total_time_ms, x: rect.left + rect.width / 2, y: rect.top }); }} onBlur={() => setHoveredHeatmap(null)} aria-label={`${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][day]}, ${hour}:00: ${cell.plays} plays, ${formatDuration(cell.total_time_ms)}`} className="aspect-square cursor-pointer rounded-sm outline-none ring-[var(--color-primary)] focus:ring-2" style={{ backgroundColor: `rgba(74,211,255,${0.08 + (cell.plays / heatmap.max) * 0.82})` }} />)}</Fragment>)}
                                 </div>
-                                <p className="mt-3 text-sm text-[var(--color-primary)]" aria-live="polite">{heatmapDetail || "Hover or focus a square for details."}</p>
+                                {hoveredHeatmap ? <div className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full rounded-md border border-white/10 bg-[#202020] px-3 py-2 text-xs text-white shadow-xl" style={{ left: hoveredHeatmap.x, top: hoveredHeatmap.y - 10 }}><p className="font-bold">{["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][hoveredHeatmap.day]}, {String(hoveredHeatmap.hour).padStart(2, "0")}:00</p><p className="text-gray-300">{hoveredHeatmap.plays} plays · {formatDuration(hoveredHeatmap.time)}</p></div> : null}
                             </section>
                             <div className="grid gap-5 lg:grid-cols-2">
                                 <section className="rounded-xl border border-white/10 bg-mgray p-5">
