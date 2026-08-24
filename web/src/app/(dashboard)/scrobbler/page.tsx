@@ -815,7 +815,7 @@ export default function ScrobblerDashboard() {
                                 </div>
                                 <div className="min-h-0 flex-1">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={topChart} margin={{ top: 12, right: 8, left: -20, bottom: 0 }}>
+                                    <BarChart data={topChart} margin={{ top: 12, right: 8, left: 0, bottom: 0 }}>
                                         <XAxis
                                             dataKey="name"
                                             tick={{ fill: "#888", fontSize: 11 }}
