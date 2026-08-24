@@ -191,7 +191,7 @@ export default function ScrobblerDashboard() {
         const weights = new Map<string, number>();
         const plays = new Map<string, number>(insightArtists.map((item: any) => [item.spotify_id, Number(item.play_count) || 0]));
         for (const artist of (spotifyInsightArtists?.artists || []) as any[]) for (const genre of artist.genres || []) weights.set(String(genre), (weights.get(String(genre)) || 0) + (plays.get(artist.id) || 0));
-        return [...weights.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+        return [...weights.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
     }, [spotifyInsightArtists, insightArtists]);
     const discoveryArtists = useMemo(() => {
         const byId = new Map((spotifyDiscoveryArtists?.artists || []).map((artist: any) => [artist.id, artist]));
@@ -378,7 +378,7 @@ export default function ScrobblerDashboard() {
                                 </section>
                             </div>
                             <section className="rounded-xl border border-white/10 bg-mgray p-5">
-                                <h2 className="text-lg font-bold font-metropolis">Discoveries</h2>
+                                <h2 className="text-lg font-bold font-metropolis">Your biggest discoveries</h2>
                                 <p className="text-sm text-gray-400 mt-1">{Number(discoveries.count?.[0]?.count || 0).toLocaleString()} artists first appeared in this period.</p>
                                 {discoveryArtists.length ? <div className="mt-4 flex flex-wrap gap-2">{discoveryArtists.map((artist: any) => <span key={artist.id} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1 pr-3"><img src={artist.images?.[2]?.url || artist.images?.[0]?.url || "/images/logo.png"} alt="" className="h-6 w-6 rounded-full object-cover" />{artist.name}</span>)}</div> : null}
                             </section>
