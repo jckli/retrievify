@@ -83,7 +83,13 @@ export default function ScrobblerSetupPage() {
 				body,
 				credentials: "include",
 			});
-			const payload = await response.json();
+			const text = await response.text();
+			let payload: any = {};
+			try {
+				payload = text ? JSON.parse(text) : {};
+			} catch {
+				payload = { error: text };
+			}
 			if (!response.ok) throw new Error(payload.error || "Import failed.");
 			setImportResult(payload.data);
 			setHistoryFile(null);
