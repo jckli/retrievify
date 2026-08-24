@@ -31,22 +31,29 @@ function localDayMs(value: string, end = false) {
     return new Date(year, month - 1, day, end ? 23 : 0, end ? 59 : 0, end ? 59 : 0, end ? 999 : 0).getTime();
 }
 
-function rangedPeriod(label: string, start: number, end: number, comparisonLabel = "the preceding equal-length period") {
-    const span = end - start;
+function rangedPeriod(label: string, start: number, end: number, comparisonLabel = "the preceding equal-length period", previousStart = start - (end - start) - 1, previousEnd = start - 1) {
     return {
         label,
         query: new URLSearchParams({ start: String(start), end: String(end) }).toString(),
-        previousQuery: new URLSearchParams({ start: String(start - span - 1), end: String(start - 1) }).toString(),
+        previousQuery: new URLSearchParams({ start: String(previousStart), end: String(previousEnd) }).toString(),
         comparisonLabel,
         ready: true,
     };
 }
 
-function periodDetails(period: Period, startDate: string, endDate: string, year: number) {
+function periodDetails(period: Period, startDate: string, endDate: string, year: number, selectedMonth: string) {
     if (period === "all") return { label: "All time", query: "", previousQuery: "", comparisonLabel: "", ready: true };
     if (period === "month") {
-        const now = new Date();
-        return rangedPeriod("This month", new Date(now.getFullYear(), now.getMonth(), 1).getTime(), now.getTime());
+        if (!/^\d{4}-\d{2}$/.test(selectedMonth)) {
+            return { label: "Month", query: "", previousQuery: "", comparisonLabel: "", ready: false };
+        }
+        const [monthYear, month] = selectedMonth.split("-").map(Number);
+        const start = new Date(monthYear, month - 1, 1).getTime();
+        const end = new Date(monthYear, month, 0, 23, 59, 59, 999).getTime();
+        const previous = new Date(monthYear, month - 2, 1);
+        const previousStart = previous.getTime();
+        const previousEnd = new Date(previous.getFullYear(), previous.getMonth() + 1, 0, 23, 59, 59, 999).getTime();
+        return rangedPeriod(new Date(monthYear, month - 1).toLocaleDateString(undefined, { month: "long", year: "numeric" }), start, end, new Date(previous.getFullYear(), previous.getMonth()).toLocaleDateString(undefined, { month: "long", year: "numeric" }), previousStart, previousEnd);
     }
     if (period === "year")
         return rangedPeriod(String(year), new Date(year, 0, 1).getTime(), new Date(year, 11, 31, 23, 59, 59, 999).getTime(), String(year - 1));
@@ -65,6 +72,10 @@ export default function ScrobblerDashboard() {
     const [statSort, setStatSort] = useState<"plays" | "time">("plays");
     const [page, setPage] = useState(1);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState(() => {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    });
     const [hoveredHeatmap, setHoveredHeatmap] = useState<{
         day: number;
         hour: number;
@@ -75,15 +86,26 @@ export default function ScrobblerDashboard() {
     } | null>(null);
     const timezone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC", []);
     const selectedPeriod = useMemo(
-        () => periodDetails(period, startDate, endDate, selectedYear),
-        [period, startDate, endDate, selectedYear],
+        () => periodDetails(period, startDate, endDate, selectedYear, selectedMonth),
+        [period, startDate, endDate, selectedYear, selectedMonth],
     );
 
     useEffect(() => setPage(1), [period, startDate, endDate]);
 
     const { data: statusData, isLoading: statusLoading } = useSWR("/retrievify/spotify/scrobbler/status", fetcher);
     const isSetup = statusData?.setup === true;
+    const { data: yearsData } = useSWR(
+        isSetup ? `/retrievify/spotify/scrobbler/years?timezone=${encodeURIComponent(timezone)}` : null,
+        fetcher,
+    );
+    const availableYears: number[] = yearsData?.data || [];
     const rangeSuffix = selectedPeriod.query ? `&${selectedPeriod.query}` : "";
+
+    useEffect(() => {
+        if (availableYears.length && !availableYears.includes(selectedYear)) {
+            setSelectedYear(availableYears[0]);
+        }
+    }, [availableYears, selectedYear]);
 
     const {
         data: insightsData,
@@ -327,7 +349,7 @@ export default function ScrobblerDashboard() {
                     {(
                         [
                             ["all", "All time"],
-                            ["month", "This month"],
+                            ["month", "Month"],
                             ["year", "Year"],
                             ["custom", "Custom"],
                         ] as const
@@ -364,19 +386,26 @@ export default function ScrobblerDashboard() {
                         </label>
                     </div>
                 )}
-                {period === "year" && (
+                {period === "year" && availableYears.length > 0 && (
                     <select
                         value={selectedYear}
                         onChange={event => setSelectedYear(Number(event.target.value))}
                         className="h-10 cursor-pointer rounded-md border border-white/10 bg-[#151515] px-3 text-sm text-white [color-scheme:dark]"
                     >
-                        {Array.from(
-                            { length: new Date().getFullYear() - 2020 + 1 },
-                            (_, index) => new Date().getFullYear() - index,
-                        ).map(year => (
+                        {availableYears.map(year => (
                             <option key={year}>{year}</option>
                         ))}
                     </select>
+                )}
+                {period === "year" && !availableYears.length && <span className="text-sm text-gray-400">Loading years…</span>}
+                {period === "month" && (
+                    <input
+                        type="month"
+                        value={selectedMonth}
+                        max={`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`}
+                        onChange={event => setSelectedMonth(event.target.value)}
+                        className="h-10 cursor-pointer rounded-md border border-white/10 bg-[#151515] px-3 text-sm text-white [color-scheme:dark] outline-none focus:border-[var(--color-primary)]"
+                    />
                 )}
             </section>
 
