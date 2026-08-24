@@ -15,6 +15,7 @@ export default function ScrobblerSetupPage() {
 	const [historyFile, setHistoryFile] = useState<File | null>(null);
 	const [isImporting, setIsImporting] = useState(false);
 	const [importResult, setImportResult] = useState<any>(null);
+	const [importError, setImportError] = useState("");
 	const [formData, setFormData] = useState({
 		bskyHandle: "",
 		bskyPass: "",
@@ -72,7 +73,7 @@ export default function ScrobblerSetupPage() {
 
 	const handleImport = async () => {
 		if (!historyFile) return;
-		setError("");
+		setImportError("");
 		setImportResult(null);
 		setIsImporting(true);
 		try {
@@ -94,7 +95,7 @@ export default function ScrobblerSetupPage() {
 			setImportResult(payload.data);
 			setHistoryFile(null);
 		} catch (err: any) {
-			setError(err.message || "Import failed.");
+			setImportError(err.message || "Import failed.");
 		} finally {
 			setIsImporting(false);
 		}
@@ -265,6 +266,7 @@ export default function ScrobblerSetupPage() {
 						<input type="file" accept=".zip,application/zip" onChange={event => setHistoryFile(event.target.files?.[0] || null)} className="block min-w-0 flex-1 cursor-pointer text-sm text-gray-400 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:font-bold file:text-white hover:file:bg-white/15" />
 						<button onClick={handleImport} disabled={!historyFile || isImporting} className="cursor-pointer rounded-xl bg-[var(--color-primary)] px-5 py-3 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50">{isImporting ? "Importing…" : "Import history"}</button>
 					</div>
+					{importError && <p className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">{importError}</p>}
 					{importResult && <p className="mt-4 text-sm text-green-300">Imported {Number(importResult.imported).toLocaleString()} plays. Skipped {Number(importResult.duplicates).toLocaleString()} duplicates and {Number(importResult.unavailable).toLocaleString()} unavailable tracks.</p>}
 				</div>
 			)}
