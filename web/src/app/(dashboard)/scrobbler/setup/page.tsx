@@ -16,6 +16,7 @@ export default function ScrobblerSetupPage() {
 	const [isImporting, setIsImporting] = useState(false);
 	const [importResult, setImportResult] = useState<any>(null);
 	const [importError, setImportError] = useState("");
+	const [importID, setImportID] = useState("");
 	const [formData, setFormData] = useState({
 		bskyHandle: "",
 		bskyPass: "",
@@ -25,6 +26,7 @@ export default function ScrobblerSetupPage() {
 	});
 
 	const { data: config } = useSWR("/retrievify/spotify/scrobbler/config", fetcher);
+	const { data: importStatus } = useSWR(importID ? `/retrievify/spotify/scrobbler/import/${importID}` : null, fetcher, { refreshInterval: 2000 });
 
 	useEffect(() => {
 		if (config?.data) {
@@ -36,6 +38,13 @@ export default function ScrobblerSetupPage() {
 			}));
 		}
 	}, [config]);
+
+	useEffect(() => {
+		const job = importStatus?.data;
+		if (!job) return;
+		if (job.error) setImportError(job.error);
+		if (job.phase === "Complete") setImportResult(job);
+	}, [importStatus]);
 
 	const handleNext = () => {
 		if (!formData.bskyHandle || !formData.bskyPass || !formData.bskyPds)
@@ -92,7 +101,7 @@ export default function ScrobblerSetupPage() {
 				payload = { error: text };
 			}
 			if (!response.ok) throw new Error(payload.error || "Import failed.");
-			setImportResult(payload.data);
+			setImportID(payload.data.id);
 			setHistoryFile(null);
 		} catch (err: any) {
 			setImportError(err.message || "Import failed.");
@@ -266,6 +275,7 @@ export default function ScrobblerSetupPage() {
 						<input type="file" accept=".zip,application/zip" onChange={event => setHistoryFile(event.target.files?.[0] || null)} className="block min-w-0 flex-1 cursor-pointer text-sm text-gray-400 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:font-bold file:text-white hover:file:bg-white/15" />
 						<button onClick={handleImport} disabled={!historyFile || isImporting} className="cursor-pointer rounded-xl bg-[var(--color-primary)] px-5 py-3 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50">{isImporting ? "Importing…" : "Import history"}</button>
 					</div>
+					{importStatus?.data && !importResult && <p className="mt-4 text-sm text-gray-300">{importStatus.data.phase} · {Number(importStatus.data.processed).toLocaleString()} / {Number(importStatus.data.eligible).toLocaleString()} plays</p>}
 					{importError && <p className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">{importError}</p>}
 					{importResult && <p className="mt-4 text-sm text-green-300">Imported {Number(importResult.imported).toLocaleString()} plays. Skipped {Number(importResult.duplicates).toLocaleString()} duplicates and {Number(importResult.unavailable).toLocaleString()} unavailable tracks.</p>}
 				</div>
