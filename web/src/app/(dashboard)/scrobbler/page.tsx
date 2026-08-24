@@ -31,28 +31,29 @@ function localDayMs(value: string, end = false) {
     return new Date(year, month - 1, day, end ? 23 : 0, end ? 59 : 0, end ? 59 : 0, end ? 999 : 0).getTime();
 }
 
-function rangedPeriod(label: string, start: number, end: number) {
+function rangedPeriod(label: string, start: number, end: number, comparisonLabel = "the preceding equal-length period") {
     const span = end - start;
     return {
         label,
         query: new URLSearchParams({ start: String(start), end: String(end) }).toString(),
         previousQuery: new URLSearchParams({ start: String(start - span - 1), end: String(start - 1) }).toString(),
+        comparisonLabel,
         ready: true,
     };
 }
 
 function periodDetails(period: Period, startDate: string, endDate: string, year: number) {
-    if (period === "all") return { label: "All time", query: "", previousQuery: "", ready: true };
+    if (period === "all") return { label: "All time", query: "", previousQuery: "", comparisonLabel: "", ready: true };
     if (period === "month") {
         const now = new Date();
         return rangedPeriod("This month", new Date(now.getFullYear(), now.getMonth(), 1).getTime(), now.getTime());
     }
     if (period === "year")
-        return rangedPeriod(String(year), new Date(year, 0, 1).getTime(), new Date(year, 11, 31, 23, 59, 59, 999).getTime());
-    if (!startDate || !endDate) return { label: "Custom range", query: "", previousQuery: "", ready: false };
+        return rangedPeriod(String(year), new Date(year, 0, 1).getTime(), new Date(year, 11, 31, 23, 59, 59, 999).getTime(), String(year - 1));
+    if (!startDate || !endDate) return { label: "Custom range", query: "", previousQuery: "", comparisonLabel: "", ready: false };
     const start = localDayMs(startDate);
     const end = localDayMs(endDate, true);
-    return end < start ? { label: "Custom range", query: "", previousQuery: "", ready: false } : rangedPeriod(`${startDate} to ${endDate}`, start, end);
+    return end < start ? { label: "Custom range", query: "", previousQuery: "", comparisonLabel: "", ready: false } : rangedPeriod(`${startDate} to ${endDate}`, start, end);
 }
 
 export default function ScrobblerDashboard() {
@@ -741,20 +742,22 @@ export default function ScrobblerDashboard() {
                     ) : (
                         <>
                             <div className="grid gap-3 sm:grid-cols-3">
-                                <RankingCard label={`#1 ${statType.slice(0, -1)}`} value={topMusic[0].name} detail={`${topMusic[0].play_count.toLocaleString()} plays`} />
-                                <RankingCard label="Time listened" value={formatDuration(topMusic[0].total_duration_ms)} detail={`on ${topMusic[0].name}`} />
+                                <RankingCard label={`Top ${statType.slice(0, -1)}`} value={topMusic[0].name} detail={`${topMusic[0].play_count.toLocaleString()} plays · ${formatDuration(topMusic[0].total_duration_ms)}`} />
+                                <RankingCard label={`Time on top ${statType.slice(0, -1)}`} value={formatDuration(topMusic[0].total_duration_ms)} detail={`${topMusic[0].play_count.toLocaleString()} plays`} />
                                 <RankingCard
-                                    label={statType === "artists" ? "Top 10 artist plays" : "Top 10 share"}
-                                    value={statType === "artists" ? topTenPlays.toLocaleString() : `${Math.round((topTenPlays / Math.max(1, totalPlays)) * 100)}%`}
-                                    detail={statType === "artists" ? "artist appearances" : `${topTenPlays.toLocaleString()} of ${totalPlays.toLocaleString()} plays`}
+                                    label={statType === "artists" ? "Top 10 artist plays" : "Top 10 plays"}
+                                    value={`${topTenPlays.toLocaleString()} plays`}
+                                    detail={statType === "artists" ? "artist appearances" : `${Math.round((topTenPlays / Math.max(1, totalPlays)) * 100)}% of ${totalPlays.toLocaleString()} total plays`}
                                 />
                             </div>
+                            {selectedPeriod.comparisonLabel ? <p className="text-sm text-gray-400">Rank movement compares with {selectedPeriod.comparisonLabel}. “New to top 50” means the item was outside that period’s top 50.</p> : null}
                             <div className="grid grid-cols-1 xl:grid-cols-5 gap-5">
-                            <section className="xl:col-span-3 rounded-xl border border-white/10 bg-mgray p-5 h-[420px]">
+                            <section className="xl:col-span-3 flex h-[420px] min-h-0 flex-col rounded-xl border border-white/10 bg-mgray p-5">
                                 <div className="mb-3">
                                     <h2 className="text-lg font-bold font-metropolis">Top {statType}</h2>
                                     <p className="text-sm text-gray-400">Top 15 of 50, ranked by {statSort === "plays" ? "plays" : "listening time"}.</p>
                                 </div>
+                                <div className="min-h-0 flex-1">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={topChart} margin={{ top: 12, right: 8, left: -20, bottom: 0 }}>
                                         <XAxis
@@ -780,6 +783,7 @@ export default function ScrobblerDashboard() {
                                         </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
+                                </div>
                             </section>
                             <ol className="xl:col-span-2 space-y-2 rounded-xl border border-white/10 bg-mgray p-3 max-h-[420px] overflow-y-auto">
                                 {topMusic.map((item, index) => (
