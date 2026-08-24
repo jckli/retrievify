@@ -830,6 +830,10 @@ export default function ScrobblerDashboard() {
                                             tickLine={false}
                                             axisLine={false}
                                             allowDecimals={false}
+                                            width={statSort === "time" ? 58 : 42}
+                                            tickFormatter={(value: number) =>
+                                                statSort === "time" ? formatDuration(value) : value.toLocaleString()
+                                            }
                                         />
                                         <Tooltip content={<TopTooltip sort={statSort} />} cursor={{ fill: "rgba(255,255,255,.04)" }} />
                                         <Bar dataKey={statSort === "plays" ? "play_count" : "total_duration_ms"} radius={[4, 4, 0, 0]}>
