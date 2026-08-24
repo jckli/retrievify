@@ -16,6 +16,8 @@ type Stat = {
     spotify_id: string;
     play_count: number;
     total_duration_ms: number;
+    first_played_at?: string;
+    last_played_at?: string;
 };
 
 function formatDuration(durationMs = 0) {
@@ -29,37 +31,28 @@ function localDayMs(value: string, end = false) {
     return new Date(year, month - 1, day, end ? 23 : 0, end ? 59 : 0, end ? 59 : 0, end ? 999 : 0).getTime();
 }
 
+function rangedPeriod(label: string, start: number, end: number) {
+    const span = end - start;
+    return {
+        label,
+        query: new URLSearchParams({ start: String(start), end: String(end) }).toString(),
+        previousQuery: new URLSearchParams({ start: String(start - span - 1), end: String(start - 1) }).toString(),
+        ready: true,
+    };
+}
+
 function periodDetails(period: Period, startDate: string, endDate: string, year: number) {
-    if (period === "all") return { label: "All time", query: "", ready: true };
+    if (period === "all") return { label: "All time", query: "", previousQuery: "", ready: true };
     if (period === "month") {
         const now = new Date();
-        return {
-            label: "This month",
-            query: new URLSearchParams({
-                start: String(new Date(now.getFullYear(), now.getMonth(), 1).getTime()),
-                end: String(now.getTime()),
-            }).toString(),
-            ready: true,
-        };
+        return rangedPeriod("This month", new Date(now.getFullYear(), now.getMonth(), 1).getTime(), now.getTime());
     }
     if (period === "year")
-        return {
-            label: String(year),
-            query: new URLSearchParams({
-                start: String(new Date(year, 0, 1).getTime()),
-                end: String(new Date(year, 11, 31, 23, 59, 59, 999).getTime()),
-            }).toString(),
-            ready: true,
-        };
-    if (!startDate || !endDate) return { label: "Custom range", query: "", ready: false };
-    return {
-        label: `${startDate} to ${endDate}`,
-        query: new URLSearchParams({
-            start: String(localDayMs(startDate)),
-            end: String(localDayMs(endDate, true)),
-        }).toString(),
-        ready: localDayMs(startDate) <= localDayMs(endDate, true),
-    };
+        return rangedPeriod(String(year), new Date(year, 0, 1).getTime(), new Date(year, 11, 31, 23, 59, 59, 999).getTime());
+    if (!startDate || !endDate) return { label: "Custom range", query: "", previousQuery: "", ready: false };
+    const start = localDayMs(startDate);
+    const end = localDayMs(endDate, true);
+    return end < start ? { label: "Custom range", query: "", previousQuery: "", ready: false } : rangedPeriod(`${startDate} to ${endDate}`, start, end);
 }
 
 export default function ScrobblerDashboard() {
@@ -68,6 +61,7 @@ export default function ScrobblerDashboard() {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [statType, setStatType] = useState<StatType>("tracks");
+    const [statSort, setStatSort] = useState<"plays" | "time">("plays");
     const [page, setPage] = useState(1);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [hoveredHeatmap, setHoveredHeatmap] = useState<{
@@ -108,7 +102,13 @@ export default function ScrobblerDashboard() {
         mutate: refreshStats,
     } = useSWR(
         isSetup && selectedPeriod.ready && activeTab === "top"
-            ? `/retrievify/spotify/scrobbler/stats?type=${statType}&limit=15${rangeSuffix}`
+            ? `/retrievify/spotify/scrobbler/stats?type=${statType}&limit=50&sort=${statSort}${rangeSuffix}`
+            : null,
+        fetcher,
+    );
+    const { data: previousStatsData } = useSWR(
+        isSetup && activeTab === "top" && selectedPeriod.previousQuery
+            ? `/retrievify/spotify/scrobbler/stats?type=${statType}&limit=50&sort=${statSort}&${selectedPeriod.previousQuery}`
             : null,
         fetcher,
     );
@@ -210,6 +210,13 @@ export default function ScrobblerDashboard() {
             };
         });
     }, [spotifyTopData, statType, topStats]);
+    const previousRanks = useMemo(
+        () => new Map(((previousStatsData?.data || []) as Stat[]).map((item, index) => [item.spotify_id, index + 1])),
+        [previousStatsData],
+    );
+    const topChart = topMusic.slice(0, 15);
+    const topTenPlays = topMusic.slice(0, 10).reduce((total, item) => total + item.play_count, 0);
+    const totalPlays = Number(statsData?.summary?.total_plays || 0);
 
     const recentPlays = useMemo(() => {
         const spotifyByID = new Map((spotifyTimelineData?.tracks || []).map((item: any) => [item.id, item]));
@@ -701,16 +708,29 @@ export default function ScrobblerDashboard() {
                 </div>
             ) : activeTab === "top" ? (
                 <div className="space-y-5">
-                    <div className="flex gap-1 w-fit rounded-lg border border-white/10 bg-mgray p-1">
-                        {(["tracks", "artists", "albums"] as StatType[]).map(value => (
-                            <button
-                                key={value}
-                                onClick={() => setStatType(value)}
-                                className={`cursor-pointer capitalize px-3 py-2 rounded-md text-sm font-bold ${statType === value ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
-                            >
-                                {value}
-                            </button>
-                        ))}
+                    <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex gap-1 w-fit rounded-lg border border-white/10 bg-mgray p-1">
+                            {(["tracks", "artists", "albums"] as StatType[]).map(value => (
+                                <button
+                                    key={value}
+                                    onClick={() => setStatType(value)}
+                                    className={`cursor-pointer capitalize px-3 py-2 rounded-md text-sm font-bold ${statType === value ? "bg-[var(--color-primary)] text-black" : "text-gray-400 hover:text-white"}`}
+                                >
+                                    {value}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="flex gap-1 rounded-lg border border-white/10 bg-mgray p-1">
+                            {(["plays", "time"] as const).map(value => (
+                                <button
+                                    key={value}
+                                    onClick={() => setStatSort(value)}
+                                    className={`cursor-pointer rounded-md px-3 py-2 text-sm font-bold ${statSort === value ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"}`}
+                                >
+                                    {value === "plays" ? "Plays" : "Time listened"}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                     {statsError ? (
                         <ErrorState />
@@ -719,10 +739,24 @@ export default function ScrobblerDashboard() {
                     ) : topMusic.length === 0 ? (
                         <EmptyState />
                     ) : (
-                        <div className="grid grid-cols-1 xl:grid-cols-5 gap-5">
+                        <>
+                            <div className="grid gap-3 sm:grid-cols-3">
+                                <RankingCard label={`#1 ${statType.slice(0, -1)}`} value={topMusic[0].name} detail={`${topMusic[0].play_count.toLocaleString()} plays`} />
+                                <RankingCard label="Time listened" value={formatDuration(topMusic[0].total_duration_ms)} detail={`on ${topMusic[0].name}`} />
+                                <RankingCard
+                                    label={statType === "artists" ? "Top 10 artist plays" : "Top 10 share"}
+                                    value={statType === "artists" ? topTenPlays.toLocaleString() : `${Math.round((topTenPlays / Math.max(1, totalPlays)) * 100)}%`}
+                                    detail={statType === "artists" ? "artist appearances" : `${topTenPlays.toLocaleString()} of ${totalPlays.toLocaleString()} plays`}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 xl:grid-cols-5 gap-5">
                             <section className="xl:col-span-3 rounded-xl border border-white/10 bg-mgray p-5 h-[420px]">
+                                <div className="mb-3">
+                                    <h2 className="text-lg font-bold font-metropolis">Top {statType}</h2>
+                                    <p className="text-sm text-gray-400">Top 15 of 50, ranked by {statSort === "plays" ? "plays" : "listening time"}.</p>
+                                </div>
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={topMusic} margin={{ top: 12, right: 8, left: -20, bottom: 0 }}>
+                                    <BarChart data={topChart} margin={{ top: 12, right: 8, left: -20, bottom: 0 }}>
                                         <XAxis
                                             dataKey="name"
                                             tick={{ fill: "#888", fontSize: 11 }}
@@ -738,9 +772,9 @@ export default function ScrobblerDashboard() {
                                             axisLine={false}
                                             allowDecimals={false}
                                         />
-                                        <Tooltip content={<TopTooltip />} cursor={{ fill: "rgba(255,255,255,.04)" }} />
-                                        <Bar dataKey="play_count" radius={[4, 4, 0, 0]}>
-                                            {topMusic.map((_, index) => (
+                                        <Tooltip content={<TopTooltip sort={statSort} />} cursor={{ fill: "rgba(255,255,255,.04)" }} />
+                                        <Bar dataKey={statSort === "plays" ? "play_count" : "total_duration_ms"} radius={[4, 4, 0, 0]}>
+                                            {topChart.map((_, index) => (
                                                 <Cell key={index} fill={index === 0 ? "#4ad3ff" : "#3b3b3b"} />
                                             ))}
                                         </Bar>
@@ -749,10 +783,11 @@ export default function ScrobblerDashboard() {
                             </section>
                             <ol className="xl:col-span-2 space-y-2 rounded-xl border border-white/10 bg-mgray p-3 max-h-[420px] overflow-y-auto">
                                 {topMusic.map((item, index) => (
-                                    <TopRow key={item.spotify_id} item={item} index={index} type={statType} />
+                                    <TopRow key={item.spotify_id} item={item} index={index} type={statType} previousRank={previousRanks.get(item.spotify_id)} hasPrevious={Boolean(selectedPeriod.previousQuery && previousStatsData)} />
                                 ))}
                             </ol>
                         </div>
+                        </>
                     )}
                 </div>
             ) : (
@@ -829,6 +864,16 @@ function InsightCard({ label, value }: { label: string; value: string }) {
         <div className="rounded-xl border border-white/10 bg-mgray p-4">
             <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
             <p className="mt-2 text-lg font-bold">{value}</p>
+        </div>
+    );
+}
+
+function RankingCard({ label, value, detail }: { label: string; value: string; detail: string }) {
+    return (
+        <div className="rounded-xl border border-white/10 bg-mgray p-4">
+            <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
+            <p className="mt-2 truncate text-lg font-bold" title={value}>{value}</p>
+            <p className="mt-1 truncate text-xs text-gray-500" title={detail}>{detail}</p>
         </div>
     );
 }
@@ -971,21 +1016,34 @@ function ErrorState() {
     );
 }
 
-function TopTooltip({ active, payload }: any) {
+function TopTooltip({ active, payload, sort }: any) {
     if (!active || !payload?.length) return null;
     const item = payload[0].payload;
     return (
-        <div className="rounded-lg border border-white/10 bg-[#202020] p-3">
-            <p className="font-bold">{item.name}</p>
-            <p className="text-sm text-gray-400">{item.subtitle}</p>
-            <p className="text-sm text-[var(--color-primary)] mt-2">
-                {item.play_count} plays · {formatDuration(item.total_duration_ms)}
-            </p>
+        <div className="flex min-w-52 gap-3 rounded-lg border border-white/10 bg-[#202020] p-3">
+            <img src={item.image || "/images/logo.png"} alt="" className="h-11 w-11 rounded object-cover" />
+            <div className="min-w-0">
+                <p className="font-bold">{item.name}</p>
+                <p className="truncate text-sm text-gray-400">{item.subtitle}</p>
+                <p className="mt-2 text-sm text-[var(--color-primary)]">
+                    {sort === "time" ? formatDuration(item.total_duration_ms) : `${item.play_count.toLocaleString()} plays`}
+                </p>
+                <p className="text-xs text-gray-400">
+                    {sort === "time" ? `${item.play_count.toLocaleString()} plays` : formatDuration(item.total_duration_ms)}
+                </p>
+            </div>
         </div>
     );
 }
 
-function TopRow({ item, index, type }: { item: any; index: number; type: StatType }) {
+function rankingChange(index: number, previousRank?: number) {
+    if (!previousRank) return "New to top 50";
+    const change = previousRank - index - 1;
+    if (!change) return "Same rank";
+    return change > 0 ? `↑ ${change}` : `↓ ${Math.abs(change)}`;
+}
+
+function TopRow({ item, index, type, previousRank, hasPrevious }: { item: any; index: number; type: StatType; previousRank?: number; hasPrevious: boolean }) {
     const singular = type.slice(0, -1);
     return (
         <li>
@@ -998,13 +1056,21 @@ function TopRow({ item, index, type }: { item: any; index: number; type: StatTyp
                 <div className="min-w-0 flex-1">
                     <p className="font-bold text-sm truncate">{item.name}</p>
                     <p className="text-xs text-gray-400 truncate">{item.subtitle}</p>
+                    <p className="mt-1 text-[11px] text-gray-500">
+                        {item.first_played_at ? `First ${formatDate(item.first_played_at)} · ` : ""}Last {formatDate(item.last_played_at)}
+                    </p>
                 </div>
                 <p className="text-right text-xs text-gray-400 whitespace-nowrap">
                     {item.play_count} plays
                     <br />
                     {formatDuration(item.total_duration_ms)}
+                    {hasPrevious ? <><br /><span className="text-[var(--color-primary)]">{rankingChange(index, previousRank)}</span></> : null}
                 </p>
             </Link>
         </li>
     );
+}
+
+function formatDate(value?: string) {
+    return value ? new Date(value).toLocaleDateString(undefined, { month: "short", year: "numeric" }) : "—";
 }
